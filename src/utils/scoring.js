@@ -350,16 +350,16 @@ function getCategoryGroup(category) {
 }
 
 function pairwiseDistance(catA, catB) {
-  // Misma categoría exacta → baja distancia
-  if (catA && catB && catA === catB) return 0.2 + Math.random() * 0.08;
-  // Ambas categorías conocidas, mismo grupo → distancia media
-  if (catA && catB && getCategoryGroup(catA) === getCategoryGroup(catB)) return 0.45 + Math.random() * 0.12;
+  // Misma categoría exacta → distancia muy baja
+  if (catA && catB && catA === catB) return 0.22;
+  // Ambas categorías conocidas, mismo grupo → distancia media-baja
+  if (catA && catB && getCategoryGroup(catA) === getCategoryGroup(catB)) return 0.50;
   // Ambas categorías conocidas, distinto grupo → distancia alta
-  if (catA && catB) return 0.72 + Math.random() * 0.18;
-  // Una conocida, otra desconocida → distancia alta (favorece divergencia)
-  if (catA || catB) return 0.78 + Math.random() * 0.14;
-  // Ambas desconocidas → distancia máxima (palabras muy únicas)
-  return 0.82 + Math.random() * 0.15;
+  if (catA && catB) return 0.82;
+  // Una conocida, otra desconocida → distancia muy alta
+  if (catA || catB) return 0.86;
+  // Ambas desconocidas → distancia máxima
+  return 0.91;
 }
 
 function countDistinctCategories(categories) {

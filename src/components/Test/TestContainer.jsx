@@ -68,14 +68,18 @@ function TestContainer() {
     }
   }, [finished, submissionSaved, testId]);
 
-  // Reset state if testId changes
+  // Reset state when navigating to a different test (only if no saved progress)
   useEffect(() => {
-    setAccepted(false);
-    setAnswers(makeEmptyAnswers(questionCount));
-    setCurrentIndex(0);
-    setFinished(false);
-    setShowDisclaimer(true);
-    setDatResult(null);
+    const existing = loadState(testId);
+    if (!existing) {
+      setAccepted(false);
+      setAnswers(makeEmptyAnswers(questionCount));
+      setCurrentIndex(0);
+      setFinished(false);
+      setShowDisclaimer(true);
+      setDatResult(null);
+      setFasResult(null);
+    }
   }, [testId, questionCount]);
 
   const handleAccept = () => {

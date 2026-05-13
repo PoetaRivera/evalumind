@@ -146,7 +146,7 @@ export const SEMANTIC_CATEGORIES = {
       'circuito', 'algoritmo', 'satélite', 'motor', 'antena', 'batería', 'sensor', 'pantalla', 'robot', 'chip',
       'ordenador', 'internet', 'software', 'hardware', 'servidor', 'red', 'datos', 'cable', 'fibra', 'láser',
       'impresora', 'teclado', 'monitor', 'disco', 'memoria', 'procesador', 'módem', 'router', 'cámara', 'micrófono',
-      'telescopio', 'microscopio', 'brújula', 'reloj', 'termómetro', 'barómetro', 'dinamo', 'turbina', 'pistón', 'engranaje',
+      'telescopio', 'microscopio', 'brújula', 'reloj', 'termómetro', 'barómetro', 'dinamo', 'turbina', 'pistón', 'engranaje', 'neumático',
     ],
   },
   arquitectura: {
@@ -185,7 +185,7 @@ export const SEMANTIC_CATEGORIES = {
   sensorial: {
     group: 'mental',
     words: [
-      'áspero', 'dulce', 'fragante', 'brillante', 'sonoro', 'gélido', 'rugoso', 'sedoso', 'amargo', 'estruendo',
+      'áspero', 'dulce', 'fragante', 'brillante', 'sonoro', 'gélido', 'rugoso', 'sedoso', 'amargo', 'estruendo', 'vértigo',
       'suave', 'duro', 'tibio', 'frío', 'caliente', 'húmedo', 'seco', 'pegajoso', 'resbaladizo', 'espinoso',
       'salado', 'ácido', 'agrio', 'picante', 'soso', 'perfumado', 'apestoso', 'silencioso', 'ruidoso', 'chirriante',
       'opaco', 'transparente', 'luminoso', 'oscuro', 'colorido', 'pálido', 'nítido', 'borroso', 'titilante', 'cegador',

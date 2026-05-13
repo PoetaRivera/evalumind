@@ -9,8 +9,10 @@ export default function FasTask({ letter, onComplete }) {
   const [isFinished, setIsFinished] = useState(false);
   const [error, setError] = useState(null);
   const [paused, setPaused] = useState(false);
+  const [flash, setFlash] = useState(null); // { type: 'success'|'error', word: '' }
   const inputRef = useRef(null);
   const timerRef = useRef(null);
+  const flashTimerRef = useRef(null);
 
   const startTask = () => {
     setIsActive(true);
@@ -53,10 +55,16 @@ export default function FasTask({ letter, onComplete }) {
       const err = validateWord(inputValue);
       if (err) {
         setError(err);
+        setFlash({ type: 'error', word: inputValue.trim() });
+        clearTimeout(flashTimerRef.current);
+        flashTimerRef.current = setTimeout(() => setFlash(null), 1200);
         return;
       }
 
       setError(null);
+      setFlash({ type: 'success', word: inputValue.trim() });
+      clearTimeout(flashTimerRef.current);
+      flashTimerRef.current = setTimeout(() => setFlash(null), 800);
       setWords((prev) => [...prev, inputValue.trim()]);
       setInputValue('');
       inputRef.current?.focus();
@@ -214,6 +222,20 @@ export default function FasTask({ letter, onComplete }) {
       {/* Error */}
       {error && (
         <p style={{ color: '#dc2626', fontSize: '0.85rem', marginBottom: '8px' }}>{error}</p>
+      )}
+
+      {/* Flash visual de feedback */}
+      {flash && (
+        <div style={{
+          display: 'inline-block', padding: '4px 14px', borderRadius: '16px',
+          fontSize: '0.85rem', marginBottom: '8px', fontWeight: 500,
+          background: flash.type === 'success' ? '#dcfce7' : '#fef2f2',
+          color: flash.type === 'success' ? '#16a34a' : '#dc2626',
+          border: `1px solid ${flash.type === 'success' ? '#bbf7d0' : '#fecaca'}`,
+          animation: 'fadeIn 0.2s ease',
+        }}>
+          {flash.type === 'success' ? `+ ${flash.word}` : `✕ ${flash.word}`}
+        </div>
       )}
 
       {/* Contador */}

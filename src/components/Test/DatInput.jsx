@@ -153,7 +153,7 @@ export default function DatInput({ onComplete }) {
     if (sameCategoryPair) {
       const catLabel = categoryNames[newCat] || newCat;
       setCategoryWarning(
-        `Estas palabras pertenecen al mismo dominio ("${catLabel}"). Intenta saltar a otro cajón completamente distinto.`,
+        `"${sameCategoryPair}" y "${trimmed}" pertenecen al mismo dominio (${catLabel}). Intenta saltar a otro departamento completamente distinto.`,
       );
     } else {
       setCategoryWarning(null);
