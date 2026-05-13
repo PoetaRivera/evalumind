@@ -113,7 +113,6 @@ export default function FasTask({ letter, onComplete }) {
       letter,
       words: cleanWords,
       allWords: words,
-      total,
       fluency: cleanWords.length,
       flexibility: categories.size,
       categories: [...categories],

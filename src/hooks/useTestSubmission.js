@@ -11,6 +11,10 @@ export function useTestSubmission() {
   const saveResponse = async (testId, answers, result) => {
     setLoading(true);
     setError(null);
+
+    // Guardar localmente siempre (para Mapa de Funcionamiento y notas)
+    saveCompletedTest(testId, result);
+
     try {
       const sessionId = crypto.randomUUID();
 
@@ -23,7 +27,6 @@ export function useTestSubmission() {
         createdAt: serverTimestamp(),
       };
 
-      // Likert tests
       if (result.total !== undefined && result.total !== null) {
         responseData.totalScore = result.total;
       }
@@ -35,7 +38,6 @@ export function useTestSubmission() {
         responseData.profiles = result.profiles ? result.profiles.map((p) => p.id) : [];
       }
 
-      // DAT-specific
       if (result.finalScore !== undefined) {
         responseData.finalScore = result.finalScore;
         responseData.averageDistance = result.averageDistance;
@@ -46,12 +48,12 @@ export function useTestSubmission() {
       }
 
       await addDoc(collection(db, 'responses'), responseData);
-      saveCompletedTest(testId, result);
-      setSaved(true);
     } catch (err) {
-      setError(err.message);
+      // Firestore no configurado o sin conexión: el resultado se guarda localmente igual
+      console.warn('Firestore save skipped (not configured or offline):', err.message);
     } finally {
       setLoading(false);
+      setSaved(true);
     }
   };
 
