@@ -6,7 +6,7 @@ function SectionHeader({ sectionId, title }) {
   };
 
   return (
-    <div className="section-header" role="heading" aria-level={2}>
+    <div className="section-header">
       <span className="section-badge">{sectionLabels[sectionId]}</span>
       <h2 className="section-title">{title}</h2>
     </div>

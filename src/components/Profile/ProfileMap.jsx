@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { getCompletedTests, clearCompletedTests } from '../../utils/sessionResults';
 import { exportResultsToPDF } from '../../utils/pdfExport';
 
-// Metadatos de tests para etiquetas legibles
 const TEST_LABELS = {
   'tdah-adult-v2': { name: 'TDAH', color: '#3b82f6' },
   'tea-adult-v1': { name: 'TEA', color: '#8b5cf6' },
@@ -17,32 +16,34 @@ const TEST_LABELS = {
 };
 
 const DIMENSION_LABELS = {
-  // TDAH
   inattention: 'Inatención',
   hyperactivityPhysical: 'Hiperactividad física',
   impulsivityVerbal: 'Impulsividad verbal',
-  // TEA
   socialCommunication: 'Comunicación social',
   relationships: 'Relaciones',
   routinesFlexibility: 'Rutinas/flexibilidad',
   sensoryInterests: 'Sensorial/intereses',
-  // HSP
   deepProcessing: 'Procesamiento profundo',
   overStimulation: 'Sobrestimulación',
   emotionalIntensity: 'Intensidad emocional',
   sensorySensitivity: 'Sensibilidad sensorial',
-  // Alexitimia
   identifyingFeelings: 'Identificación emocional',
   describingFeelings: 'Descripción emocional',
   externallyOriented: 'Pensamiento externo',
   somaticConfusion: 'Confusión somática',
-  // RSD
   rejectionPerception: 'Hipersensibilidad al rechazo',
   anticipatoryAvoidance: 'Evitación anticipatoria',
   rumination: 'Rumia y autocrítica',
+  physicalExhaustion: 'Agotamiento físico',
+  identityLoss: 'Pérdida de identidad',
+  emotionalDisconnect: 'Desconexión emocional',
+  collapseRecovery: 'Colapso y recuperación',
+  inhibition: 'Inhibición',
+  workingMemory: 'Memoria de trabajo',
+  planning: 'Planificación',
+  flexibility: 'Flexibilidad cognitiva',
 };
 
-// Estrategias según combinación de perfiles
 const STRATEGIES = [
   {
     id: 'tdah-estructural',
@@ -100,12 +101,21 @@ const STRATEGIES = [
 function normalizeDimensions(completedTests) {
   const allDims = {};
 
-  for (const [testId, testData] of Object.entries(completedTests)) {
-    if (!testData.dimensions) continue;
-    for (const [dimKey, score] of Object.entries(testData.dimensions)) {
-      // Normalizar a 0-100% (todos los tests Likert tienen max 16 por dimensión)
-      const pct = Math.round((score / 16) * 100);
-      allDims[dimKey] = pct;
+  for (const testData of Object.values(completedTests)) {
+    const dims = testData.dimensions;
+    if (!dims) continue;
+
+    if (Array.isArray(dims)) {
+      // Nuevo formato: [{key, label, score, max}]
+      for (const d of dims) {
+        const max = d.max || 16;
+        allDims[d.key] = Math.round((d.score / max) * 100);
+      }
+    } else {
+      // Formato legacy: {key: score}
+      for (const [dimKey, score] of Object.entries(dims)) {
+        allDims[dimKey] = Math.round((score / 16) * 100);
+      }
     }
   }
 
@@ -136,6 +146,12 @@ function findStrategies(dimensions, completedTests) {
   return STRATEGIES.filter((s) => s.condition(dimensions, completedTests));
 }
 
+function getBarColor(pct) {
+  if (pct > 60) return '#f59e0b';
+  if (pct > 40) return '#6366f1';
+  return '#10b981';
+}
+
 export default function ProfileMap() {
   const navigate = useNavigate();
   const completedTests = useMemo(() => getCompletedTests(), []);
@@ -143,7 +159,7 @@ export default function ProfileMap() {
   const hasTests = testEntries.length > 0;
 
   const dimensions = useMemo(() => normalizeDimensions(completedTests), [completedTests]);
-  const dimEntries = Object.entries(dimensions).sort((a, b) => b[1] - a[1]);
+  const dimEntries = useMemo(() => Object.entries(dimensions).sort((a, b) => b[1] - a[1]), [dimensions]);
   const strengths = useMemo(() => findStrengths(dimensions), [dimensions]);
   const effortAreas = useMemo(() => findEffortAreas(dimensions), [dimensions]);
   const strategies = useMemo(() => findStrategies(dimensions, completedTests), [dimensions, completedTests]);
@@ -167,6 +183,39 @@ export default function ProfileMap() {
     );
   }
 
+  const handleClear = () => {
+    clearCompletedTests();
+    navigate('/');
+  };
+
+  const handleExportPDF = () => {
+    const pdfData = testEntries.map(([testId, data]) => {
+      const meta = TEST_LABELS[testId] || { name: testId };
+      let maxScore = data.maxScores?.total ?? 64;
+
+      const dimensionsData = [];
+      const dims = data.dimensions;
+      if (Array.isArray(dims)) {
+        for (const d of dims) {
+          dimensionsData.push({ label: d.label || d.key, score: d.score, max: d.max || 16 });
+        }
+      } else if (dims) {
+        for (const [k, v] of Object.entries(dims)) {
+          dimensionsData.push({ label: k, score: v, max: 16 });
+        }
+      }
+
+      return {
+        testTitle: meta.name,
+        category: data.category,
+        total: data.total,
+        maxScore,
+        dimensions: dimensionsData,
+      };
+    });
+    exportResultsToPDF(pdfData);
+  };
+
   return (
     <div className="profile-map" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>Mapa de Funcionamiento</h2>
@@ -176,7 +225,7 @@ export default function ProfileMap() {
 
       {/* Tests completados */}
       <div style={{ marginBottom: '32px', display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-        {testEntries.map(([testId, data]) => {
+        {testEntries.map(([testId]) => {
           const meta = TEST_LABELS[testId] || { name: testId, color: '#6b7280' };
           return (
             <span key={testId} style={{
@@ -195,14 +244,16 @@ export default function ProfileMap() {
           <h3 style={{ fontSize: '1rem', marginBottom: '16px', color: '#374151' }}>Todas las dimensiones evaluadas</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {dimEntries.map(([key, pct]) => (
-              <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div key={key} role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}
+                aria-label={`${DIMENSION_LABELS[key] || key}: ${pct} por ciento`}
+                style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <span style={{ width: '180px', fontSize: '0.85rem', color: '#4b5563', textAlign: 'right', flexShrink: 0 }}>
                   {DIMENSION_LABELS[key] || key}
                 </span>
                 <div style={{ flex: 1, height: '20px', background: '#f3f4f6', borderRadius: '10px', overflow: 'hidden' }}>
                   <div style={{
                     width: `${pct}%`, height: '100%', borderRadius: '10px',
-                    background: pct > 60 ? '#f59e0b' : pct > 40 ? '#6366f1' : '#10b981',
+                    background: getBarColor(pct),
                     transition: 'width 0.5s ease',
                   }} />
                 </div>
@@ -286,31 +337,7 @@ export default function ProfileMap() {
         <button className="btn btn-secondary" onClick={() => navigate('/')}>
           Volver al inicio
         </button>
-        <button
-          className="btn btn-secondary"
-          onClick={() => {
-            const pdfData = testEntries.map(([testId, data]) => {
-              const meta = TEST_LABELS[testId] || { name: testId };
-              let maxScore = 64;
-              if (testId === 'dat-v1') maxScore = 100;
-              else if (testId === 'burnout-masking-v1') maxScore = 52;
-              else if (testId === 'funciones-ejecutivas-v1') maxScore = 72;
-              return {
-                testTitle: meta.name,
-                category: data.category,
-                total: data.total,
-                maxScore,
-                dimensions: Object.entries(data.dimensions || {}).map(([k, v]) => {
-                  const dimMax = testId === 'funciones-ejecutivas-v1' && (k === 'workingMemory' || k === 'planning') ? 20 :
-                                  testId === 'burnout-masking-v1' && (k === 'identityLoss') ? 12 :
-                                  testId === 'burnout-masking-v1' && (k === 'emotionalDisconnect') ? 8 : 16;
-                  return { label: k, score: v, max: dimMax };
-                }),
-              };
-            });
-            exportResultsToPDF(pdfData);
-          }}
-        >
+        <button className="btn btn-secondary" onClick={handleExportPDF}>
           Descargar PDF
         </button>
         <button className="btn btn-secondary" onClick={() => navigate('/historias')}>
@@ -319,14 +346,7 @@ export default function ProfileMap() {
         <button className="btn btn-secondary" onClick={() => navigate('/recursos')}>
           Buscar ayuda profesional
         </button>
-        <button
-          className="btn btn-link"
-          onClick={() => {
-            clearCompletedTests();
-            window.location.reload();
-          }}
-          style={{ fontSize: '0.85rem' }}
-        >
+        <button className="btn btn-link" onClick={handleClear} style={{ fontSize: '0.85rem' }}>
           Limpiar resultados de sesión
         </button>
       </div>

@@ -1,6 +1,57 @@
 # Seguimiento Fase 1 — NeuroScreen MVP
 
-## Estado actual: 9 tests + 5 features + testing
+## Estado: 9 tests + 5 features + testing + correcciones post-evaluación
+
+### Evaluación profesional (2026-05-13)
+Evaluación con 5 agentes en paralelo encontró 36 issues. Plan de implementación en 5 fases, todas completadas.
+
+---
+
+### Correcciones implementadas (5 fases, 36 issues resueltos)
+
+#### Fase 1: Seguridad y protección de datos ✅
+- `firestore.rules` creado: solo permite `create` con campos validados, bloquea lecturas
+- `firebase.json` actualizado con headers de seguridad (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
+- `userAgent` eliminado del payload de Firestore (anti-fingerprinting)
+- Rate limiting cliente: `useRef` flag previene envíos duplicados
+- `firebase/config.js`: validación de variables de entorno, `db = null` si no configurado
+
+#### Fase 2: Bugs funcionales críticos ✅
+- **ProfileMap normalización**: guarda `maxScores` y `max` por dimensión en sessionStorage, usa valores reales en vez de hardcodear 16
+- **PDF export**: lee `maxScores` desde datos guardados, eliminado hardcodeo de maxScores
+- **ProgressBar CSS**: `position: relative` agregado a `.progress-bar-wrapper`, texto blanco con text-shadow
+- **Focus indicators**: `:focus-within` en `.likert-label`, `:focus-visible` global para botones/links
+- **Factory scoring**: `createLikertScorer(config)` refactoriza 7 funciones Likert (~80% código eliminado)
+- **ErrorBoundary**: `src/components/Common/ErrorBoundary.jsx` con fallback UI
+
+#### Fase 3: Seguridad y estructura (alto) ✅
+- **FAS scoring extraído**: `src/utils/fasScoring.js` — `calculateFasScore(words, letter)` testeable
+- **Ruta 404**: `src/components/Common/NotFound.jsx`
+- **Complementariedad mejorada**: 9 reglas (4 nuevas: RSD+Burnout, Ejecutivas+TDAH, Ejecutivas+TEA, Alexitimia+Burnout), campo `tests[]` explícito
+- **Code splitting**: `React.lazy()` para RecursosPage, ProfileMap, AdaptationStoriesPage, NotFound. Main bundle: ~973KB
+- **React.memo**: QuestionCard, ExamplesAccordion
+- **WCAG AA**: `.test-nav-hint` (#999→#666), `.test-card-info` (#888→#555), `.results-profiles li` (#2c6faa→#1a5276)
+- **Focus trap + Escape**: DisclaimerModal con `useEffect` para atrapar foco dentro del modal
+- **Static objects**: `CATEGORY_LABELS` y `CATEGORY_COLORS` movidos a nivel módulo, `useMemo` en complementarityNotes
+- **ARIA fixes**: SectionHeader sin `role="heading"` redundante, InstructionsBanner sin conflicto `role="alert"`+`aria-live`, `aria-live` en status messages, `role="alert"` en errores, Layout con `<h1><NavLink>` y `aria-current`
+
+#### Fase 4: CSS y estilos ✅
+- **CSS custom properties**: `:root` con `--color-primary`, `--color-dark`, `--color-text`, `--radius-*`, `--shadow-*`
+- **Separación de page styles**: `HomePage.css`, `RecursosPage.css` extraídos de `index.css`
+- **Breakpoint tablet**: `@media (max-width: 768px)` en TestContainer.css
+- **Header responsive**: movido de TestContainer.css a Layout.css
+- **Botones globales**: `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-link` en `index.css`
+
+#### Fase 5: HTML, SEO, testing y correcciones menores ✅
+- **index.html**: `lang="es"`, meta description, Open Graph tags, title descriptivo
+- **robots.txt**: `public/robots.txt`
+- **favicon.svg**: icono NS personalizado
+- **Nuevos tests unitarios**: `fasScoring.test.js` (11 tests)
+- **Emoji aria-hidden**: DatInput emojis con `aria-hidden="true"`
+- **Timer FAS**: `role="alert"` en mensajes de error
+- **ProfileMap**: `window.location.reload()` → `navigate('/')`, `role="progressbar"` en barras de dimensión
+
+---
 
 ### Tests de screening
 
@@ -20,48 +71,30 @@
 
 | # | Feature | Ruta | Descripción |
 |---|---|---|---|
-| 1 | Mapa de Funcionamiento | `/perfil` | Dashboard combinado, barras normalizadas, fortalezas/áreas/estrategias |
-| 2 | Notas de complementariedad | ResultsView | 5 reglas entre tests (TDAH+RSD, TEA+Alexitimia, HSP+RSD, TDAH+TEA, TEA+HSP) |
+| 1 | Mapa de Funcionamiento | `/perfil` | Dashboard combinado, barras con max real, fortalezas/áreas/estrategias |
+| 2 | Notas de complementariedad | ResultsView | 9 reglas (TDAH+RSD, TEA+Alexitimia, HSP+RSD, TDAH+TEA, TEA+HSP, RSD+Burnout, Ejecutivas+TDAH, Ejecutivas+TEA, Alexitimia+Burnout) |
 | 3 | Historias de Adaptación | `/historias` | 2 historias narrativas con perfil matching |
-| 4 | Exportación PDF | ResultsView + ProfileMap | jsPDF texto plano |
+| 4 | Exportación PDF | ResultsView + ProfileMap | jsPDF, usa maxScores reales |
 | 5 | Mejoras DAT | DatInput | Instrucciones anti-narrativa, detección misma categoría, warning específico |
+| 6 | Seguridad Firestore | `firestore.rules` | Reglas de validación de schema, rate limiting cliente |
+| 7 | Code splitting | App.jsx | React.lazy + Suspense para rutas secundarias |
+| 8 | Error Boundary | App.jsx | Fallback UI si un componente crashea |
+| 9 | Ruta 404 | `*` | NotFound page |
+| 10 | SEO | index.html | meta description, OG tags, robots.txt |
 
 ### Testing
 
 | Suite | Tipo | Framework | Tests | Estado |
 |---|---|---|---|---|
-| Unitarios (scoring) | Unit | Vitest | 71 | 71 pass, 0 fail |
+| Unitarios (scoring) | Unit | Vitest | 71 | 71 pass |
+| Unitarios (FAS scoring) | Unit | Vitest | 11 | 11 pass |
+| **Total unitarios** | | | **82** | **82 pass** |
 | E2E (flujos completos) | E2E | Playwright | 31 | 28 pass, 3 skip, 0 fail |
 
 ```
-npm run test:unit   # 71 tests de scoring (<1s)
-npm run test:e2e    # 31 tests de flujo (~10s)
-npm test            # alias para test:unit
+npm run test         # 82 tests unitarios (<1s)
+npm run test:e2e     # 31 tests de flujo (~10s)
 ```
-
-### Cobertura de tests unitarios por scoring
-
-| Función | Tests | Verifica |
-|---|---|---|
-| `calculateTdahScore` | 8 | Ceros, máx, umbrales 16/6/10, categorías ≤22/≤36/>36, perfiles, dimensiones, maxScores |
-| `calculateTeaScore` | 6 | Umbral social ≥8 (masking), resto ≥9, perfiles, childhoodNote |
-| `calculateHspScore` | 5 | Categorías HSP, umbral ≥9, 20-30%, temperamento |
-| `calculateAlexithymiaScore` | 4 | Categorías sin "probabilidad", childhoodNote TEA |
-| `calculateRsdScore` | 4 | Perfiles, boundary ≤40, nota TDAH+TEA |
-| `calculateMaskingBurnoutScore` | 6 | 13 ítems, máx 52, dims irregulares (16/12/8/16), umbrales |
-| `calculateExecutiveScore` | 6 | 18 ítems, máx 72, dims irregulares (16/20/20/16), umbrales |
-| `calculateDatScore` | 7 | <7 error, convergente/divergente, pares ordenados, distancias fijas |
-| Interfaz unificada | 24 | 8 funciones × 3 asserts: estructura, descripción, childhoodNote |
-
-### Cobertura de tests e2e por flujo
-
-| Suite | Tests | Cubre |
-|---|---|---|
-| HomePage | 5 | Render, 9 cards, metadatos, navegación |
-| Likert flow | 8 | Disclaimer, navegación, Anterior, validación, localStorage, TEA/EF/Burnout |
-| DAT flow | 6 | Input, validación, ejemplos, misma categoría, cálculo |
-| FAS flow | 3 | Letra, cronómetro, validación |
-| Profile + Nav + PDF | 8 | Estado vacío, sessionStorage, rutas, historias, PDF |
 
 ### Despliegue
 
@@ -77,7 +110,7 @@ npm test            # alias para test:unit
 src/
 ├── data/ (11 archivos)
 │   ├── index.js                    ← Registro: 9 tests
-│   ├── tdahQuestions.js            ← 16 ítems
+│   ├── tdahQuestions.js            ← 16 ítems + LIKERT_OPTIONS
 │   ├── teaQuestions.js             ← 16 ítems
 │   ├── hspQuestions.js             ← 16 ítems
 │   ├── alexithymiaQuestions.js     ← 16 ítems
@@ -87,33 +120,38 @@ src/
 │   ├── datConfig.js                ← Instrucciones, ejemplos, categorías semánticas
 │   ├── fasConfig.js                ← Letras, reglas, categorías FAS
 │   └── adaptationStories.js        ← 2 historias + perfil matching
-├── utils/ (5 archivos)
-│   ├── scoring.js                  ← 8 funciones de puntuación
+├── utils/ (8 archivos)
+│   ├── scoring.js                  ← Factory createLikertScorer + calculateDatScore
 │   ├── scoring.test.js             ← 71 tests unitarios
+│   ├── fasScoring.js               ← Scoring FAS extraído (testeable)
+│   ├── fasScoring.test.js          ← 11 tests unitarios
 │   ├── wordValidation.js           ← Validación de palabras DAT
-│   ├── sessionResults.js           ← Persistencia + reglas complementariedad
+│   ├── sessionResults.js           ← Persistencia + 9 reglas complementariedad
 │   └── pdfExport.js                ← Exportación PDF con jsPDF
 ├── components/
 │   ├── Test/ (10 archivos)
 │   │   ├── TestContainer.jsx       ← Orquestador: Likert + DAT + FAS
-│   │   ├── QuestionCard.jsx        ← Pregunta Likert + ejemplos
+│   │   ├── QuestionCard.jsx        ← Pregunta Likert + ejemplos (React.memo)
 │   │   ├── DatInput.jsx            ← Input palabras + chips + validación
-│   │   ├── FasTask.jsx             ← Cronómetro 60s + input palabras
-│   │   ├── ResultsView.jsx         ← Resultados: 21 categorías + DAT/FAS
-│   │   ├── ExamplesAccordion.jsx
-│   │   ├── SectionHeader.jsx
-│   │   ├── InstructionsBanner.jsx
-│   │   ├── ProgressBar.jsx
-│   │   └── TestContainer.css
-│   ├── Common/DisclaimerModal.jsx
-│   ├── Profile/ProfileMap.jsx      ← Dashboard combinado
+│   │   ├── FasTask.jsx             ← Cronómetro 60s, usa calculateFasScore
+│   │   ├── ResultsView.jsx         ← Resultados, static objects + useMemo
+│   │   ├── ExamplesAccordion.jsx   ← (React.memo)
+│   │   ├── SectionHeader.jsx       ← Sin ARIA redundante
+│   │   ├── InstructionsBanner.jsx  ← Sin conflicto ARIA
+│   │   ├── ProgressBar.jsx         ← position: relative fix
+│   │   └── TestContainer.css      ← Focus indicators, contrastes, tablet bp
+│   ├── Common/
+│   │   ├── DisclaimerModal.jsx     ← Focus trap + Escape + autoFocus
+│   │   ├── ErrorBoundary.jsx       ← Fallback UI
+│   │   └── NotFound.jsx            ← 404 page
+│   ├── Profile/ProfileMap.jsx      ← Dashboard con max real + role="progressbar"
 │   ├── Stories/AdaptationStoriesPage.jsx
-│   ├── Layout/Layout.jsx
-│   ├── HomePage.jsx                ← 9 cards + enlaces perfil/historias
-│   └── RecursosPage.jsx
-├── hooks/useTestSubmission.js      ← Firestore + sessionStorage
-├── firebase/config.js
-├── App.jsx                         ← 6 rutas
+│   ├── Layout/Layout.jsx           ← <h1><NavLink> + aria-current
+│   ├── HomePage.jsx + HomePage.css
+│   └── RecursosPage.jsx + RecursosPage.css
+├── hooks/useTestSubmission.js      ← Firestore + sessionStorage + rate limit
+├── firebase/config.js              ← Validación de env vars
+├── App.jsx                         ← 6 rutas + ErrorBoundary + React.lazy + Suspense + 404
 └── main.jsx
 ```
 
@@ -126,16 +164,23 @@ src/
 | `/perfil` | Mapa de Funcionamiento |
 | `/historias` | Historias de Adaptación |
 | `/recursos` | Recursos y ayuda profesional |
+| `*` | NotFound (404) |
 
 ### Pendiente
 
-1. Firebase Firestore: credenciales reales en `.env` + reglas + colección `responses`
-2. Rate limiting en Firestore
-3. Directorio profesional real en `/recursos`
-4. Metaetiquetas noindex + robots.txt
+1. **Firestore API**: habilitar en Google Cloud Console (`firestore.googleapis.com`) y crear base de datos
+2. **Desplegar reglas de seguridad**: `firebase deploy --only firestore:rules`
+3. **Deploy final** con build actualizado: `npm run build && firebase deploy`
+4. Directorio profesional real en `/recursos`
 5. i18n (multi-idioma)
 6. Modo oscuro (`prefers-color-scheme`)
 7. Tipografía opcional para dislexia (OpenDyslexic)
-8. Favicon personalizado
-9. Code splitting (bundle >500KB)
-10. Span de Dígitos (tarea interactiva de memoria de trabajo)
+8. Span de Dígitos (tarea interactiva de memoria de trabajo)
+9. Mejora tests E2E: reemplazar `dispatchEvent` por `click()`, agregar Firefox/WebKit
+10. Tests unitarios para `wordValidation.js` y `sessionResults.js`
+
+### Por dónde seguir
+
+1. **Inmediato**: Habilitar Cloud Firestore API → crear BD → desplegar reglas → hacer deploy
+2. **Siguiente iteración**: Mejorar tests E2E + agregar tests unitarios faltantes
+3. **Features futuras**: Span de Dígitos, directorio profesional real, modo oscuro, i18n

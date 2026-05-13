@@ -1,8 +1,3 @@
-// ═══════════════════════════════════════════════════
-// Persistencia de resultados en sessionStorage
-// para notas de complementariedad entre tests
-// ═══════════════════════════════════════════════════
-
 const SESSION_KEY = 'neuroscreen_completed_tests';
 
 function loadAll() {
@@ -28,10 +23,13 @@ export function saveCompletedTest(testId, result) {
     testId,
     total: result.total,
     category: result.category,
-    dimensions: (result.dimensions || []).reduce((acc, d) => {
-      acc[d.key] = d.score;
-      return acc;
-    }, {}),
+    maxScores: result.maxScores || {},
+    dimensions: (result.dimensions || []).map((d) => ({
+      key: d.key,
+      label: d.label,
+      score: d.score,
+      max: d.max,
+    })),
     profiles: (result.profiles || []).map((p) => p.id),
     completedAt: Date.now(),
   };
@@ -61,10 +59,8 @@ export function clearCompletedTests() {
 const COMPLEMENTARITY_RULES = [
   {
     id: 'tdah-rsd',
-    condition: (tests) => {
-      const tdah = tests['tdah-adult-v2'];
-      const rsd = tests['rsd-adult-v1'];
-      if (!tdah || !rsd) return false;
+    tests: ['tdah-adult-v2', 'rsd-adult-v1'],
+    condition: (tdah, rsd) => {
       const tdahModerate = tdah.category === 'moderada-probabilidad' || tdah.category === 'alta-probabilidad';
       const rsdModerate = rsd.category === 'rsd-moderada' || rsd.category === 'rsd-marcada';
       return tdahModerate && rsdModerate;
@@ -76,10 +72,8 @@ const COMPLEMENTARITY_RULES = [
   },
   {
     id: 'tea-alexitimia',
-    condition: (tests) => {
-      const tea = tests['tea-adult-v1'];
-      const alex = tests['alexitimia-adult-v1'];
-      if (!tea || !alex) return false;
+    tests: ['tea-adult-v1', 'alexitimia-adult-v1'],
+    condition: (tea, alex) => {
       const teaModerate = tea.category === 'moderada-probabilidad' || tea.category === 'alta-probabilidad';
       const alexModerate = alex.category === 'alexitimia-moderada' || alex.category === 'alexitimia-marcada';
       return teaModerate && alexModerate;
@@ -91,10 +85,8 @@ const COMPLEMENTARITY_RULES = [
   },
   {
     id: 'hsp-rsd',
-    condition: (tests) => {
-      const hsp = tests['hsp-adult-v1'];
-      const rsd = tests['rsd-adult-v1'];
-      if (!hsp || !rsd) return false;
+    tests: ['hsp-adult-v1', 'rsd-adult-v1'],
+    condition: (hsp, rsd) => {
       const hspModerate = hsp.category === 'alta-sensibilidad-moderada' || hsp.category === 'alta-sensibilidad-marcada';
       const rsdModerate = rsd.category === 'rsd-moderada' || rsd.category === 'rsd-marcada';
       return hspModerate && rsdModerate;
@@ -106,10 +98,8 @@ const COMPLEMENTARITY_RULES = [
   },
   {
     id: 'tdah-tea',
-    condition: (tests) => {
-      const tdah = tests['tdah-adult-v2'];
-      const tea = tests['tea-adult-v1'];
-      if (!tdah || !tea) return false;
+    tests: ['tdah-adult-v2', 'tea-adult-v1'],
+    condition: (tdah, tea) => {
       const tdahModerate = tdah.category === 'moderada-probabilidad' || tdah.category === 'alta-probabilidad';
       const teaModerate = tea.category === 'moderada-probabilidad' || tea.category === 'alta-probabilidad';
       return tdahModerate && teaModerate;
@@ -121,10 +111,8 @@ const COMPLEMENTARITY_RULES = [
   },
   {
     id: 'tea-hsp',
-    condition: (tests) => {
-      const tea = tests['tea-adult-v1'];
-      const hsp = tests['hsp-adult-v1'];
-      if (!tea || !hsp) return false;
+    tests: ['tea-adult-v1', 'hsp-adult-v1'],
+    condition: (tea, hsp) => {
       const teaModerate = tea.category === 'moderada-probabilidad' || tea.category === 'alta-probabilidad';
       const hspModerate = hsp.category === 'alta-sensibilidad-moderada' || hsp.category === 'alta-sensibilidad-marcada';
       return teaModerate && hspModerate;
@@ -134,6 +122,58 @@ const COMPLEMENTARITY_RULES = [
       'profundo. La diferencia clave es que el TEA incluye aspectos de comunicación social y rutinas ' +
       'que no forman parte del rasgo HSP. Un profesional puede ayudarte a distinguir si tienes uno, otro, o ambos.',
   },
+  {
+    id: 'rsd-burnout',
+    tests: ['rsd-adult-v1', 'burnout-masking-v1'],
+    condition: (rsd, burnout) => {
+      const rsdModerate = rsd.category === 'rsd-moderada' || rsd.category === 'rsd-marcada';
+      const burnoutModerate = burnout.category === 'burnout-masking-moderado' || burnout.category === 'burnout-masking-severo';
+      return rsdModerate && burnoutModerate;
+    },
+    note:
+      'La RSD y el burnout por masking suelen retroalimentarse: el miedo al rechazo alimenta el camuflaje, ' +
+      'y el camuflaje constante genera agotamiento. Romper este ciclo requiere entornos donde puedas ' +
+      'bajar la máscara sin miedo a las consecuencias sociales.',
+  },
+  {
+    id: 'ejecutivas-tdah',
+    tests: ['funciones-ejecutivas-v1', 'tdah-adult-v2'],
+    condition: (ejecutivas, tdah) => {
+      const ejModerate = ejecutivas.category === 'dificultades-ejecutivas-moderadas' || ejecutivas.category === 'dificultades-ejecutivas-significativas';
+      const tdahModerate = tdah.category === 'moderada-probabilidad' || tdah.category === 'alta-probabilidad';
+      return ejModerate && tdahModerate;
+    },
+    note:
+      'Las dificultades ejecutivas y el TDAH están estrechamente vinculados. Las funciones ejecutivas ' +
+      '(memoria de trabajo, inhibición, planificación) son precisamente las áreas más afectadas por el TDAH. ' +
+      'Si ambos resultados son altos, una evaluación neuropsicológica puede ayudarte a mapear tus fortalezas y desafíos específicos.',
+  },
+  {
+    id: 'ejecutivas-tea',
+    tests: ['funciones-ejecutivas-v1', 'tea-adult-v1'],
+    condition: (ejecutivas, tea) => {
+      const ejModerate = ejecutivas.category === 'dificultades-ejecutivas-moderadas' || ejecutivas.category === 'dificultades-ejecutivas-significativas';
+      const teaModerate = tea.category === 'moderada-probabilidad' || tea.category === 'alta-probabilidad';
+      return ejModerate && teaModerate;
+    },
+    note:
+      'Las personas con TEA frecuentemente experimentan desafíos ejecutivos, especialmente en flexibilidad ' +
+      'cognitiva y planificación. Esto no es un déficit de inteligencia: es una forma diferente de procesar ' +
+      'que puede beneficiarse de apoyos visuales, rutinas externas y estrategias de organización personalizadas.',
+  },
+  {
+    id: 'alexitimia-burnout',
+    tests: ['alexitimia-adult-v1', 'burnout-masking-v1'],
+    condition: (alex, burnout) => {
+      const alexModerate = alex.category === 'alexitimia-moderada' || alex.category === 'alexitimia-marcada';
+      const burnoutModerate = burnout.category === 'burnout-masking-moderado' || burnout.category === 'burnout-masking-severo';
+      return alexModerate && burnoutModerate;
+    },
+    note:
+      'La alexitimia puede hacer que no detectes el agotamiento hasta que es severo, porque las señales ' +
+      'de alarma del cuerpo (fatiga, tensión, malestar) no se traducen claramente en "necesito descansar". ' +
+      'Aprender a leer las señales corporales como datos puede ayudarte a prevenir el burnout.',
+  },
 ];
 
 export function getComplementarityNotes(currentTestId) {
@@ -141,18 +181,13 @@ export function getComplementarityNotes(currentTestId) {
   const notes = [];
 
   for (const rule of COMPLEMENTARITY_RULES) {
-    // Solo mostrar si el test actual está involucrado en la regla
-    const ruleIds = rule.id.split('-');
-    const involvesCurrent = ruleIds.some((id) => {
-      if (id === 'tdah') return currentTestId === 'tdah-adult-v2';
-      if (id === 'tea') return currentTestId === 'tea-adult-v1';
-      if (id === 'hsp') return currentTestId === 'hsp-adult-v1';
-      if (id === 'alexitimia') return currentTestId === 'alexitimia-adult-v1';
-      if (id === 'rsd') return currentTestId === 'rsd-adult-v1';
-      return false;
-    });
+    const involvesCurrent = rule.tests.includes(currentTestId);
+    if (!involvesCurrent) continue;
 
-    if (involvesCurrent && rule.condition(allTests)) {
+    const testDatas = rule.tests.map((tid) => allTests[tid]).filter(Boolean);
+    if (testDatas.length < rule.tests.length) continue;
+
+    if (rule.condition(...testDatas)) {
       notes.push(rule);
     }
   }

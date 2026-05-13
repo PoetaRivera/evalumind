@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { LIKERT_OPTIONS } from '../../data/tdahQuestions';
 import ExamplesAccordion from './ExamplesAccordion';
 
@@ -53,4 +54,4 @@ function QuestionCard({ question, selectedValue, onSelect, currentIndex, totalQu
   );
 }
 
-export default QuestionCard;
+export default memo(QuestionCard);

@@ -1,4 +1,4 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import './Layout.css';
 
 function Layout() {
@@ -6,13 +6,24 @@ function Layout() {
     <div className="app-layout">
       <header className="app-header">
         <div>
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <h1 style={{ margin: 0 }}>NeuroScreen</h1>
-          </Link>
+          <h1 style={{ margin: 0 }}>
+            <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              NeuroScreen
+            </NavLink>
+          </h1>
           <span className="app-tagline">Herramienta de screening orientativo</span>
         </div>
         <nav style={{ display: 'flex', gap: '16px', fontSize: '0.85rem' }}>
-          <Link to="/perfil" style={{ color: '#6b7280', textDecoration: 'none' }}>Mi perfil</Link>
+          <NavLink
+            to="/perfil"
+            style={({ isActive }) => ({
+              color: isActive ? '#4a90d9' : '#6b7280',
+              textDecoration: 'none',
+              fontWeight: isActive ? 600 : 400,
+            })}
+          >
+            Mi perfil
+          </NavLink>
         </nav>
       </header>
       <main className="app-main">

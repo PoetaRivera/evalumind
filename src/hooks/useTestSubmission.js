@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { db } from '../firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { saveCompletedTest } from '../utils/sessionResults';
@@ -7,8 +7,12 @@ export function useTestSubmission() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
+  const submitting = useRef(false);
 
-  const saveResponse = async (testId, answers, result) => {
+  const saveResponse = useCallback(async (testId, answers, result) => {
+    if (submitting.current) return;
+    submitting.current = true;
+
     setLoading(true);
     setError(null);
 
@@ -22,7 +26,6 @@ export function useTestSubmission() {
         testId,
         answers,
         resultCategory: result.category,
-        userAgent: navigator.userAgent,
         sessionId,
         createdAt: serverTimestamp(),
       };
@@ -47,15 +50,19 @@ export function useTestSubmission() {
         responseData.pairwiseDistances = result.pairwiseDistances;
       }
 
-      await addDoc(collection(db, 'responses'), responseData);
+      if (db) {
+        await addDoc(collection(db, 'responses'), responseData);
+      }
     } catch (err) {
-      // Firestore no configurado o sin conexión: el resultado se guarda localmente igual
       console.warn('Firestore save skipped (not configured or offline):', err.message);
     } finally {
       setLoading(false);
       setSaved(true);
+      setTimeout(() => {
+        submitting.current = false;
+      }, 2000);
     }
-  };
+  }, []);
 
   return { loading, error, saved, saveResponse };
 }

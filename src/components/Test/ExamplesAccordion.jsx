@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
 function ExamplesAccordion({ examples, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -31,4 +31,4 @@ function ExamplesAccordion({ examples, defaultOpen = false }) {
   );
 }
 
-export default ExamplesAccordion;
+export default memo(ExamplesAccordion);

@@ -1,0 +1,22 @@
+.recursos-page {
+  max-width: 600px;
+}
+
+.recursos-section {
+  margin: 1.5rem 0;
+}
+
+.recursos-section h3 {
+  font-size: 1rem;
+  color: var(--color-dark);
+  margin-bottom: 0.5rem;
+}
+
+.recursos-section ul {
+  padding-left: 1.2rem;
+}
+
+.recursos-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}

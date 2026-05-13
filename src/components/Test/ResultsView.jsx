@@ -1,6 +1,59 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getComplementarityNotes } from '../../utils/sessionResults';
 import { exportResultsToPDF } from '../../utils/pdfExport';
+
+const CATEGORY_LABELS = {
+  'baja-probabilidad': 'Baja probabilidad',
+  'moderada-probabilidad': 'Moderada probabilidad',
+  'alta-probabilidad': 'Alta probabilidad',
+  'sensibilidad-promedio': 'Sensibilidad promedio',
+  'alta-sensibilidad-moderada': 'Alta sensibilidad moderada',
+  'alta-sensibilidad-marcada': 'Alta sensibilidad marcada',
+  'alexitimia-baja': 'Procesamiento emocional fluido',
+  'alexitimia-moderada': 'Alexitimia moderada',
+  'alexitimia-marcada': 'Alexitimia marcada',
+  'convergente': 'Pensamiento convergente',
+  'moderadamente-divergente': 'Moderadamente divergente',
+  'altamente-divergente': 'Altamente divergente',
+  'rsd-moderada': 'RSD moderada',
+  'rsd-marcada': 'RSD marcada',
+  'bajo-burnout-masking': 'Burnout por masking bajo',
+  'burnout-masking-moderado': 'Burnout por masking moderado',
+  'burnout-masking-severo': 'Burnout por masking severo',
+  'funciones-ejecutivas-preservadas': 'Funciones ejecutivas preservadas',
+  'dificultades-ejecutivas-moderadas': 'Dificultades ejecutivas moderadas',
+  'dificultades-ejecutivas-significativas': 'Dificultades ejecutivas significativas',
+  'fluidez-baja': 'Fluidez verbal baja',
+  'fluidez-moderada': 'Fluidez verbal moderada',
+  'fluidez-alta': 'Fluidez verbal alta',
+};
+
+const CATEGORY_COLORS = {
+  'baja-probabilidad': '#2e7d32',
+  'moderada-probabilidad': '#e67e22',
+  'alta-probabilidad': '#c0392b',
+  'sensibilidad-promedio': '#2e7d32',
+  'alta-sensibilidad-moderada': '#6c5ce7',
+  'alta-sensibilidad-marcada': '#6c5ce7',
+  'alexitimia-baja': '#2e7d32',
+  'alexitimia-moderada': '#e67e22',
+  'alexitimia-marcada': '#c0392b',
+  'convergente': '#6366f1',
+  'moderadamente-divergente': '#f59e0b',
+  'altamente-divergente': '#10b981',
+  'rsd-moderada': '#ec4899',
+  'rsd-marcada': '#be185d',
+  'bajo-burnout-masking': '#2e7d32',
+  'burnout-masking-moderado': '#e67e22',
+  'burnout-masking-severo': '#c0392b',
+  'funciones-ejecutivas-preservadas': '#2e7d32',
+  'dificultades-ejecutivas-moderadas': '#e67e22',
+  'dificultades-ejecutivas-significativas': '#c0392b',
+  'fluidez-baja': '#f59e0b',
+  'fluidez-moderada': '#6366f1',
+  'fluidez-alta': '#10b981',
+};
 
 function RadarChart({ dimensions }) {
   const sides = dimensions.length;
@@ -105,59 +158,10 @@ function RadarChart({ dimensions }) {
 
 function ResultsView({ result, testId, loading, error, saved, onRestart }) {
   const navigate = useNavigate();
-  const complementarityNotes = testId ? getComplementarityNotes(testId) : [];
-
-  const categoryLabels = {
-    'baja-probabilidad': 'Baja probabilidad',
-    'moderada-probabilidad': 'Moderada probabilidad',
-    'alta-probabilidad': 'Alta probabilidad',
-    'sensibilidad-promedio': 'Sensibilidad promedio',
-    'alta-sensibilidad-moderada': 'Alta sensibilidad moderada',
-    'alta-sensibilidad-marcada': 'Alta sensibilidad marcada',
-    'alexitimia-baja': 'Procesamiento emocional fluido',
-    'alexitimia-moderada': 'Alexitimia moderada',
-    'alexitimia-marcada': 'Alexitimia marcada',
-    'convergente': 'Pensamiento convergente',
-    'moderadamente-divergente': 'Moderadamente divergente',
-    'altamente-divergente': 'Altamente divergente',
-    'rsd-moderada': 'RSD moderada',
-    'rsd-marcada': 'RSD marcada',
-    'bajo-burnout-masking': 'Burnout por masking bajo',
-    'burnout-masking-moderado': 'Burnout por masking moderado',
-    'burnout-masking-severo': 'Burnout por masking severo',
-    'funciones-ejecutivas-preservadas': 'Funciones ejecutivas preservadas',
-    'dificultades-ejecutivas-moderadas': 'Dificultades ejecutivas moderadas',
-    'dificultades-ejecutivas-significativas': 'Dificultades ejecutivas significativas',
-    'fluidez-baja': 'Fluidez verbal baja',
-    'fluidez-moderada': 'Fluidez verbal moderada',
-    'fluidez-alta': 'Fluidez verbal alta',
-  };
-
-  const categoryColors = {
-    'baja-probabilidad': '#2e7d32',
-    'moderada-probabilidad': '#e67e22',
-    'alta-probabilidad': '#c0392b',
-    'sensibilidad-promedio': '#2e7d32',
-    'alta-sensibilidad-moderada': '#6c5ce7',
-    'alta-sensibilidad-marcada': '#6c5ce7',
-    'alexitimia-baja': '#2e7d32',
-    'alexitimia-moderada': '#e67e22',
-    'alexitimia-marcada': '#c0392b',
-    'convergente': '#6366f1',
-    'moderadamente-divergente': '#f59e0b',
-    'altamente-divergente': '#10b981',
-    'rsd-moderada': '#ec4899',
-    'rsd-marcada': '#be185d',
-    'bajo-burnout-masking': '#2e7d32',
-    'burnout-masking-moderado': '#e67e22',
-    'burnout-masking-severo': '#c0392b',
-    'funciones-ejecutivas-preservadas': '#2e7d32',
-    'dificultades-ejecutivas-moderadas': '#e67e22',
-    'dificultades-ejecutivas-significativas': '#c0392b',
-    'fluidez-baja': '#f59e0b',
-    'fluidez-moderada': '#6366f1',
-    'fluidez-alta': '#10b981',
-  };
+  const complementarityNotes = useMemo(
+    () => testId ? getComplementarityNotes(testId) : [],
+    [testId]
+  );
 
   const dimensions = result.dimensions || [];
   const chartDimensions = dimensions.length >= 3 ? dimensions : [];
@@ -172,8 +176,8 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
           <span className="result-score">{result.total}</span>
           <span className="result-max">de {result.maxScores.total}</span>
         </div>
-        <div className="result-category" style={{ color: categoryColors[result.category] }}>
-          {categoryLabels[result.category]}
+        <div className="result-category" style={{ color: CATEGORY_COLORS[result.category] }}>
+          {CATEGORY_LABELS[result.category]}
         </div>
       </div>
 
@@ -345,15 +349,15 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
       )}
 
       {/* Estado del guardado */}
-      {loading && <p className="results-saving">Guardando resultados...</p>}
+      {loading && <p className="results-saving" aria-live="polite">Guardando resultados...</p>}
 
       {error && (
-        <p className="results-error">
+        <p className="results-error" role="alert">
           No se pudieron guardar los resultados, pero puedes ver tu puntuación igualmente.
         </p>
       )}
 
-      {saved && <p className="results-saved">Resultados guardados de forma anónima.</p>}
+      {saved && <p className="results-saved" aria-live="polite">Resultados guardados de forma anónima.</p>}
 
       {/* Acciones */}
       <div className="results-actions">

@@ -46,7 +46,7 @@ function ExampleAccordion({ example, type }) {
         }}
       >
         <span>
-          <span style={{ color: style.tag, marginRight: '8px', fontSize: '0.85rem', fontWeight: 700 }}>
+          <span aria-hidden="true" style={{ color: style.tag, marginRight: '8px', fontSize: '0.85rem', fontWeight: 700 }}>
             {type === 'narrative' || type === 'convergent' ? '❌' : type === 'semiDivergent' ? '⚠️' : '✅'}
           </span>
           {example.label}
@@ -282,7 +282,7 @@ export default function DatInput({ onComplete }) {
           background: '#fffbeb', padding: '8px 12px', borderRadius: '6px',
           border: '1px solid #fcd34d',
         }} role="alert">
-          ⚠️ {categoryWarning}
+          <span aria-hidden="true">⚠️</span> {categoryWarning}
         </p>
       )}
 
