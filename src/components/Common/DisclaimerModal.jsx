@@ -1,20 +1,25 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './DisclaimerModal.css';
 
 function DisclaimerModal({ onAccept, disclaimerText }) {
   const [checked, setChecked] = useState(false);
   const modalRef = useRef(null);
   const checkboxRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkboxRef.current?.focus();
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') return;
+      if (e.key === 'Escape') {
+        navigate('/');
+        return;
+      }
 
       if (e.key === 'Tab') {
         const focusable = modalRef.current?.querySelectorAll(
-          'input[type="checkbox"], button:not(:disabled)'
+          'input[type="checkbox"], button:not(:disabled), .modal-cancel'
         );
         if (!focusable || focusable.length === 0) return;
 
@@ -33,7 +38,7 @@ function DisclaimerModal({ onAccept, disclaimerText }) {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title">
@@ -52,14 +57,23 @@ function DisclaimerModal({ onAccept, disclaimerText }) {
           />
           He leído y entiendo el aviso. Deseo continuar.
         </label>
-        <button
-          className="btn btn-primary"
-          disabled={!checked}
-          onClick={onAccept}
-          aria-label="Comenzar el test de screening"
-        >
-          Entiendo, quiero continuar
-        </button>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
+          <button
+            className="btn btn-primary"
+            disabled={!checked}
+            onClick={onAccept}
+            aria-label="Comenzar el test"
+          >
+            Entiendo, quiero continuar
+          </button>
+          <button
+            className="btn btn-link modal-cancel"
+            onClick={() => navigate('/')}
+            style={{ fontSize: '0.85rem' }}
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
   );

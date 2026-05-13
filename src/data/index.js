@@ -58,7 +58,7 @@ const TEST_REGISTRY = {
     disclaimerText: `${DISCLAIMER_GENERAL} La alexitimia no es un trastorno, sino un estilo de procesamiento emocional.`,
   },
   'rsd-adulto': {
-    testId: 'rsd-adult-v1', title: 'Rejection Sensitive Dysphoria (RSD)',
+    testId: 'rsd-adult-v1', title: 'Screening de RSD (Sensibilidad al Rechazo)',
     description: 'Evaluación orientativa de la hipersensibilidad al rechazo: percepción, intensidad emocional, evitación anticipatoria y rumia.',
     instructions: ['Piensa en los últimos 6 meses.', 'Responde pensando en cómo te sientes internamente, no solo en lo que otros ven.'],
     questions: rsdQuestions, sections: RSD_SECTIONS, scoringFn: calculateRsdScore,
@@ -87,8 +87,8 @@ const TEST_REGISTRY = {
     disclaimerText: `${DISCLAIMER_GENERAL} La fluidez verbal puede variar según el cansancio, la ansiedad o el momento del día.`,
   },
   dat: {
-    testId: 'dat-v1', type: 'dat', title: 'Test de Asociación Divergente (DAT)',
-    description: 'Medición de pensamiento divergente mediante distancia semántica entre palabras.',
+    testId: 'dat-v1', type: 'dat', title: 'Asociación Divergente — DAT (Tarea)',
+    description: 'Evalúa tu capacidad de pensamiento divergente: qué tan lejos saltan tus asociaciones entre palabras.',
     instructions: datConfig.instructions, questions: [], sections: [], config: datConfig, scoringFn: calculateDatScore,
     disclaimerText: `${DISCLAIMER_GENERAL} El pensamiento divergente es un estilo cognitivo, no una medida de inteligencia.`,
   },
@@ -109,7 +109,7 @@ const TEST_REGISTRY = {
     testId: 'self-discrepancy-v1', type: 'self-discrepancy', title: 'Auto-Discrepancia (Masking)',
     description: 'Mide la brecha entre quién eres y quién muestras. 25 rasgos con doble valoración: tu yo público y tu yo auténtico.',
     instructions: [
-      'Para cada rasgo, arrastra el deslizador azul (lo que muestras) y el morado (lo que realmente eres).',
+      'Para cada rasgo, arrastra el deslizador de ARRIBA (lo que muestras en público) y el de ABAJO (lo que realmente eres).',
       'Sé honesto/a: este test es anónimo.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
@@ -129,6 +129,7 @@ const TEST_REGISTRY = {
     testId: 'sart-v1', type: 'sart', title: 'Atención Sostenida — SART (TDAH)',
     description: 'Tarea de atención sostenida: presiona la barra para cada dígito... excepto el 3. Mide inhibición, atención y variabilidad de respuesta.',
     instructions: [
+      '⚠️ Esta tarea requiere un teclado físico. No funciona en dispositivos móviles.',
       'Presiona ESPACIO para cada dígito que aparezca.',
       'NO presiones cuando aparezca el número 3 (en rojo).',
       'La mayoría de las veces DEBES responder. Responde rápido.',
@@ -140,6 +141,7 @@ const TEST_REGISTRY = {
     testId: 'flanker-v1', type: 'flanker', title: 'Control Inhibitorio — Flanker (TDAH + Ejecutivas)',
     description: 'Ignora las flechas distractoras y responde solo a la flecha del centro. Mide control inhibitorio.',
     instructions: [
+      '⚠️ Esta tarea requiere un teclado físico. No funciona en dispositivos móviles.',
       'Presiona ← si la flecha CENTRAL apunta izquierda.',
       'Presiona → si la flecha CENTRAL apunta derecha.',
       'Ignora las flechas de los lados. Responde rápido.',
@@ -183,6 +185,7 @@ const TEST_REGISTRY = {
     testId: 'switch-task-v1', type: 'switch-task', title: 'Cambio de Tarea (Flexibilidad)',
     description: 'Alterna entre clasificar por color o por forma. Mide el costo cognitivo de cambiar entre tareas.',
     instructions: [
+      '⚠️ Esta tarea requiere un teclado físico. No funciona en dispositivos móviles.',
       'Una pista te dirá si debes responder por COLOR (rojo← azul→) o FORMA (círculo← cuadrado→).',
       'La tarea cambia aleatoriamente. Responde con ← o →.',
     ],
@@ -203,6 +206,7 @@ const TEST_REGISTRY = {
     testId: 'auditory-distraction-v1', type: 'auditory-distraction', title: 'Distracción Auditiva (HSP)',
     description: 'Responde a puntos verdes mientras suenan distractores. Mide tu susceptibilidad a la distracción.',
     instructions: [
+      '⚠️ Esta tarea requiere un teclado físico. No funciona en dispositivos móviles.',
       'Presiona ← o → según dónde aparezca el punto verde.',
       'Ignora los sonidos distractores.',
       'Recomendado usar auriculares.',

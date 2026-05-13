@@ -110,9 +110,9 @@ export default function AdaptationStoriesPage() {
         </div>
       )}
 
-      {/* Todas las historias */}
-      {adaptationStories.map((story) => (
-        <StoryCard key={story.id} story={story} isMatching={matchingIds.has(story.id)} />
+      {/* Historias restantes (sin duplicar las que ya coincidieron) */}
+      {adaptationStories.filter((s) => !matchingIds.has(s.id)).map((story) => (
+        <StoryCard key={story.id} story={story} isMatching={false} />
       ))}
     </div>
   );

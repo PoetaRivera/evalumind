@@ -52,8 +52,8 @@ export default function SelfDiscrepancyTask({ onComplete }) {
         </h2>
         <p style={{ fontSize: '0.9rem', color: '#6b7280', lineHeight: 1.6 }}>
           Para cada rasgo, mueve los dos deslizadores:{' '}
-          <strong style={{ color: '#4a90d9' }}>cuánto lo MUESTRAS en público</strong> y{' '}
-          <strong style={{ color: '#8b5cf6' }}>cuánto SIENTES que realmente eres así</strong>.
+          <strong style={{ color: '#4a90d9' }}>arriba: cuánto lo MUESTRAS en público</strong> y{' '}
+          <strong style={{ color: '#8b5cf6' }}>abajo: cuánto SIENTES que realmente eres así</strong>.
         </p>
         <p style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
           {completeCount} de {TRAITS.length} rasgos completados

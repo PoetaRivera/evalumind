@@ -363,10 +363,10 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
       <div className="results-actions">
         <button
           className="btn btn-primary"
-          onClick={() => navigate('/recursos')}
-          aria-label="Buscar ayuda profesional"
+          onClick={() => navigate('/perfil')}
+          aria-label="Ver mi perfil"
         >
-          Buscar ayuda profesional
+          Ver mi perfil
         </button>
         <button
           className="btn btn-secondary"
@@ -387,17 +387,21 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
         </button>
         <button
           className="btn btn-secondary"
-          onClick={onRestart}
+          onClick={() => navigate('/recursos')}
+          aria-label="Ver recursos y orientación profesional"
+        >
+          Recursos profesionales
+        </button>
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            if (window.confirm('¿Volver a hacer el test? Tus resultados actuales se perderán.')) {
+              onRestart();
+            }
+          }}
           aria-label="Volver a realizar el test"
         >
           Volver a hacer el test
-        </button>
-        <button
-          className="btn btn-link"
-          onClick={() => navigate('/perfil')}
-          aria-label="Ver mapa de funcionamiento"
-        >
-          Ver mi perfil combinado
         </button>
         <button
           className="btn btn-link"
@@ -407,6 +411,10 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
           Volver al inicio
         </button>
       </div>
+
+      <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#9ca3af', marginTop: '20px' }}>
+        Tus resultados se guardan solo en esta sesión del navegador. Se eliminarán al cerrar la pestaña.
+      </p>
     </div>
   );
 }

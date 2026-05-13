@@ -13,6 +13,17 @@ const TEST_LABELS = {
   'funciones-ejecutivas-v1': { name: 'F. Ejecutivas', color: '#14b8a6' },
   'dat-v1': { name: 'DAT', color: '#ef4444' },
   'fas-v1': { name: 'FAS', color: '#6366f1' },
+  'social-scenarios-v1': { name: 'Escenarios RSD', color: '#ec4899' },
+  'self-discrepancy-v1': { name: 'Auto-Discrepancia', color: '#f97316' },
+  'fer-v1': { name: 'Reconocimiento Emocional', color: '#f59e0b' },
+  'sart-v1': { name: 'Atención (SART)', color: '#3b82f6' },
+  'flanker-v1': { name: 'Flanker', color: '#3b82f6' },
+  'digit-span-v1': { name: 'Span Dígitos', color: '#14b8a6' },
+  'navon-v1': { name: 'Navon', color: '#8b5cf6' },
+  'rmet-v1': { name: 'RMET', color: '#8b5cf6' },
+  'switch-task-v1': { name: 'Flexibilidad', color: '#14b8a6' },
+  'sensory-threshold-v1': { name: 'Umbral Sensorial', color: '#10b981' },
+  'auditory-distraction-v1': { name: 'Distracción Auditiva', color: '#10b981' },
 };
 
 const DIMENSION_LABELS = {
@@ -75,7 +86,7 @@ const STRATEGIES = [
     title: 'Diseño sensorial del entorno',
     description:
       'Tu sistema nervioso capta lo que otros filtran. Diseña tu espacio: luces cálidas, ruido controlado, ' +
-      'texturas que te calmen. No es un lujo: es una necesidad de tu neurotipo.',
+      'texturas que te calmen. No es un lujo: es una forma de cuidar tu sistema nervioso.',
   },
   {
     id: 'divergent-gift',
@@ -184,8 +195,10 @@ export default function ProfileMap() {
   }
 
   const handleClear = () => {
-    clearCompletedTests();
-    navigate('/');
+    if (window.confirm('¿Borrar todos tus resultados? Los datos están guardados solo en esta sesión y se perderán permanentemente.')) {
+      clearCompletedTests();
+      navigate('/');
+    }
   };
 
   const handleExportPDF = () => {

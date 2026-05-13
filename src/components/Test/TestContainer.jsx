@@ -180,6 +180,7 @@ function TestContainer() {
     case 'fas':
       return (
         <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
           <FasTask letter={fasLetter.current} onComplete={handleTaskComplete} />
         </div>
       );
@@ -228,6 +229,7 @@ function TestContainer() {
     case 'navon':
       return (
         <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
           <NavonTask {...taskProps} />
         </div>
       );
@@ -292,6 +294,13 @@ function TestContainer() {
         totalQuestions={questionCount}
         isFirstInSection={isFirstInSection}
       />
+      <div style={{ textAlign: 'right', marginBottom: '4px' }}>
+        <a href="/" style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'none' }}
+           onClick={(e) => { e.preventDefault(); if (window.confirm('¿Salir del test? Perderás el progreso actual.')) window.location.href = '/'; }}>
+          Salir del test
+        </a>
+      </div>
+
       <div className="test-nav">
         <button className="btn btn-secondary" onClick={handlePrev} disabled={currentIndex === 0} aria-label="Pregunta anterior">
           Anterior
