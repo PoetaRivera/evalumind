@@ -1,0 +1,61 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #1a1a2e;
+}
+
+.modal-content p {
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 0.8rem;
+}
+
+.disclaimer-confidentiality {
+  font-size: 0.85rem;
+  color: #666;
+  border-left: 3px solid #4a90d9;
+  padding-left: 0.8rem;
+}
+
+.disclaimer-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.2rem 0;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.disclaimer-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: #4a90d9;
+}
+
+.modal-content .btn {
+  width: 100%;
+}
+
+.modal-content .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
