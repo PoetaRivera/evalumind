@@ -7,10 +7,10 @@ test.describe('HomePage', () => {
     await expect(page.locator('.home-description')).toBeVisible();
   });
 
-  test('shows all 9 test cards', async ({ page }) => {
+  test('shows all 20 test cards (7 Likert + 13 acción)', async ({ page }) => {
     await page.goto('/');
     const cards = page.locator('.test-card');
-    await expect(cards).toHaveCount(9);
+    await expect(cards).toHaveCount(20);
   });
 
   test('each card has title, description, and start button', async ({ page }) => {
