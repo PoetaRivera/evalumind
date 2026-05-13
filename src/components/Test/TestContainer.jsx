@@ -10,8 +10,21 @@ import ProgressBar from './ProgressBar';
 import ResultsView from './ResultsView';
 import DatInput from './DatInput';
 import FasTask from './FasTask';
+import SocialScenariosTask from './SocialScenariosTask';
+import SelfDiscrepancyTask from './SelfDiscrepancyTask';
+import FERTask from './FERTask';
+import SARTTask from './SARTTask';
+import DigitSpanTask from './DigitSpanTask';
+import FlankerTask from './FlankerTask';
+import NavonTask from './NavonTask';
+import RMETTask from './RMETTask';
+import SwitchTask from './SwitchTask';
+import SensoryThresholdTask from './SensoryThresholdTask';
+import AuditoryDistractionTask from './AuditoryDistractionTask';
 import { FAS_LETTERS } from '../../data/fasConfig';
 import './TestContainer.css';
+
+const TASK_TYPES = ['dat', 'fas', 'social-scenarios', 'self-discrepancy', 'fer', 'sart', 'flanker', 'digit-span', 'navon', 'rmet', 'switch-task', 'sensory-threshold', 'auditory-distraction'];
 
 function makeEmptyAnswers(count) {
   return new Array(count).fill(null);
@@ -25,9 +38,7 @@ function loadState(testId) {
   try {
     const raw = localStorage.getItem(storageKey(testId));
     if (raw) return JSON.parse(raw);
-  } catch {
-    /* datos corruptos */
-  }
+  } catch { /* corrupt data */ }
   return null;
 }
 
@@ -43,9 +54,7 @@ function TestContainer() {
   const [currentIndex, setCurrentIndex] = useState(saved?.currentIndex ?? 0);
   const [finished, setFinished] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(!saved?.accepted);
-  // DAT & FAS
-  const [datResult, setDatResult] = useState(null);
-  const [fasResult, setFasResult] = useState(null);
+  const [taskResult, setTaskResult] = useState(null);
   const fasLetter = useRef(FAS_LETTERS[Math.floor(Math.random() * FAS_LETTERS.length)]);
 
   const { loading, error, saved: submissionSaved, saveResponse } = useTestSubmission();
@@ -55,9 +64,7 @@ function TestContainer() {
       try {
         const state = { accepted, answers, currentIndex, ...overrides };
         localStorage.setItem(storageKey(testId), JSON.stringify(state));
-      } catch {
-        /* storage lleno o privado */
-      }
+      } catch { /* storage full or private */ }
     },
     [accepted, answers, currentIndex, testId],
   );
@@ -68,7 +75,6 @@ function TestContainer() {
     }
   }, [finished, submissionSaved, testId]);
 
-  // Reset state when navigating to a different test (only if no saved progress)
   useEffect(() => {
     const existing = loadState(testId);
     if (!existing) {
@@ -77,8 +83,7 @@ function TestContainer() {
       setCurrentIndex(0);
       setFinished(false);
       setShowDisclaimer(true);
-      setDatResult(null);
-      setFasResult(null);
+      setTaskResult(null);
     }
   }, [testId, questionCount]);
 
@@ -95,17 +100,8 @@ function TestContainer() {
     persist({ answers: next });
   };
 
-  const handleNext = () => {
-    const next = currentIndex + 1;
-    setCurrentIndex(next);
-    persist({ currentIndex: next });
-  };
-
-  const handlePrev = () => {
-    const prev = currentIndex - 1;
-    setCurrentIndex(prev);
-    persist({ currentIndex: prev });
-  };
+  const handleNext = () => { const next = currentIndex + 1; setCurrentIndex(next); persist({ currentIndex: next }); };
+  const handlePrev = () => { const prev = currentIndex - 1; setCurrentIndex(prev); persist({ currentIndex: prev }); };
 
   const handleFinish = () => {
     const result = test.scoringFn(answers);
@@ -113,24 +109,23 @@ function TestContainer() {
     saveResponse(test.testId, answers, result);
   };
 
-  // DAT: user clicked "Calcular resultado"
+  // Generic task complete handler
+  const handleTaskComplete = useCallback((result) => {
+    setTaskResult(result);
+    setAnswers(result.words || []);
+    setFinished(true);
+    saveResponse(test.testId, result.words || [], result);
+  }, [test, saveResponse]);
+
+  // DAT handler (needs to pass words to scoringFn)
   const handleDatComplete = (words) => {
     const result = test.scoringFn(words);
-    setDatResult(result);
+    setTaskResult(result);
     setAnswers(words);
     setFinished(true);
     saveResponse(test.testId, words, result);
   };
 
-  // FAS: cronómetro terminado o user hizo clic en terminar
-  const handleFasComplete = (result) => {
-    setFasResult(result);
-    setAnswers(result.words || []);
-    setFinished(true);
-    saveResponse(test.testId, result.words || [], result);
-  };
-
-  // Test not found
   if (!test) {
     return (
       <div className="test-container">
@@ -142,21 +137,15 @@ function TestContainer() {
     );
   }
 
-  const isDat = test.type === 'dat';
-  const isFas = test.type === 'fas';
+  const isTask = TASK_TYPES.includes(test.type);
+  const isLikert = !isTask;
 
   if (showDisclaimer) {
-    return (
-      <DisclaimerModal
-        onAccept={handleAccept}
-        disclaimerText={test.disclaimerText}
-      />
-    );
+    return <DisclaimerModal onAccept={handleAccept} disclaimerText={test.disclaimerText} />;
   }
 
   if (finished) {
-    // Para DAT/FAS, el resultado ya fue calculado; para Likert, calcular ahora
-    const result = isDat ? datResult : isFas ? fasResult : test.scoringFn(answers);
+    const result = isTask ? taskResult : test.scoringFn(answers);
     return (
       <ResultsView
         result={result}
@@ -165,9 +154,8 @@ function TestContainer() {
         error={error}
         saved={submissionSaved}
         onRestart={() => {
-          if (isDat) setDatResult(null);
-          if (isFas) setFasResult(null);
-          setAnswers(isDat ? [] : makeEmptyAnswers(questionCount));
+          setTaskResult(null);
+          setAnswers([]);
           setCurrentIndex(0);
           setFinished(false);
           setShowDisclaimer(true);
@@ -178,23 +166,101 @@ function TestContainer() {
     );
   }
 
-  // ─── DAT flow ────────────────────────────────────
-  if (isDat) {
-    return (
-      <div className="test-container">
-        <InstructionsBanner instructions={test.instructions} />
-        <DatInput onComplete={handleDatComplete} />
-      </div>
-    );
-  }
+  // ─── Task routing ───────────────────────────────
+  const taskProps = { onComplete: handleTaskComplete };
 
-  // ─── FAS flow ────────────────────────────────────
-  if (isFas) {
-    return (
-      <div className="test-container">
-        <FasTask letter={fasLetter.current} onComplete={handleFasComplete} />
-      </div>
-    );
+  switch (test.type) {
+    case 'dat':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <DatInput onComplete={handleDatComplete} />
+        </div>
+      );
+    case 'fas':
+      return (
+        <div className="test-container">
+          <FasTask letter={fasLetter.current} onComplete={handleTaskComplete} />
+        </div>
+      );
+    case 'social-scenarios':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <SocialScenariosTask {...taskProps} />
+        </div>
+      );
+    case 'self-discrepancy':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <SelfDiscrepancyTask {...taskProps} />
+        </div>
+      );
+    case 'fer':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <FERTask {...taskProps} />
+        </div>
+      );
+    case 'sart':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <SARTTask {...taskProps} />
+        </div>
+      );
+    case 'flanker':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <FlankerTask {...taskProps} />
+        </div>
+      );
+    case 'digit-span':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <DigitSpanTask {...taskProps} />
+        </div>
+      );
+    case 'navon':
+      return (
+        <div className="test-container">
+          <NavonTask {...taskProps} />
+        </div>
+      );
+    case 'rmet':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <RMETTask {...taskProps} />
+        </div>
+      );
+    case 'switch-task':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <SwitchTask {...taskProps} />
+        </div>
+      );
+    case 'sensory-threshold':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <SensoryThresholdTask {...taskProps} />
+        </div>
+      );
+    case 'auditory-distraction':
+      return (
+        <div className="test-container">
+          <InstructionsBanner instructions={test.instructions} />
+          <AuditoryDistractionTask {...taskProps} />
+        </div>
+      );
+    default:
+      break;
   }
 
   // ─── Likert flow ─────────────────────────────────
@@ -203,26 +269,21 @@ function TestContainer() {
   const isLast = currentIndex === questionCount - 1;
   const question = test.questions[currentIndex];
 
-  // Primera pregunta de cada sección
   const currentSection = test.sections.find(
     (s) => currentIndex >= s.range[0] && currentIndex <= s.range[1],
   );
   const isFirstInSection = currentSection && currentIndex === currentSection.range[0];
 
-  // ¿Acabamos de cambiar de sección?
   const prevQuestion = currentIndex > 0 ? test.questions[currentIndex - 1] : null;
   const sectionChanged = prevQuestion && prevQuestion.section !== question.section;
 
   return (
     <div className="test-container">
       <InstructionsBanner instructions={test.instructions} />
-
       <ProgressBar current={currentIndex + 1} total={questionCount} />
-
       {(sectionChanged || (!prevQuestion && currentSection)) && (
         <SectionHeader sectionId={question.section} title={question.sectionTitle} />
       )}
-
       <QuestionCard
         question={question}
         selectedValue={currentAnswer}
@@ -231,37 +292,19 @@ function TestContainer() {
         totalQuestions={questionCount}
         isFirstInSection={isFirstInSection}
       />
-
       <div className="test-nav">
-        <button
-          className="btn btn-secondary"
-          onClick={handlePrev}
-          disabled={currentIndex === 0}
-          aria-label="Pregunta anterior"
-        >
+        <button className="btn btn-secondary" onClick={handlePrev} disabled={currentIndex === 0} aria-label="Pregunta anterior">
           Anterior
         </button>
-
         <span className="test-nav-hint">
           {currentAnswer === null && 'Selecciona una opción para continuar'}
         </span>
-
         {isLast ? (
-          <button
-            className="btn btn-primary"
-            onClick={handleFinish}
-            disabled={!allAnswered}
-            aria-label="Finalizar test y ver resultados"
-          >
+          <button className="btn btn-primary" onClick={handleFinish} disabled={!allAnswered} aria-label="Finalizar test y ver resultados">
             Finalizar y ver resultados
           </button>
         ) : (
-          <button
-            className="btn btn-primary"
-            onClick={handleNext}
-            disabled={currentAnswer === null}
-            aria-label="Siguiente pregunta"
-          >
+          <button className="btn btn-primary" onClick={handleNext} disabled={currentAnswer === null} aria-label="Siguiente pregunta">
             Siguiente
           </button>
         )}

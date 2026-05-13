@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 
 export async function acceptDisclaimer(page) {
-  await page.getByLabel(/confirmo que he leído/i).check();
+  await page.getByLabel(/he leído y entiendo el aviso/i).check();
   await page.getByRole('button', { name: /comenzar el test/i }).click();
 }
 
