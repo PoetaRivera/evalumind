@@ -15,7 +15,7 @@ export function calculateFasScore(words, letter) {
   const perseverationRatio = cleanWords.length > 0 ? maxCategoryCount / cleanWords.length : 0;
   const hasPerseveration = perseverationRatio > 0.4 && cleanWords.length > 5;
 
-  let description = '';
+  let description;
   if (cleanWords.length < 8) {
     description =
       'Fluidez verbal baja. Esto puede deberse a ansiedad, agotamiento o dificultades en el acceso léxico. ' +

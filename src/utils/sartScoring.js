@@ -30,8 +30,8 @@ export function calculateSARTScore(trials) {
   const rawScore = (commissionRate * 50) + (omissionRate * 30) + (rtVariability * 15) + (anticipationRate * 5);
   const scaledScore = Math.round(Math.min(100, Math.max(0, rawScore * 100)));
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (scaledScore <= 20) {
     category = 'atencion-optima';

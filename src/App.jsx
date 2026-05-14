@@ -1,10 +1,10 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
-import TestContainer from './components/Test/TestContainer';
 import HomePage from './components/HomePage';
 import ErrorBoundary from './components/Common/ErrorBoundary';
 
+const TestContainer = lazy(() => import('./components/Test/TestContainer'));
 const RecursosPage = lazy(() => import('./components/RecursosPage'));
 const ProfileMap = lazy(() => import('./components/Profile/ProfileMap'));
 const AdaptationStoriesPage = lazy(() => import('./components/Stories/AdaptationStoriesPage'));

@@ -609,8 +609,8 @@ export const calculateDatScore = (words) => {
   const consistencyBonus = Math.max(0, 1 - stdDev) * CONSISTENCY_FACTOR;
   const finalScore = Math.min(100, Math.max(0, (rawScore * RAW_SCORE_FACTOR) + consistencyBonus));
 
-  let category = 'convergente';
-  let description = '';
+  let category;
+  let description;
 
   if (finalScore < 35) {
     category = 'convergente';

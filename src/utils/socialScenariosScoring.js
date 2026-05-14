@@ -21,8 +21,8 @@ export function calculateSocialScenariosScore(responses) {
 
   // Categorías
   const biasScore = Math.round(rejectionRatio * 100);
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (biasScore <= 20) {
     category = 'sesgo-bajo';

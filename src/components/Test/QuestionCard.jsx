@@ -3,6 +3,8 @@ import { LIKERT_OPTIONS } from '../../data/tdahQuestions';
 import ExamplesAccordion from './ExamplesAccordion';
 
 function QuestionCard({ question, selectedValue, onSelect, currentIndex, totalQuestions, isFirstInSection }) {
+  const dimensionLabel = question.sectionTitle?.split('—')[0].trim() || question.dimension;
+
   return (
     <div
       className="question-card"
@@ -14,11 +16,7 @@ function QuestionCard({ question, selectedValue, onSelect, currentIndex, totalQu
           Pregunta {currentIndex + 1} de {totalQuestions}
         </span>
         <span className="question-dimension">
-          {question.dimension === 'inattention'
-            ? 'Atención'
-            : question.dimension === 'hyperactivityPhysical'
-              ? 'Hiperactividad'
-              : 'Impulsividad'}
+          {dimensionLabel}
         </span>
       </div>
 

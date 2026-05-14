@@ -25,8 +25,8 @@ export function calculateSensoryThresholdScore(trials) {
 
   const thresholdPct = Math.round((threshold / 100) * 100);
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (thresholdPct >= 70) {
     category = 'umbral-alto';
@@ -80,8 +80,8 @@ export function calculateAuditoryDistractionScore(trials) {
   const distractionCost = noiseRT > 0 ? noiseRT - quietRT : 0;
   const distractionScore = Math.min(100, Math.max(0, (distractionCost / 300) * 100));
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (distractionScore <= 25) {
     category = 'baja-distractibilidad';

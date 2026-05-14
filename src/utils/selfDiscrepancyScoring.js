@@ -30,8 +30,8 @@ export function calculateSelfDiscrepancyScore(responses) {
   const discrepancyPct = Math.round((meanDiscrepancy / maxDiscrepancy) * 100);
   const maskingEffortPct = Math.round(((suppressionCount + fakingCount) / total) * 100);
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (discrepancyPct <= 20) {
     category = 'baja-discrepancia';

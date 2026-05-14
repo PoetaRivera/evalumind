@@ -35,8 +35,8 @@ export function calculateNavonScore(trials) {
   const congAcc = congruentTrials.filter((t) => t.correct).length / (congruentTrials.length || 1);
   const interference = congAcc - incongAcc;
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (localBias > 0.15) {
     category = 'sesgo-local';

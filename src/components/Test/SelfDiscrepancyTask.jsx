@@ -12,12 +12,6 @@ const TRAITS = [
   'Callado/a', 'Sensible', 'Serio/a', 'Aventurero/a',
 ];
 
-const SCALE_LABELS = {
-  1: 'Nada',
-  4: 'Moderado',
-  7: 'Totalmente',
-};
-
 export default function SelfDiscrepancyTask({ onComplete }) {
   const [ratings, setRatings] = useState(
     TRAITS.map((trait) => ({ trait, publicSelf: 0, privateSelf: 0 })),

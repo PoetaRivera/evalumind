@@ -33,8 +33,8 @@ export function calculateFERScore(responses) {
   const negCorrect = negativeTrials.filter((r) => r.selectedAnswer === r.correctAnswer).length;
   const negAccuracy = negativeTrials.length > 0 ? Math.round((negCorrect / negativeTrials.length) * 100) : 0;
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (accuracyPct >= 80) {
     category = 'reconocimiento-alto';

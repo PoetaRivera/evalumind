@@ -15,6 +15,12 @@ export default function FasTask({ letter, onComplete }) {
   const timerRef = useRef(null);
   const flashTimerRef = useRef(null);
 
+  const finishTask = useCallback(() => {
+    setIsActive(false);
+    setIsFinished(true);
+    onComplete(calculateFasScore(words, letter));
+  }, [letter, onComplete, words]);
+
   const startTask = () => {
     setIsActive(true);
     setTimeLeft(FAS_DURATION);
@@ -33,7 +39,7 @@ export default function FasTask({ letter, onComplete }) {
       finishTask();
     }
     return () => clearTimeout(timerRef.current);
-  }, [isActive, paused, timeLeft]);
+  }, [finishTask, isActive, paused, timeLeft]);
 
   const validateWord = useCallback(
     (word) => {
@@ -73,12 +79,6 @@ export default function FasTask({ letter, onComplete }) {
     [inputValue, isActive, paused, validateWord],
   );
 
-  const finishTask = () => {
-    setIsActive(false);
-    setIsFinished(true);
-    onComplete(calculateFasScore(words, letter));
-  };
-
   const pct = ((FAS_DURATION - timeLeft) / FAS_DURATION) * 100;
   const urgencyColor = timeLeft <= 10 ? '#dc2626' : timeLeft <= 20 ? '#f59e0b' : '#6366f1';
 
@@ -109,10 +109,6 @@ export default function FasTask({ letter, onComplete }) {
   }
 
   if (isFinished) {
-    const result = {
-      words: [...new Set(words.map((w) => w.toLowerCase().trim()))],
-      allWords: words,
-    };
     return null; // El resultado se pasa vía onComplete, TestContainer muestra ResultsView
   }
 

@@ -30,8 +30,8 @@ export function calculateDigitSpanScore(responses) {
   // Puntuación combinada: max 30
   const combinedScore = forwardSpan + (backwardSpan * 2);
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (combinedScore >= 18) {
     category = 'memoria-alta';

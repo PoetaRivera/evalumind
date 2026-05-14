@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getAllTests } from '../data';
+import { getAllTestCards } from '../data/testMetadata';
 import './HomePage.css';
 
 const LIKERT_IDS = ['tdah-adulto', 'tea-adulto', 'hsp-adulto', 'alexitimia-adulto', 'rsd-adulto', 'burnout-masking', 'funciones-ejecutivas'];
@@ -11,15 +11,12 @@ function TestCard({ test, navigate }) {
     <div className="test-card">
       <h3>{test.title}</h3>
       <p className="test-card-desc">{test.description}</p>
-      <ul className="test-card-info">
-        <li>{test.isTask ? '1 tarea interactiva' : `${test.questionCount} preguntas`}</li>
-        <li>~{test.isTask ? '3–8' : Math.max(4, Math.ceil(test.questionCount / 2.5))} min</li>
-      </ul>
-      <button
-        className="btn btn-primary"
-        onClick={() => navigate(`/test/${test.id}`)}
-      >
-        {test.isTask ? 'Comenzar tarea' : 'Comenzar cuestionario'}
+      <div className="test-card-meta">
+        <span>{test.isTask ? 'Tarea interactiva' : `${test.questionCount} preguntas`}</span>
+        <span>~{test.isTask ? '3–8' : Math.max(4, Math.ceil(test.questionCount / 2.5))} min</span>
+      </div>
+      <button className="btn btn-primary" onClick={() => navigate(`/test/${test.id}`)}>
+        {test.isTask ? 'Comenzar tarea' : 'Comenzar'}
       </button>
     </div>
   );
@@ -27,8 +24,7 @@ function TestCard({ test, navigate }) {
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const tests = getAllTests();
-
+  const tests = getAllTestCards();
   const likertTests = useMemo(() => tests.filter((t) => LIKERT_IDS.includes(t.id)), [tests]);
   const taskTests = useMemo(() => tests.filter((t) => TASK_IDS.includes(t.id)), [tests]);
 
@@ -36,93 +32,90 @@ export default function HomePage() {
     <div className="home-page">
       {/* ─── Hero ─── */}
       <section className="home-hero">
-        <h1 className="home-hero-title">Explora cómo funciona tu mente</h1>
+        <div className="home-hero-badge">Evaluación cognitiva</div>
+        <h1 className="home-hero-title">Conoce cómo funciona tu mente</h1>
         <p className="home-hero-subtitle">
-          Tests gratuitos y anónimos que combinan preguntas de auto-observación con ejercicios interactivos.{' '}
-          No es un diagnóstico. Es un punto de partida.
+          Tests gratuitos que combinan preguntas de auto-observación con ejercicios interactivos.
+          Resultados claros en menos de 10 minutos, sin registro ni datos personales.
         </p>
         <div className="home-hero-actions">
-          <a href="#start" className="btn btn-primary" style={{ padding: '12px 32px', fontSize: '1rem' }}>
-            Comenzar
-          </a>
-          <Link to="/perfil" className="btn btn-secondary" style={{ padding: '12px 32px', fontSize: '1rem' }}>
-            Mi perfil
-          </Link>
+          <a href="#tests" className="btn btn-primary btn-lg">Comenzar evaluación</a>
+          <Link to="/perfil" className="btn btn-secondary btn-lg">Ver mi perfil</Link>
+        </div>
+        <div className="home-hero-trust">
+          <span>Gratuito</span>
+          <span>Sin registro</span>
+          <span>Resultados inmediatos</span>
+          <span>Privado</span>
         </div>
       </section>
 
       {/* ─── Cómo funciona ─── */}
       <section className="home-how">
-        <h2 className="home-section-heading">Cómo funciona</h2>
-        <div className="home-steps">
-          <div className="home-step">
-            <div className="home-step-num">1</div>
-            <h3>Elige un área</h3>
-            <p>Atención, sensibilidad, emociones, cognición social. Explora lo que te intrigue.</p>
-          </div>
-          <div className="home-step-arrow">→</div>
-          <div className="home-step">
-            <div className="home-step-num">2</div>
-            <h3>Completa los tests</h3>
-            <p>Cuestionarios sobre tu experiencia + ejercicios que miden tu rendimiento real.</p>
-          </div>
-          <div className="home-step-arrow">→</div>
-          <div className="home-step">
-            <div className="home-step-num">3</div>
-            <h3>Descubre tu perfil</h3>
-            <p>Resultados por área, mapa combinado, y notas que conectan tus patrones.</p>
+        <div className="home-how-inner">
+          <span className="home-section-label">Tu experiencia</span>
+          <h2 className="home-section-title">Tres pasos. Sin curva de aprendizaje.</h2>
+          <div className="home-steps">
+            <div className="home-step">
+              <div className="home-step-num">1</div>
+              <div className="home-step-content">
+                <h3>Elige un área</h3>
+                <p>Atención, memoria, sensibilidad, emociones o cognición social. Empieza por lo que te intrigue.</p>
+              </div>
+            </div>
+            <div className="home-step">
+              <div className="home-step-num">2</div>
+              <div className="home-step-content">
+                <h3>Responde y ejercita</h3>
+                <p>Cuestionarios sobre tu experiencia diaria y ejercicios breves que miden tu rendimiento real.</p>
+              </div>
+            </div>
+            <div className="home-step">
+              <div className="home-step-num">3</div>
+              <div className="home-step-content">
+                <h3>Descubre tu perfil</h3>
+                <p>Resultados claros por área, mapa combinado, y notas que conectan tus patrones.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Metodología breve ─── */}
-      <section className="home-methodology">
-        <div className="home-methodology-grid">
-          <div>
-            <h3>Dos tipos de prueba</h3>
-            <p>
-              <strong>Cuestionarios:</strong> preguntas sobre tu experiencia cotidiana. Miden cómo te percibes.<br />
-              <strong>Tareas:</strong> ejercicios que miden tu rendimiento real (tiempo de reacción, memoria, precisión).<br />
-              La combinación de ambos da una visión más completa que cualquiera por separado.
-            </p>
+      {/* ─── Confianza ─── */}
+      <section className="home-trust">
+        <div className="home-trust-inner">
+          <div className="home-trust-item">
+            <h4>Dos tipos de prueba</h4>
+            <p>Combinamos lo que tú percibes (cuestionarios) con lo que mide el sistema (tareas interactivas). La combinación de ambas perspectivas ofrece una visión más completa.</p>
           </div>
-          <div>
-            <h3>Privacidad real</h3>
-            <p>
-              No recopilamos datos personales. No usamos cookies de seguimiento. Tus resultados se guardan
-              solo en esta sesión del navegador y se eliminan al cerrar la pestaña.{' '}
-              <strong>Nada se almacena en servidores de forma permanente.</strong>
-            </p>
+          <div className="home-trust-item">
+            <h4>Resultados orientativos</h4>
+            <p>Ningún test constituye un diagnóstico. Son herramientas de auto-conocimiento basadas en criterios científicos. Si algo te preocupa, consulta con un profesional.</p>
           </div>
-          <div>
-            <h3>Limitaciones</h3>
-            <p>
-              Estos tests son orientativos, no diagnósticos. No sustituyen una evaluación profesional.
-              Si tus resultados te preocupan, busca un psicólogo, psiquiatra o neuropsicólogo.
-            </p>
+          <div className="home-trust-item">
+            <h4>Privacidad real</h4>
+            <p>No pedimos datos personales ni usamos cookies de seguimiento. Tu perfil local vive en la sesión del navegador; si el envío está activo, solo se guarda una copia anónima de respuestas para mejorar la herramienta.</p>
           </div>
         </div>
       </section>
 
       {/* ─── Tests ─── */}
-      <div id="start">
+      <div id="tests">
         <section className="home-section">
-          <h2 className="home-section-heading">Cuestionarios</h2>
-          <p className="home-section-desc">Preguntas sobre tu experiencia cotidiana. Responde según lo que vives, no lo que crees que deberías responder.</p>
+          <span className="home-section-label">Cuestionarios</span>
+          <h2 className="home-section-title">Preguntas sobre tu experiencia</h2>
+          <p className="home-section-desc">Responde según lo que vives cotidianamente. No hay respuestas correctas o incorrectas.</p>
           <div className="tests-grid">
-            {likertTests.map((test) => (
-              <TestCard key={test.id} test={test} navigate={navigate} />
-            ))}
+            {likertTests.map((t) => <TestCard key={t.id} test={t} navigate={navigate} />)}
           </div>
         </section>
 
         <section className="home-section">
-          <h2 className="home-section-heading">Tareas interactivas</h2>
-          <p className="home-section-desc">Ejercicios que miden tu rendimiento. No hay respuestas correctas o incorrectas: mide cómo funciona tu atención, memoria y procesamiento.</p>
+          <span className="home-section-label">Tareas interactivas</span>
+          <h2 className="home-section-title">Ejercicios que miden tu rendimiento</h2>
+          <p className="home-section-desc">Tareas breves que evalúan tu atención, memoria, velocidad de procesamiento y más. Algunas requieren teclado.</p>
           <div className="tests-grid">
-            {taskTests.map((test) => (
-              <TestCard key={test.id} test={test} navigate={navigate} />
-            ))}
+            {taskTests.map((t) => <TestCard key={t.id} test={t} navigate={navigate} />)}
           </div>
         </section>
       </div>

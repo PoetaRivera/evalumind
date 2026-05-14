@@ -14,25 +14,6 @@ function DisclaimerModal({ onAccept, disclaimerText }) {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         navigate('/');
-        return;
-      }
-
-      if (e.key === 'Tab') {
-        const focusable = modalRef.current?.querySelectorAll(
-          'input[type="checkbox"], button:not(:disabled), .modal-cancel'
-        );
-        if (!focusable || focusable.length === 0) return;
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
       }
     };
 
@@ -43,34 +24,34 @@ function DisclaimerModal({ onAccept, disclaimerText }) {
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title">
       <div className="modal-content" ref={modalRef}>
-        <h2 id="disclaimer-title">Aviso importante</h2>
-        <p>{disclaimerText}</p>
-        <p className="disclaimer-confidentiality">
-          Tus respuestas son anónimas. No almacenamos información que permita identificarte.
+        <div className="modal-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h2 id="disclaimer-title">Antes de continuar</h2>
+        <div className="modal-disclaimer-text">
+          <p>{disclaimerText}</p>
+        </div>
+        <p className="modal-privacy-note">
+          Tus respuestas no incluyen datos personales. Se guardan en esta sesión y pueden enviarse de forma anónima para análisis agregado si el servidor está activo.
         </p>
-        <label className="disclaimer-checkbox">
+        <label className="modal-checkbox">
           <input
             ref={checkboxRef}
             type="checkbox"
             checked={checked}
             onChange={(e) => setChecked(e.target.checked)}
           />
-          He leído y entiendo el aviso. Deseo continuar.
+          <span>He leído y entiendo el aviso. Deseo continuar.</span>
         </label>
-        <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
-          <button
-            className="btn btn-primary"
-            disabled={!checked}
-            onClick={onAccept}
-            aria-label="Comenzar el test"
-          >
-            Entiendo, quiero continuar
+        <div className="modal-actions">
+          <button className="btn btn-primary" disabled={!checked} onClick={onAccept}>
+            Comenzar
           </button>
-          <button
-            className="btn btn-link modal-cancel"
-            onClick={() => navigate('/')}
-            style={{ fontSize: '0.85rem' }}
-          >
+          <button className="btn btn-ghost" onClick={() => navigate('/')}>
             Cancelar
           </button>
         </div>

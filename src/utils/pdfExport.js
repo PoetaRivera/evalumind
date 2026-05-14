@@ -1,10 +1,9 @@
-import jsPDF from 'jspdf';
-
 /**
  * Exporta resultados a PDF (formato texto plano, ligero, sin dependencia de canvas).
  * @param {Array} results - Array de objetos { testTitle, category, total, maxScore, description, dimensions }
  */
-export function exportResultsToPDF(results) {
+export async function exportResultsToPDF(results) {
+  const { default: jsPDF } = await import('jspdf');
   const doc = new jsPDF();
   const today = new Date().toLocaleDateString('es-ES', {
     year: 'numeric',
@@ -33,7 +32,7 @@ export function exportResultsToPDF(results) {
   y += 10;
 
   // Resultados por test
-  results.forEach((result, index) => {
+  results.forEach((result) => {
     if (y > 250) {
       doc.addPage();
       y = 20;

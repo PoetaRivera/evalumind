@@ -222,7 +222,11 @@ export function getTest(testId) {
 
 export function getAllTests() {
   return Object.keys(TEST_REGISTRY).map((id) => {
-    const { questions, sections, scoringFn, ...meta } = TEST_REGISTRY[id];
+    const registryEntry = TEST_REGISTRY[id];
+    const { questions } = registryEntry;
+    const meta = Object.fromEntries(
+      Object.entries(registryEntry).filter(([key]) => !['questions', 'sections', 'scoringFn'].includes(key)),
+    );
     const taskTypes = ['dat', 'fas', 'social-scenarios', 'self-discrepancy', 'fer', 'sart', 'flanker', 'digit-span', 'navon', 'rmet', 'switch-task', 'sensory-threshold', 'auditory-distraction'];
     const isTask = taskTypes.includes(meta.type);
     return {

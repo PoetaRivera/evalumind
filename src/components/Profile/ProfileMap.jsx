@@ -53,6 +53,25 @@ const DIMENSION_LABELS = {
   workingMemory: 'Memoria de trabajo',
   planning: 'Planificación',
   flexibility: 'Flexibilidad cognitiva',
+  emotionalImpact: 'Impacto emocional',
+  selfDiscrepancy: 'Brecha auténtico/público',
+  maskingEffort: 'Esfuerzo de camuflaje',
+  emotionRecognition: 'Reconocimiento emocional',
+  negativeEmotionRecognition: 'Reconocimiento de emociones negativas',
+  sustainedAttention: 'Atención sostenida',
+  responseInhibition: 'Inhibición de respuesta',
+  rtVariability: 'Variabilidad de respuesta',
+  interferenceControl: 'Control de interferencia',
+  flankerEffectMs: 'Efecto Flanker',
+  forwardSpan: 'Span directo',
+  backwardSpan: 'Span inverso',
+  localBias: 'Sesgo hacia el detalle',
+  globalPrecedence: 'Precedencia global',
+  theoryOfMind: 'Teoría de la mente',
+  switchCost: 'Costo de cambio',
+  switchCostMs: 'Costo de cambio en ms',
+  sensoryThreshold: 'Umbral sensorial',
+  distractibility: 'Distractibilidad auditiva',
 };
 
 const STRATEGIES = [
@@ -184,7 +203,7 @@ export default function ProfileMap() {
             Completa al menos 2 tests para ver tu mapa de funcionamiento combinado.
           </p>
           <p style={{ fontSize: '0.9rem', color: '#9ca3af', marginBottom: '24px' }}>
-            Tus resultados se guardan en esta sesión del navegador. Al cerrar la pestaña se eliminan.
+            Tu mapa local se arma con los resultados disponibles en esta sesión del navegador.
           </p>
           <button className="btn btn-primary" onClick={() => navigate('/')}>
             Ir a los tests
@@ -195,7 +214,7 @@ export default function ProfileMap() {
   }
 
   const handleClear = () => {
-    if (window.confirm('¿Borrar todos tus resultados? Los datos están guardados solo en esta sesión y se perderán permanentemente.')) {
+    if (window.confirm('¿Borrar tu mapa local? Los datos de esta sesión se perderán permanentemente.')) {
       clearCompletedTests();
       navigate('/');
     }
@@ -366,7 +385,7 @@ export default function ProfileMap() {
 
       <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#9ca3af', marginTop: '32px' }}>
         Este mapa es orientativo. No constituye un diagnóstico ni un perfil clínico.
-        Los resultados se guardan solo en esta sesión del navegador.
+        El mapa se guarda solo en esta sesión del navegador.
       </p>
     </div>
   );

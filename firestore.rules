@@ -1,18 +1,70 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function hasOnlyResponseFields() {
+      return request.resource.data.keys().hasOnly([
+        'testId',
+        'answers',
+        'resultCategory',
+        'sessionId',
+        'createdAt',
+        'totalScore',
+        'dimensions',
+        'profiles',
+        'finalScore',
+        'averageDistance',
+        'standardDeviation',
+        'pairwiseDistances'
+      ]);
+    }
+
+    function validString(field, maxLength) {
+      return request.resource.data[field] is string
+        && request.resource.data[field].size() > 0
+        && request.resource.data[field].size() <= maxLength;
+    }
+
+    function validOptionalString(field, maxLength) {
+      return !(field in request.resource.data) || validString(field, maxLength);
+    }
+
+    function validOptionalNumber(field) {
+      return !(field in request.resource.data)
+        || request.resource.data[field] is int
+        || request.resource.data[field] is float;
+    }
+
+    function validOptionalList(field, maxLength) {
+      return !(field in request.resource.data)
+        || (request.resource.data[field] is list && request.resource.data[field].size() <= maxLength);
+    }
+
+    function validOptionalMap(field, maxLength) {
+      return !(field in request.resource.data)
+        || (request.resource.data[field] is map && request.resource.data[field].keys().size() <= maxLength);
+    }
+
     match /responses/{response} {
       // Nadie puede leer los datos de screening
       allow read: if false;
 
       // Solo permitir crear documentos con estructura validada
       allow create: if
-        request.resource.data.keys().hasAll(['testId', 'sessionId', 'createdAt'])
-        && request.resource.data.testId is string
-        && request.resource.data.testId.size() > 0
-        && request.resource.data.testId.size() < 100
-        && request.resource.data.sessionId is string
-        && request.resource.data.sessionId.size() > 0;
+        request.resource.data.keys().hasAll(['testId', 'answers', 'resultCategory', 'sessionId', 'createdAt'])
+        && hasOnlyResponseFields()
+        && validString('testId', 100)
+        && validString('resultCategory', 80)
+        && validString('sessionId', 80)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.answers is list
+        && request.resource.data.answers.size() <= 120
+        && validOptionalNumber('totalScore')
+        && validOptionalNumber('finalScore')
+        && validOptionalNumber('averageDistance')
+        && validOptionalNumber('standardDeviation')
+        && validOptionalMap('dimensions', 40)
+        && validOptionalList('profiles', 40)
+        && validOptionalList('pairwiseDistances', 80);
 
       // No permitir updates ni deletes desde el cliente
       allow update, delete: if false;

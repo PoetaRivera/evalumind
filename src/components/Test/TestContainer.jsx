@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getTest } from '../../data';
 import { useTestSubmission } from '../../hooks/useTestSubmission';
 import DisclaimerModal from '../Common/DisclaimerModal';
@@ -26,6 +26,10 @@ import './TestContainer.css';
 
 const TASK_TYPES = ['dat', 'fas', 'social-scenarios', 'self-discrepancy', 'fer', 'sart', 'flanker', 'digit-span', 'navon', 'rmet', 'switch-task', 'sensory-threshold', 'auditory-distraction'];
 
+function randomFasLetter() {
+  return FAS_LETTERS[Math.floor(Math.random() * FAS_LETTERS.length)];
+}
+
 function makeEmptyAnswers(count) {
   return new Array(count).fill(null);
 }
@@ -44,6 +48,7 @@ function loadState(testId) {
 
 function TestContainer() {
   const { testId } = useParams();
+  const navigate = useNavigate();
   const test = getTest(testId);
 
   const saved = loadState(testId);
@@ -55,9 +60,15 @@ function TestContainer() {
   const [finished, setFinished] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(!saved?.accepted);
   const [taskResult, setTaskResult] = useState(null);
-  const fasLetter = useRef(FAS_LETTERS[Math.floor(Math.random() * FAS_LETTERS.length)]);
+  const [fasLetter, setFasLetter] = useState(() => randomFasLetter());
 
-  const { loading, error, saved: submissionSaved, saveResponse } = useTestSubmission();
+  const {
+    loading,
+    error,
+    saved: submissionSaved,
+    remoteSaved,
+    saveResponse,
+  } = useTestSubmission();
 
   const persist = useCallback(
     (overrides) => {
@@ -138,7 +149,6 @@ function TestContainer() {
   }
 
   const isTask = TASK_TYPES.includes(test.type);
-  const isLikert = !isTask;
 
   if (showDisclaimer) {
     return <DisclaimerModal onAccept={handleAccept} disclaimerText={test.disclaimerText} />;
@@ -153,6 +163,7 @@ function TestContainer() {
         loading={loading}
         error={error}
         saved={submissionSaved}
+        remoteSaved={remoteSaved}
         onRestart={() => {
           setTaskResult(null);
           setAnswers([]);
@@ -160,6 +171,7 @@ function TestContainer() {
           setFinished(false);
           setShowDisclaimer(true);
           setAccepted(false);
+          setFasLetter(randomFasLetter());
           localStorage.removeItem(storageKey(testId));
         }}
       />
@@ -179,10 +191,10 @@ function TestContainer() {
       );
     case 'fas':
       return (
-        <div className="test-container">
-          <InstructionsBanner instructions={test.instructions} />
-          <FasTask letter={fasLetter.current} onComplete={handleTaskComplete} />
-        </div>
+          <div className="test-container">
+            <InstructionsBanner instructions={test.instructions} />
+          <FasTask letter={fasLetter} onComplete={handleTaskComplete} />
+          </div>
       );
     case 'social-scenarios':
       return (
@@ -295,10 +307,9 @@ function TestContainer() {
         isFirstInSection={isFirstInSection}
       />
       <div style={{ textAlign: 'right', marginBottom: '4px' }}>
-        <a href="/" style={{ fontSize: '0.8rem', color: '#9ca3af', textDecoration: 'none' }}
-           onClick={(e) => { e.preventDefault(); if (window.confirm('¿Salir del test? Perderás el progreso actual.')) window.location.href = '/'; }}>
-          Salir del test
-        </a>
+        <button className="btn btn-ghost" onClick={() => { if (window.confirm('¿Salir del test? Perderás el progreso actual.')) navigate('/'); }} style={{ fontSize: '0.8125rem', padding: '4px 8px' }}>
+          Salir
+        </button>
       </div>
 
       <div className="test-nav">

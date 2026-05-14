@@ -31,8 +31,8 @@ export function calculateSwitchScore(trials) {
 
   const overallAcc = trials.filter((t) => t.correct).length / trials.length;
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (totalScore <= 20) {
     category = 'flexibilidad-alta';

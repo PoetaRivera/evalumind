@@ -1,65 +1,62 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import './Layout.css';
 
+const NAV_LINKS = [
+  { to: '/', label: 'Inicio' },
+  { to: '/perfil', label: 'Mi perfil' },
+  { to: '/historias', label: 'Historias' },
+  { to: '/recursos', label: 'Recursos' },
+];
+
 function Layout() {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
   return (
     <div className="app-layout">
       <header className="app-header">
-        <div>
-          <h1 style={{ margin: 0 }}>
-            <NavLink to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              NeuroScreen
+        <NavLink to="/" className="app-logo" aria-label="NeuroScreen — Ir al inicio">
+          NeuroScreen
+        </NavLink>
+        <nav className="app-nav" role="navigation" aria-label="Navegación principal">
+          {NAV_LINKS.filter((l) => l.to !== '/').map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) => `app-nav-link${isActive ? ' app-nav-link--active' : ''}`}
+              end
+            >
+              {link.label}
             </NavLink>
-          </h1>
-          <span className="app-tagline">Herramienta de screening orientativo</span>
-        </div>
-        <nav style={{ display: 'flex', gap: '16px', fontSize: '0.85rem', flexWrap: 'wrap' }}>
-          <NavLink
-            to="/perfil"
-            style={({ isActive }) => ({
-              color: isActive ? '#4a90d9' : '#9ca3af',
-              textDecoration: 'none',
-              fontWeight: isActive ? 600 : 400,
-            })}
-          >
-            Mi perfil
-          </NavLink>
-          <NavLink
-            to="/historias"
-            style={({ isActive }) => ({
-              color: isActive ? '#4a90d9' : '#9ca3af',
-              textDecoration: 'none',
-              fontWeight: isActive ? 600 : 400,
-            })}
-          >
-            Historias
-          </NavLink>
-          <NavLink
-            to="/recursos"
-            style={({ isActive }) => ({
-              color: isActive ? '#4a90d9' : '#9ca3af',
-              textDecoration: 'none',
-              fontWeight: isActive ? 600 : 400,
-            })}
-          >
-            Recursos
-          </NavLink>
+          ))}
         </nav>
       </header>
-      <main className="app-main">
+
+      <main className={`app-main${isHome ? ' app-main--home' : ''}`}>
         <Outlet />
       </main>
+
       <footer className="app-footer">
-        <nav style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <NavLink to="/" style={{ color: '#6b7280', fontSize: '0.8rem' }}>Inicio</NavLink>
-          <NavLink to="/perfil" style={{ color: '#6b7280', fontSize: '0.8rem' }}>Mi perfil</NavLink>
-          <NavLink to="/historias" style={{ color: '#6b7280', fontSize: '0.8rem' }}>Historias</NavLink>
-          <NavLink to="/recursos" style={{ color: '#6b7280', fontSize: '0.8rem' }}>Recursos</NavLink>
-        </nav>
-        <p>
-          NeuroScreen no diagnostica. Solo ofrece información orientativa basada en criterios
-          científicos. Consulta siempre con un profesional de la salud mental.
-        </p>
+        <div className="app-footer-content">
+          <div className="app-footer-brand">
+            <span className="app-footer-name">NeuroScreen</span>
+            <span className="app-footer-tagline">Herramienta de orientación cognitiva</span>
+          </div>
+          <nav className="app-footer-nav">
+            {NAV_LINKS.map((link) => (
+              <NavLink key={link.to} to={link.to} className="app-footer-link" end={link.to === '/'}>
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
+          <p className="app-footer-disclaimer">
+            NeuroScreen no diagnostica. Solo ofrece información orientativa basada en criterios científicos.
+            Consulta siempre con un profesional de la salud.
+          </p>
+          <p className="app-footer-privacy">
+            No pedimos datos personales. El perfil local vive en tu sesión; las respuestas pueden enviarse de forma anónima para análisis agregado.
+          </p>
+        </div>
       </footer>
     </div>
   );

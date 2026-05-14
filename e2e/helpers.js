@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 
 export async function acceptDisclaimer(page) {
   await page.getByLabel(/he leído y entiendo el aviso/i).check();
-  await page.getByRole('button', { name: /comenzar el test/i }).click();
+  await page.getByRole('button', { name: /comenzar/i }).click();
 }
 
 export async function answerAllQuestions(page, count) {

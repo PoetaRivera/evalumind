@@ -1,5 +1,7 @@
 .recursos-page {
   max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md);
 }
 
 .recursos-section {

@@ -27,6 +27,40 @@ const CATEGORY_LABELS = {
   'fluidez-baja': 'Fluidez verbal baja',
   'fluidez-moderada': 'Fluidez verbal moderada',
   'fluidez-alta': 'Fluidez verbal alta',
+  'sesgo-bajo': 'Sesgo de rechazo bajo',
+  'sesgo-moderado': 'Sesgo de rechazo moderado',
+  'sesgo-alto': 'Sesgo de rechazo alto',
+  'baja-discrepancia': 'Baja auto-discrepancia',
+  'discrepancia-moderada': 'Auto-discrepancia moderada',
+  'alta-discrepancia': 'Alta auto-discrepancia',
+  'reconocimiento-alto': 'Reconocimiento emocional alto',
+  'reconocimiento-moderado': 'Reconocimiento emocional moderado',
+  'reconocimiento-bajo': 'Reconocimiento emocional bajo',
+  'atencion-optima': 'Atención sostenida óptima',
+  'atencion-buena': 'Atención sostenida buena',
+  'atencion-moderada': 'Atención sostenida moderada',
+  'atencion-baja': 'Atención sostenida baja',
+  'inhibicion-optima': 'Control inhibitorio óptimo',
+  'inhibicion-buena': 'Control inhibitorio bueno',
+  'inhibicion-reducida': 'Control inhibitorio reducido',
+  'memoria-alta': 'Memoria de trabajo alta',
+  'memoria-moderada': 'Memoria de trabajo moderada',
+  'memoria-baja': 'Memoria de trabajo baja',
+  'procesamiento-balanceado': 'Procesamiento balanceado',
+  'precedencia-global': 'Precedencia global',
+  'sesgo-local': 'Sesgo hacia el detalle',
+  'mentalizacion-alta': 'Mentalización alta',
+  'mentalizacion-moderada': 'Mentalización moderada',
+  'mentalizacion-baja': 'Mentalización baja',
+  'flexibilidad-alta': 'Flexibilidad cognitiva alta',
+  'flexibilidad-moderada': 'Flexibilidad cognitiva moderada',
+  'flexibilidad-baja': 'Flexibilidad cognitiva baja',
+  'umbral-alto': 'Umbral sensorial alto',
+  'umbral-moderado': 'Umbral sensorial moderado',
+  'umbral-bajo': 'Umbral sensorial bajo',
+  'baja-distractibilidad': 'Baja distractibilidad',
+  'distractibilidad-moderada': 'Distractibilidad moderada',
+  'alta-distractibilidad': 'Alta distractibilidad',
 };
 
 const CATEGORY_COLORS = {
@@ -53,6 +87,40 @@ const CATEGORY_COLORS = {
   'fluidez-baja': '#f59e0b',
   'fluidez-moderada': '#6366f1',
   'fluidez-alta': '#10b981',
+  'sesgo-bajo': '#2e7d32',
+  'sesgo-moderado': '#e67e22',
+  'sesgo-alto': '#c0392b',
+  'baja-discrepancia': '#2e7d32',
+  'discrepancia-moderada': '#e67e22',
+  'alta-discrepancia': '#c0392b',
+  'reconocimiento-alto': '#2e7d32',
+  'reconocimiento-moderado': '#e67e22',
+  'reconocimiento-bajo': '#c0392b',
+  'atencion-optima': '#2e7d32',
+  'atencion-buena': '#10b981',
+  'atencion-moderada': '#e67e22',
+  'atencion-baja': '#c0392b',
+  'inhibicion-optima': '#2e7d32',
+  'inhibicion-buena': '#10b981',
+  'inhibicion-reducida': '#c0392b',
+  'memoria-alta': '#2e7d32',
+  'memoria-moderada': '#6366f1',
+  'memoria-baja': '#c0392b',
+  'procesamiento-balanceado': '#10b981',
+  'precedencia-global': '#6366f1',
+  'sesgo-local': '#8b5cf6',
+  'mentalizacion-alta': '#2e7d32',
+  'mentalizacion-moderada': '#e67e22',
+  'mentalizacion-baja': '#c0392b',
+  'flexibilidad-alta': '#2e7d32',
+  'flexibilidad-moderada': '#e67e22',
+  'flexibilidad-baja': '#c0392b',
+  'umbral-alto': '#2e7d32',
+  'umbral-moderado': '#e67e22',
+  'umbral-bajo': '#8b5cf6',
+  'baja-distractibilidad': '#2e7d32',
+  'distractibilidad-moderada': '#e67e22',
+  'alta-distractibilidad': '#c0392b',
 };
 
 function RadarChart({ dimensions }) {
@@ -79,7 +147,6 @@ function RadarChart({ dimensions }) {
   });
 
   const ticks = [0.25, 0.5, 0.75];
-  const outerPoints = outer.map((p) => `${p.x},${p.y}`).join(' ');
   const dataPoints = data.map((p) => `${p.x},${p.y}`).join(' ');
 
   // Ajustar altura del viewBox según número de lados
@@ -156,7 +223,7 @@ function RadarChart({ dimensions }) {
   );
 }
 
-function ResultsView({ result, testId, loading, error, saved, onRestart }) {
+function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRestart }) {
   const navigate = useNavigate();
   const complementarityNotes = useMemo(
     () => testId ? getComplementarityNotes(testId) : [],
@@ -177,7 +244,7 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
           <span className="result-max">de {result.maxScores.total}</span>
         </div>
         <div className="result-category" style={{ color: CATEGORY_COLORS[result.category] }}>
-          {CATEGORY_LABELS[result.category]}
+          {CATEGORY_LABELS[result.category] || result.category || 'Resultado calculado'}
         </div>
       </div>
 
@@ -351,13 +418,23 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
       {/* Estado del guardado */}
       {loading && <p className="results-saving" aria-live="polite">Guardando resultados...</p>}
 
-      {error && (
-        <p className="results-error" role="alert">
-          No se pudieron guardar los resultados, pero puedes ver tu puntuación igualmente.
+      {saved && (
+        <p className="results-saved" aria-live="polite">
+          Resultados disponibles en esta sesión del navegador.
         </p>
       )}
 
-      {saved && <p className="results-saved" aria-live="polite">Resultados guardados de forma anónima.</p>}
+      {remoteSaved && (
+        <p className="results-saved" aria-live="polite">
+          Copia anónima enviada correctamente para análisis agregado.
+        </p>
+      )}
+
+      {error && (
+        <p className="results-error" role="alert">
+          {error}
+        </p>
+      )}
 
       {/* Acciones */}
       <div className="results-actions">
@@ -413,7 +490,7 @@ function ResultsView({ result, testId, loading, error, saved, onRestart }) {
       </div>
 
       <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#9ca3af', marginTop: '20px' }}>
-        Tus resultados se guardan solo en esta sesión del navegador. Se eliminarán al cerrar la pestaña.
+        Tu perfil local se guarda solo en esta sesión del navegador. Si el envío está activo, también se registra una copia anónima sin datos personales.
       </p>
     </div>
   );

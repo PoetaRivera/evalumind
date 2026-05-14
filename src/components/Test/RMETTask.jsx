@@ -25,8 +25,8 @@ export default function RMETTask({ onComplete }) {
       const correct = responses.filter((r) => r.selected === r.correct).length;
       const accuracyPct = Math.round((correct / RMET_STIMULI.length) * 100);
 
-      let category = '';
-      let description = '';
+      let category;
+      let description;
       if (accuracyPct >= 75) {
         category = 'mentalizacion-alta';
         description = `Reconoces correctamente estados mentales en el ${accuracyPct}% de los casos. Tu teoría de la mente parece estar en un rango típico.`;

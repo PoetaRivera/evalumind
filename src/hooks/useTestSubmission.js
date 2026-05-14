@@ -7,6 +7,7 @@ export function useTestSubmission() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [remoteSaved, setRemoteSaved] = useState(false);
   const submitting = useRef(false);
 
   const saveResponse = useCallback(async (testId, answers, result) => {
@@ -15,9 +16,12 @@ export function useTestSubmission() {
 
     setLoading(true);
     setError(null);
+    setSaved(false);
+    setRemoteSaved(false);
 
     // Guardar localmente siempre (para Mapa de Funcionamiento y notas)
     saveCompletedTest(testId, result);
+    setSaved(true);
 
     try {
       const sessionId = crypto.randomUUID();
@@ -52,17 +56,19 @@ export function useTestSubmission() {
 
       if (db) {
         await addDoc(collection(db, 'responses'), responseData);
+        setRemoteSaved(true);
       }
     } catch (err) {
+      const message = 'No se pudo enviar la copia anónima. Tus resultados locales siguen disponibles en esta sesión.';
       console.warn('Firestore save skipped (not configured or offline):', err.message);
+      setError(message);
     } finally {
       setLoading(false);
-      setSaved(true);
       setTimeout(() => {
         submitting.current = false;
       }, 2000);
     }
   }, []);
 
-  return { loading, error, saved, saveResponse };
+  return { loading, error, saved, remoteSaved, saveResponse };
 }

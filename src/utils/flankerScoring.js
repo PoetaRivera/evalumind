@@ -31,8 +31,8 @@ export function calculateFlankerScore(trials) {
   const accuracyScore = Math.min(100, Math.max(0, accuracyCost * 200));
   const totalScore = Math.round(effectScore * 0.6 + accuracyScore * 0.4);
 
-  let category = '';
-  let description = '';
+  let category;
+  let description;
 
   if (totalScore <= 25) {
     category = 'inhibicion-optima';

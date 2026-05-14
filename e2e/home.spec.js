@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('HomePage', () => {
   test('renders title and description', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('.home-hero-title')).toContainText('Explora cómo funciona tu mente');
+    await expect(page.locator('.home-hero-title')).toContainText('Conoce cómo funciona tu mente');
     await expect(page.locator('.home-hero-subtitle')).toBeVisible();
   });
 
@@ -26,8 +26,8 @@ test.describe('HomePage', () => {
 
   test('navigation links to /perfil and /historias are visible', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('Mi perfil').first()).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Cómo funciona', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Mi perfil' }).first()).toBeVisible();
+    await expect(page.getByText('Tres pasos', { exact: false })).toBeVisible();
   });
 
   test('clicking a test card navigates to the test', async ({ page }) => {
