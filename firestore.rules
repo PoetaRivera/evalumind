@@ -24,10 +24,6 @@ service cloud.firestore {
         && request.resource.data[field].size() <= maxLength;
     }
 
-    function validOptionalString(field, maxLength) {
-      return !(field in request.resource.data) || validString(field, maxLength);
-    }
-
     function validOptionalNumber(field) {
       return !(field in request.resource.data)
         || request.resource.data[field] is int
