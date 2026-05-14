@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('HomePage', () => {
   test('renders title and description', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h2')).toContainText('NeuroScreen');
-    await expect(page.locator('.home-description')).toBeVisible();
+    await expect(page.locator('.home-hero-title')).toContainText('Explora cómo funciona tu mente');
+    await expect(page.locator('.home-hero-subtitle')).toBeVisible();
   });
 
   test('shows all 20 test cards (7 Likert + 13 acción)', async ({ page }) => {
@@ -26,8 +26,8 @@ test.describe('HomePage', () => {
 
   test('navigation links to /perfil and /historias are visible', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('Mapa de Funcionamiento')).toBeVisible();
-    await expect(page.getByText('Historias de Adaptación')).toBeVisible();
+    await expect(page.getByText('Mi perfil').first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Cómo funciona', exact: true })).toBeVisible();
   });
 
   test('clicking a test card navigates to the test', async ({ page }) => {

@@ -66,10 +66,10 @@ test.describe('Navigation', () => {
 
   test('home buttons navigate to /perfil and /historias', async ({ page }) => {
     await page.goto('/');
-    await page.getByText(/mapa de funcionamiento/i).click();
+    await page.getByText(/mi perfil/i).first().click();
     await expect(page).toHaveURL('/perfil');
     await page.goto('/');
-    await page.getByText(/historias de adaptación/i).click();
+    await page.locator('a[href="/historias"]').first().click();
     await expect(page).toHaveURL('/historias');
   });
 

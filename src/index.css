@@ -5,26 +5,26 @@
 }
 
 :root {
-  --color-primary: #4a90d9;
-  --color-primary-dark: #2c6faa;
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
   --color-dark: #1a1a2e;
-  --color-text: #222;
-  --color-text-muted: #555;
+  --color-text: #1f2937;
+  --color-text-muted: #4b5563;
   --color-text-light: #6b7280;
-  --color-bg: #f5f6f8;
+  --color-bg: #f9fafb;
   --color-white: #fff;
-  --color-border: #d0d0d0;
-  --color-border-light: #e0e0e0;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #c0392b;
-  --color-info: #6366f1;
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --color-border: #d1d5db;
+  --color-border-light: #e5e7eb;
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-info: #4f46e5;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06);
 
-  font-family: system-ui, Roboto, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   color: var(--color-text);
@@ -53,7 +53,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 [tabindex]:focus-visible {
-  outline: 3px solid var(--color-primary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
