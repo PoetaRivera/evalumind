@@ -6,16 +6,19 @@
 Evaluación con 5 agentes en paralelo encontró 36 issues. Plan de implementación en 5 fases, todas completadas.
 
 ### Commits recientes (2026-05-15)
+- `d929803` — **Rebrand NeuroScreen → EvaluMind**: 19 archivos renombrados (package.json, index.html, Layout, sessionStorage/localStorage keys, pdfExport, e2e, docs). Repo GitHub renombrado a `PoetaRivera/evalumind`
 - `87c78ea` — **Corrección bugs P0**: usePageVisibility hook (pausa al cambiar pestaña), botones touch en SART/Flanker/Navon/Switch/AuditoryDistraction, RT real en SensoryThreshold, data-testid en 10 componentes
 - `53ffdd2` — **Fix firestore.rules**: elimina función `validOptionalString` sin uso que generaba warning de compilación
-- `2e088d8` — **testMetadata.js + refinamientos visuales**: metadata centralizada de 20 tests (7 Likert + 13 tareas conductuales) con `getAllTestCards()`. Refinamientos CSS/componentes en TestContainer, HomePage, Layout, DisclaimerModal, ResultsView, ProfileMap y 13 scoring utilities. Actualización de config (firestore rules, eslint, index.html SEO, README)
+- `2e088d8` — **testMetadata.js + refinamientos visuales**: metadata centralizada de 20 tests (7 Likert + 13 tareas conductuales) con `getAllTestCards()`
 
 ### Infraestructura (2026-05-15)
-- ✅ Firestore API habilitada
-- ✅ BD `(default)` creada en `evalumind-app`
+- ✅ Nuevo proyecto Firebase `evalumind-app` creado desde CLI
+- ✅ Firestore API habilitada + BD `(default)` creada
+- ✅ Web App registrada, credenciales en `.env`
 - ✅ `firestore.rules` desplegado (0 warnings)
-- ✅ Build + deploy completado (`87c78ea`)
+- ✅ Build + deploy completado (`d929803`)
 - 🌎 **Producción**: https://evalumind-app.web.app
+- 🔗 **GitHub**: https://github.com/PoetaRivera/evalumind
 
 ---
 
