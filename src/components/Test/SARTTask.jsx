@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { calculateSARTScore } from '../../utils/sartScoring';
+import { usePageVisibility } from '../../hooks/usePageVisibility';
 
-const TOTAL_TRIALS = 180; // ~5-6 min
+const TOTAL_TRIALS = 180;
 const DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const NOGO_DIGIT = 3; // 10% de trials
-const STIMULUS_DURATION = 250; // ms que se muestra el dígito
-const ISI = 1500; // ms entre inicio de un estímulo y el siguiente
-const RESPONSE_WINDOW = 1200; // ms máximo para responder
+const NOGO_DIGIT = 3;
+const STIMULUS_DURATION = 250;
+const ISI = 1500;
+const RESPONSE_WINDOW = 1200;
 
 function generateTrials() {
   const trials = [];
@@ -30,8 +31,29 @@ export default function SARTTask({ onComplete }) {
   const [showDigit, setShowDigit] = useState(false);
   const [fixationOn, setFixationOn] = useState(false);
   const [results, setResults] = useState([]);
+  const [paused, setPaused] = useState(false);
   const respondedRef = useRef(false);
   const rtStartRef = useRef(0);
+  const { isVisible, pauseCount, registerCallbacks } = usePageVisibility();
+
+  useEffect(() => {
+    registerCallbacks(
+      () => setPaused(true),
+      null
+    );
+  }, [registerCallbacks]);
+
+  const handleResume = useCallback(() => {
+    setPaused(false);
+  }, []);
+
+  const respond = useCallback(() => {
+    if (!respondedRef.current) {
+      respondedRef.current = true;
+      setFixationOn(true);
+      setTimeout(() => setFixationOn(false), 100);
+    }
+  }, []);
 
   const finish = useCallback(() => {
     setIsActive(false);
@@ -41,7 +63,7 @@ export default function SARTTask({ onComplete }) {
   }, [results, onComplete]);
 
   useEffect(() => {
-    if (!isActive || isFinished) return;
+    if (!isActive || isFinished || paused) return;
 
     if (currentTrial >= TOTAL_TRIALS) {
       finish();
@@ -54,12 +76,10 @@ export default function SARTTask({ onComplete }) {
     setShowDigit(true);
     rtStartRef.current = performance.now();
 
-    // Esconder dígito después de STIMULUS_DURATION ms
     const hideTimeout = setTimeout(() => {
       setShowDigit(false);
     }, STIMULUS_DURATION);
 
-    // Pasar al siguiente trial después de ISI
     const nextTimeout = setTimeout(() => {
       const rt = performance.now() - rtStartRef.current;
       setResults((prev) => [...prev, {
@@ -75,25 +95,21 @@ export default function SARTTask({ onComplete }) {
       clearTimeout(hideTimeout);
       clearTimeout(nextTimeout);
     };
-  }, [isActive, currentTrial, isFinished, trials, finish]);
+  }, [isActive, currentTrial, isFinished, trials, finish, paused]);
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isActive || paused) return;
 
     const handleKey = (e) => {
       if (e.code === 'Space' || e.key === ' ') {
         e.preventDefault();
-        if (!respondedRef.current) {
-          respondedRef.current = true;
-          setFixationOn(true);
-          setTimeout(() => setFixationOn(false), 100);
-        }
+        respond();
       }
     };
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [isActive]);
+  }, [isActive, paused, respond]);
 
   if (!isStarted) {
     return (
@@ -103,11 +119,11 @@ export default function SARTTask({ onComplete }) {
         </h2>
         <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Aparecerán dígitos del 1 al 9 en la pantalla, uno tras otro.</p>
-          <p><strong>Presiona la barra espaciadora</strong> para cada dígito...</p>
+          <p><strong>Presiona la barra espaciadora</strong> (o el botón en pantalla) para cada dígito...</p>
           <p style={{ color: '#dc2626' }}><strong>...EXCEPTO cuando aparezca el número 3.</strong></p>
           <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Es rápido: cada dígito aparece solo un instante. La mayoría de las veces DEBES responder. Solo inhibes con el 3.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px', fontSize: '1.05rem' }}>
+        <button className="btn btn-primary" data-testid="sart-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px', fontSize: '1.05rem' }}>
           Comenzar (5 min)
         </button>
       </div>
@@ -127,7 +143,7 @@ export default function SARTTask({ onComplete }) {
         height: '4px', background: '#f3f4f6', borderRadius: '2px',
         marginBottom: '32px', overflow: 'hidden',
       }}>
-        <div style={{
+        <div data-testid="sart-progress" style={{
           height: '100%', width: `${pct}%`, background: '#4a90d9',
           borderRadius: '2px', transition: 'width 0.3s ease',
         }} />
@@ -135,12 +151,12 @@ export default function SARTTask({ onComplete }) {
 
       <div style={{
         width: '120px', height: '120px', borderRadius: '50%',
-        background: showDigit ? '#1a1a2e' : '#f3f4f6',
+        background: showDigit && !paused ? '#1a1a2e' : '#f3f4f6',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         margin: '0 auto 16px', transition: 'background 0.05s',
       }}>
-        {showDigit ? (
-          <span style={{ fontSize: '3rem', fontWeight: 700, color: currentDigit === NOGO_DIGIT ? '#dc2626' : '#fff' }}>
+        {showDigit && !paused ? (
+          <span data-testid="sart-digit" style={{ fontSize: '3rem', fontWeight: 700, color: currentDigit === NOGO_DIGIT ? '#dc2626' : '#fff' }}>
             {currentDigit}
           </span>
         ) : (
@@ -151,7 +167,7 @@ export default function SARTTask({ onComplete }) {
       <div style={{
         width: '80px', height: '80px', borderRadius: '50%',
         background: fixationOn ? '#10b981' : '#f3f4f6',
-        margin: '0 auto', transition: 'background 0.05s',
+        margin: '0 auto 8px', transition: 'background 0.05s',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <span style={{ fontSize: '0.8rem', color: '#6b7280' }}>
@@ -159,9 +175,45 @@ export default function SARTTask({ onComplete }) {
         </span>
       </div>
 
+      <button
+        data-testid="sart-respond"
+        onPointerDown={(e) => { e.preventDefault(); respond(); }}
+        style={{
+          padding: '10px 32px', fontSize: '1rem', fontWeight: 600,
+          background: '#1a1a2e', color: '#fff', border: 'none',
+          borderRadius: '8px', cursor: 'pointer', marginTop: '8px',
+          userSelect: 'none', touchAction: 'manipulation',
+        }}
+      >
+        Responder
+      </button>
+
       <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '12px' }}>
-        Espaciadora para responder · No respondas al {NOGO_DIGIT}
+        Espaciadora o botón · No respondas al {NOGO_DIGIT}
       </p>
+
+      {paused && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', zIndex: 1000,
+        }}>
+          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>
+            Prueba pausada
+          </p>
+          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+            No cambies de pestaña durante la tarea. Pausas: {pauseCount}
+          </p>
+          <button
+            className="btn btn-primary"
+            data-testid="sart-resume"
+            onClick={handleResume}
+            style={{ padding: '12px 36px', fontSize: '1rem' }}
+          >
+            Reanudar
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -240,10 +240,10 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       {/* Resumen principal */}
       <div className="results-summary">
         <div className="result-total">
-          <span className="result-score">{result.total}</span>
+          <span className="result-score" data-testid="result-score">{result.total}</span>
           <span className="result-max">de {result.maxScores.total}</span>
         </div>
-        <div className="result-category" style={{ color: CATEGORY_COLORS[result.category] }}>
+        <div className="result-category" data-testid="result-category" style={{ color: CATEGORY_COLORS[result.category] }}>
           {CATEGORY_LABELS[result.category] || result.category || 'Resultado calculado'}
         </div>
       </div>
@@ -416,22 +416,22 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       )}
 
       {/* Estado del guardado */}
-      {loading && <p className="results-saving" aria-live="polite">Guardando resultados...</p>}
+      {loading && <p className="results-saving" data-testid="result-saving" aria-live="polite">Guardando resultados...</p>}
 
       {saved && (
-        <p className="results-saved" aria-live="polite">
+        <p className="results-saved" data-testid="result-saved-local" aria-live="polite">
           Resultados disponibles en esta sesión del navegador.
         </p>
       )}
 
       {remoteSaved && (
-        <p className="results-saved" aria-live="polite">
+        <p className="results-saved" data-testid="result-saved-remote" aria-live="polite">
           Copia anónima enviada correctamente para análisis agregado.
         </p>
       )}
 
       {error && (
-        <p className="results-error" role="alert">
+        <p className="results-error" data-testid="result-error" role="alert">
           {error}
         </p>
       )}
@@ -440,6 +440,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       <div className="results-actions">
         <button
           className="btn btn-primary"
+          data-testid="result-perfil"
           onClick={() => navigate('/perfil')}
           aria-label="Ver mi perfil"
         >
@@ -447,6 +448,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </button>
         <button
           className="btn btn-secondary"
+          data-testid="result-pdf"
           onClick={() => {
             const maxScore = result.maxScores?.total ?? (result.dimensions?.length > 0 ? 64 : 100);
             exportResultsToPDF([{
@@ -464,6 +466,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </button>
         <button
           className="btn btn-secondary"
+          data-testid="result-recursos"
           onClick={() => navigate('/recursos')}
           aria-label="Ver recursos y orientación profesional"
         >
@@ -471,6 +474,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </button>
         <button
           className="btn btn-secondary"
+          data-testid="result-restart"
           onClick={() => {
             if (window.confirm('¿Volver a hacer el test? Tus resultados actuales se perderán.')) {
               onRestart();
@@ -482,6 +486,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </button>
         <button
           className="btn btn-link"
+          data-testid="result-home"
           onClick={() => navigate('/')}
           aria-label="Volver al inicio"
         >

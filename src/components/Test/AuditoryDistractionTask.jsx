@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { calculateAuditoryDistractionScore } from '../../utils/hspScoring';
+import { usePageVisibility } from '../../hooks/usePageVisibility';
 
 const TOTAL_TRIALS = 60;
 const ITI = 1200;
@@ -9,7 +10,6 @@ function generateTrials() {
   for (let i = 0; i < TOTAL_TRIALS; i++) {
     const side = Math.random() > 0.5 ? 'left' : 'right';
     const hasDistractor = Math.random() > 0.5;
-    // Tono distractor: social (voz), ambiental (tráfico), neutro (tono puro)
     let distractorType = null;
     if (hasDistractor) {
       const r = Math.random();
@@ -29,18 +29,24 @@ export default function AuditoryDistractionTask({ onComplete }) {
   const [showTarget, setShowTarget] = useState(false);
   const [results, setResults] = useState([]);
   const [dotSide, setDotSide] = useState(null);
+  const [paused, setPaused] = useState(false);
   const respondedRef = useRef(false);
   const rtStartRef = useRef(0);
   const audioCtxRef = useRef(null);
+  const { isVisible, pauseCount, registerCallbacks } = usePageVisibility();
 
-  // Audio context
+  useEffect(() => {
+    registerCallbacks(() => setPaused(true), null);
+  }, [registerCallbacks]);
+
+  const handleResume = useCallback(() => setPaused(false), []);
+
   const playDistractor = useCallback((type) => {
     try {
       const ctx = audioCtxRef.current || new (window.AudioContext || window.webkitAudioContext)();
       audioCtxRef.current = ctx;
 
       if (type === 'social') {
-        // Simular murmullo social con tonos variables
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sawtooth';
@@ -51,7 +57,6 @@ export default function AuditoryDistractionTask({ onComplete }) {
         osc.connect(gain); gain.connect(ctx.destination);
         osc.start(); osc.stop(ctx.currentTime + 0.5);
       } else if (type === 'ambiental') {
-        // Ruido blanco breve
         const bufferSize = ctx.sampleRate * 0.5;
         const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -61,9 +66,22 @@ export default function AuditoryDistractionTask({ onComplete }) {
         source.connect(ctx.destination);
         source.start();
       }
-      // 'tono' = sin distractor en esta implementación simple
     } catch { /* Web Audio no disponible */ }
   }, []);
+
+  const handleResponse = useCallback((key) => {
+    if (respondedRef.current) return;
+    respondedRef.current = true;
+    const rt = performance.now() - rtStartRef.current;
+    const trial = trials[currentTrial];
+    setResults((prev) => [...prev, {
+      distractor: trial.hasDistractor,
+      distractorType: trial.distractorType,
+      correct: key === trial.side, reactionTime: rt,
+    }]);
+    setShowTarget(false);
+    setTimeout(() => setCurrentTrial((t) => t + 1), ITI / 2);
+  }, [currentTrial, trials]);
 
   const finish = useCallback(() => {
     setIsActive(false);
@@ -73,13 +91,12 @@ export default function AuditoryDistractionTask({ onComplete }) {
   }, [results, onComplete]);
 
   useEffect(() => {
-    if (!isActive || isFinished) return;
+    if (!isActive || isFinished || paused) return;
     if (currentTrial >= TOTAL_TRIALS) { finish(); return; }
 
     const trial = trials[currentTrial];
     respondedRef.current = false;
 
-    // Play distractor if present (briefly before target)
     if (trial.hasDistractor) {
       setTimeout(() => playDistractor(trial.distractorType), 200);
     }
@@ -101,32 +118,19 @@ export default function AuditoryDistractionTask({ onComplete }) {
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [isActive, currentTrial, isFinished, trials, finish, playDistractor]);
+  }, [isActive, currentTrial, isFinished, trials, finish, paused, playDistractor]);
 
   useEffect(() => {
-    if (!isActive || !showTarget) return;
+    if (!isActive || !showTarget || paused) return;
 
     const handleKey = (e) => {
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        e.preventDefault();
-        if (respondedRef.current) return;
-        respondedRef.current = true;
-        const rt = performance.now() - rtStartRef.current;
-        const trial = trials[currentTrial];
-        const answer = e.key === 'ArrowLeft' ? 'left' : 'right';
-        setResults((prev) => [...prev, {
-          distractor: trial.hasDistractor,
-          distractorType: trial.distractorType,
-          correct: answer === trial.side, reactionTime: rt,
-        }]);
-        setShowTarget(false);
-        setTimeout(() => setCurrentTrial((t) => t + 1), ITI / 2);
-      }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); handleResponse('left'); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); handleResponse('right'); }
     };
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [isActive, showTarget, currentTrial, trials]);
+  }, [isActive, showTarget, paused, handleResponse]);
 
   if (!isStarted) {
     return (
@@ -136,11 +140,11 @@ export default function AuditoryDistractionTask({ onComplete }) {
         </h2>
         <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Aparecerá un punto <strong>verde</strong> a la izquierda o derecha.</p>
-          <p>Presiona ← o → lo más rápido que puedas.</p>
+          <p>Presiona ← o → (o los botones) lo más rápido que puedas.</p>
           <p>A veces sonarán <strong>distractores auditivos</strong> (murmullos, ruido ambiental).</p>
           <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Ignora los sonidos y concéntrate en el punto. Recomendado usar auriculares.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px' }}>
+        <button className="btn btn-primary" data-testid="auditory-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px' }}>
           Comenzar (2 min)
         </button>
       </div>
@@ -156,7 +160,6 @@ export default function AuditoryDistractionTask({ onComplete }) {
       </div>
 
       <div style={{ width: '300px', height: '200px', margin: '0 auto', position: 'relative' }}>
-        {/* Fixation cross */}
         <div style={{
           position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
           fontSize: '2rem', color: '#d0d0d0',
@@ -164,9 +167,8 @@ export default function AuditoryDistractionTask({ onComplete }) {
           {!showTarget && '+'}
         </div>
 
-        {/* Target dot */}
-        {showTarget && (
-          <div style={{
+        {showTarget && !paused && (
+          <div data-testid="auditory-target" style={{
             position: 'absolute', top: '50%', transform: 'translateY(-50%)',
             [dotSide === 'left' ? 'left' : 'right']: '50px',
             width: '24px', height: '24px', borderRadius: '50%',
@@ -175,9 +177,52 @@ export default function AuditoryDistractionTask({ onComplete }) {
         )}
       </div>
 
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '12px' }}>
+        <button
+          data-testid="auditory-left"
+          onPointerDown={(e) => { e.preventDefault(); if (showTarget && !paused) handleResponse('left'); }}
+          style={{
+            padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
+            background: '#1a1a2e', color: '#fff', border: 'none',
+            borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
+            touchAction: 'manipulation',
+          }}
+        >
+          ← Izquierda
+        </button>
+        <button
+          data-testid="auditory-right"
+          onPointerDown={(e) => { e.preventDefault(); if (showTarget && !paused) handleResponse('right'); }}
+          style={{
+            padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
+            background: '#1a1a2e', color: '#fff', border: 'none',
+            borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
+            touchAction: 'manipulation',
+          }}
+        >
+          Derecha →
+        </button>
+      </div>
+
       <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '16px' }}>
-        ← izquierda &nbsp;|&nbsp; derecha →
+        ← izquierda &nbsp;|&nbsp; derecha → &nbsp;|&nbsp; También puedes usar las flechas del teclado
       </p>
+
+      {paused && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', zIndex: 1000,
+        }}>
+          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
+          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+            No cambies de pestaña durante la tarea. Pausas: {pauseCount}
+          </p>
+          <button className="btn btn-primary" data-testid="auditory-resume" onClick={handleResume} style={{ padding: '12px 36px', fontSize: '1rem' }}>
+            Reanudar
+          </button>
+        </div>
+      )}
     </div>
   );
 }

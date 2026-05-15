@@ -140,7 +140,7 @@ function TestContainer() {
   if (!test) {
     return (
       <div className="test-container">
-        <div className="question-card">
+        <div className="question-card" data-testid="test-not-found">
           <h2>Test no encontrado</h2>
           <p>El test solicitado no está disponible.</p>
         </div>
@@ -307,24 +307,24 @@ function TestContainer() {
         isFirstInSection={isFirstInSection}
       />
       <div style={{ textAlign: 'right', marginBottom: '4px' }}>
-        <button className="btn btn-ghost" onClick={() => { if (window.confirm('¿Salir del test? Perderás el progreso actual.')) navigate('/'); }} style={{ fontSize: '0.8125rem', padding: '4px 8px' }}>
+        <button className="btn btn-ghost" data-testid="test-exit" onClick={() => { if (window.confirm('¿Salir del test? Perderás el progreso actual.')) navigate('/'); }} style={{ fontSize: '0.8125rem', padding: '4px 8px' }}>
           Salir
         </button>
       </div>
 
       <div className="test-nav">
-        <button className="btn btn-secondary" onClick={handlePrev} disabled={currentIndex === 0} aria-label="Pregunta anterior">
+        <button className="btn btn-secondary" data-testid="test-prev" onClick={handlePrev} disabled={currentIndex === 0} aria-label="Pregunta anterior">
           Anterior
         </button>
         <span className="test-nav-hint">
           {currentAnswer === null && 'Selecciona una opción para continuar'}
         </span>
         {isLast ? (
-          <button className="btn btn-primary" onClick={handleFinish} disabled={!allAnswered} aria-label="Finalizar test y ver resultados">
+          <button className="btn btn-primary" data-testid="test-finish" onClick={handleFinish} disabled={!allAnswered} aria-label="Finalizar test y ver resultados">
             Finalizar y ver resultados
           </button>
         ) : (
-          <button className="btn btn-primary" onClick={handleNext} disabled={currentAnswer === null} aria-label="Siguiente pregunta">
+          <button className="btn btn-primary" data-testid="test-next" onClick={handleNext} disabled={currentAnswer === null} aria-label="Siguiente pregunta">
             Siguiente
           </button>
         )}

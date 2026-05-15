@@ -8,14 +8,14 @@ const TASK_IDS = ['dat', 'fas', 'social-scenarios', 'self-discrepancy', 'fer', '
 
 function TestCard({ test, navigate }) {
   return (
-    <div className="test-card">
+    <div className="test-card" data-testid={`test-card-${test.id}`}>
       <h3>{test.title}</h3>
       <p className="test-card-desc">{test.description}</p>
       <div className="test-card-meta">
         <span>{test.isTask ? 'Tarea interactiva' : `${test.questionCount} preguntas`}</span>
         <span>~{test.isTask ? '3–8' : Math.max(4, Math.ceil(test.questionCount / 2.5))} min</span>
       </div>
-      <button className="btn btn-primary" onClick={() => navigate(`/test/${test.id}`)}>
+      <button className="btn btn-primary" data-testid={`start-test-${test.id}`} onClick={() => navigate(`/test/${test.id}`)}>
         {test.isTask ? 'Comenzar tarea' : 'Comenzar'}
       </button>
     </div>

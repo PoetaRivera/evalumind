@@ -13,7 +13,7 @@ function ProgressBar({ current, total }) {
       >
         <div className="progress-bar-fill" style={{ width: `${pct}%` }} />
       </div>
-      <span className="progress-bar-text">
+      <span className="progress-bar-text" data-testid="test-progress">
         Pregunta {current} de {total} · {pct}%
       </span>
     </div>
