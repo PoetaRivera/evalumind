@@ -68,19 +68,30 @@ Evaluación con 5 agentes en paralelo encontró 36 issues. Plan de implementaci�
 
 ---
 
-### Tests de screening
+### Tests (20 — 7 Likert + 13 tareas interactivas)
 
-| # | Test | testId | Tipo | Ítems | Máx | Categorías |
-|---|---|---|---|---|---|---|
-| 1 | TDAH Adulto | `tdah-adult-v2` | Likert | 16 (A8/B3/C5) | 64 | baja / moderada / alta probabilidad |
-| 2 | TEA Adulto | `tea-adult-v1` | Likert | 16 (A4×4) | 64 | baja / moderada / alta probabilidad |
-| 3 | Alta Sensibilidad | `hsp-adult-v1` | Likert | 16 (A4×4) | 64 | promedio / moderada / marcada sensibilidad |
-| 4 | Alexitimia | `alexitimia-adult-v1` | Likert | 16 (A4×4) | 64 | baja / moderada / marcada alexitimia |
-| 5 | RSD | `rsd-adult-v1` | Likert | 16 (A4×4) | 64 | baja / moderada / marcada RSD |
-| 6 | Burnout por Masking | `burnout-masking-v1` | Likert | 13 (A4/B3/C2/D4) | 52 | bajo / moderado / severo |
-| 7 | Funciones Ejecutivas | `funciones-ejecutivas-v1` | Likert | 18 (A4/B5/C5/D4) | 72 | preservadas / moderadas / significativas |
-| 8 | DAT | `dat-v1` | Tarea | 1 tarea (10 palabras) | 100 | convergente / moderadamente-divergente / altamente-divergente |
-| 9 | Fluencia Verbal (FAS) | `fas-v1` | Tarea | 1 tarea (60s crono) | ~30+ | baja / moderada / alta fluidez |
+| # | Test | testId | Tipo | Trials/Ítems | Scoring |
+|---|---|---|---|---|---|
+| 1 | TDAH Adulto | `tdah-adult-v2` | Likert | 16 ítems | `calculateTdahScore` |
+| 2 | TEA Adulto | `tea-adult-v1` | Likert | 16 ítems | `calculateTeaScore` |
+| 3 | Alta Sensibilidad (HSP) | `hsp-adult-v1` | Likert | 16 ítems | `calculateHspScore` |
+| 4 | Alexitimia | `alexitimia-adult-v1` | Likert | 16 ítems | `calculateAlexithymiaScore` |
+| 5 | RSD | `rsd-adult-v1` | Likert | 16 ítems | `calculateRsdScore` |
+| 6 | Burnout por Masking | `burnout-masking-v1` | Likert | 13 ítems | `calculateMaskingBurnoutScore` |
+| 7 | Funciones Ejecutivas | `funciones-ejecutivas-v1` | Likert | 18 ítems | `calculateExecutiveScore` |
+| 8 | DAT (Asociación Divergente) | `dat-v1` | Tarea | 10 palabras | `calculateDatScore` |
+| 9 | Fluencia Verbal (FAS) | `fas-v1` | Tarea | 60s crono | `calculateFasScore` |
+| 10 | Escenarios Sociales (RSD) | `social-scenarios` | Tarea | 16 escenarios | `calculateSocialScenariosScore` |
+| 11 | Auto-Discrepancia (Masking) | `self-discrepancy` | Tarea | 25 rasgos × 2 | `calculateSelfDiscrepancyScore` |
+| 12 | Reconocimiento Emocional (Faces) | `fer` | Tarea | 30 situaciones | `calculateFERScore` |
+| 13 | Atención Sostenida (SART) | `sart` | Tarea | 180 trials | `calculateSARTScore` |
+| 14 | Control Inhibitorio (Flanker) | `flanker` | Tarea | 100 trials | `calculateFlankerScore` |
+| 15 | Span de Dígitos (Memoria) | `digit-span` | Tarea | 2 fases × 8 niveles | `calculateDigitSpanScore` |
+| 16 | Figuras de Navon | `navon` | Tarea | 96 trials | `calculateNavonScore` |
+| 17 | RMET (Teoría de la Mente) | `rmet` | Tarea | 24 estímulos | Inline en componente |
+| 18 | Cambio de Tarea (Flexibilidad) | `switch-task` | Tarea | 96 trials | `calculateSwitchScore` |
+| 19 | Umbral Sensorial (HSP) | `sensory-threshold` | Tarea | 40 trials | `calculateSensoryThresholdScore` |
+| 20 | Distracción Auditiva (HSP) | `auditory-distraction` | Tarea | 60 trials | `calculateAuditoryDistractionScore` |
 
 ### Features implementadas
 
@@ -119,54 +130,38 @@ npm run test:e2e     # 31 tests de flujo (~10s)
 | Firebase Console | https://console.firebase.google.com/project/evalumind-app |
 | GitHub | https://github.com/PoetaRivera/evalumind |
 
-### Arquitectura final
+### Arquitectura actual
 
 ```
 src/
-├── data/ (11 archivos)
-│   ├── index.js                    ← Registro: 9 tests
-│   ├── tdahQuestions.js            ← 16 ítems + LIKERT_OPTIONS
-│   ├── teaQuestions.js             ← 16 ítems
-│   ├── hspQuestions.js             ← 16 ítems
-│   ├── alexithymiaQuestions.js     ← 16 ítems
-│   ├── rsdQuestions.js             ← 16 ítems
-│   ├── burnoutMaskingQuestions.js  ← 13 ítems
-│   ├── executiveQuestions.js       ← 18 ítems
-│   ├── datConfig.js                ← Instrucciones, ejemplos, categorías semánticas
-│   ├── fasConfig.js                ← Letras, reglas, categorías FAS
-│   └── adaptationStories.js        ← 2 historias + perfil matching
-├── utils/ (8 archivos)
-│   ├── scoring.js                  ← Factory createLikertScorer + calculateDatScore
-│   ├── scoring.test.js             ← 71 tests unitarios
-│   ├── fasScoring.js               ← Scoring FAS extraído (testeable)
-│   ├── fasScoring.test.js          ← 11 tests unitarios
-│   ├── wordValidation.js           ← Validación de palabras DAT
-│   ├── sessionResults.js           ← Persistencia + 9 reglas complementariedad
-│   └── pdfExport.js                ← Exportación PDF con jsPDF
+├── data/ (14 archivos)
+│   ├── index.js                     ← TEST_REGISTRY con 20 tests
+│   ├── testMetadata.js              ← getAllTestCards() para HomePage
+│   ├── [7 archivos de preguntas Likert]
+│   ├── datConfig.js, fasConfig.js, socialScenarios.js, rmetStimuli.js
+│   └── adaptationStories.js
+├── utils/ (15 archivos)
+│   ├── scoring.js                   ← createLikertScorer factory + calculateDatScore
+│   ├── scoring.test.js (71 tests), fasScoring.test.js (11 tests)
+│   └── [13 scorers: sart, flanker, digitSpan, navon, switch, fer,
+│        selfDiscrepancy, socialScenarios, fas, hsp (sensory+auditory),
+│        wordValidation, sessionResults, pdfExport]
 ├── components/
-│   ├── Test/ (10 archivos)
-│   │   ├── TestContainer.jsx       ← Orquestador: Likert + DAT + FAS
-│   │   ├── QuestionCard.jsx        ← Pregunta Likert + ejemplos (React.memo)
-│   │   ├── DatInput.jsx            ← Input palabras + chips + validación
-│   │   ├── FasTask.jsx             ← Cronómetro 60s, usa calculateFasScore
-│   │   ├── ResultsView.jsx         ← Resultados, static objects + useMemo
-│   │   ├── ExamplesAccordion.jsx   ← (React.memo)
-│   │   ├── SectionHeader.jsx       ← Sin ARIA redundante
-│   │   ├── InstructionsBanner.jsx  ← Sin conflicto ARIA
-│   │   ├── ProgressBar.jsx         ← position: relative fix
-│   │   └── TestContainer.css      ← Focus indicators, contrastes, tablet bp
-│   ├── Common/
-│   │   ├── DisclaimerModal.jsx     ← Focus trap + Escape + autoFocus
-│   │   ├── ErrorBoundary.jsx       ← Fallback UI
-│   │   └── NotFound.jsx            ← 404 page
-│   ├── Profile/ProfileMap.jsx      ← Dashboard con max real + role="progressbar"
-│   ├── Stories/AdaptationStoriesPage.jsx
-│   ├── Layout/Layout.jsx           ← <h1><NavLink> + aria-current
-│   ├── HomePage.jsx + HomePage.css
-│   └── RecursosPage.jsx + RecursosPage.css
-├── hooks/useTestSubmission.js      ← Firestore + sessionStorage + rate limit
-├── firebase/config.js              ← Validación de env vars
-├── App.jsx                         ← 6 rutas + ErrorBoundary + React.lazy + Suspense + 404
+│   ├── Test/ (23 archivos)
+│   │   ├── TestContainer.jsx        ← Orquestador: switch para 20 tests
+│   │   ├── 13 tareas interactivas (SARTTask, FlankerTask, DigitSpanTask,
+│   │   │   NavonTask, RMETTask, SwitchTask, SensoryThresholdTask,
+│   │   │   AuditoryDistractionTask, FERTask, SelfDiscrepancyTask,
+│   │   │   SocialScenariosTask, FasTask, DatInput)
+│   │   └── QuestionCard, ProgressBar, SectionHeader, InstructionsBanner,
+│   │       ExamplesAccordion, ResultsView, TestContainer.css
+│   ├── Common/ (DisclaimerModal, ErrorBoundary, NotFound)
+│   ├── Layout/, Profile/, Stories/, HomePage, RecursosPage
+├── hooks/
+│   ├── useTestSubmission.js         ← Firestore + sessionStorage + rate limit
+│   └── usePageVisibility.js         ← Pausa por cambio de pestaña
+├── firebase/config.js
+├── App.jsx                          ← 6 rutas + lazy + Suspense + ErrorBoundary
 └── main.jsx
 ```
 
@@ -174,8 +169,8 @@ src/
 
 | Ruta | Página |
 |---|---|
-| `/` | HomePage (9 cards + enlaces) |
-| `/test/:testId` | 9 tests (7 Likert + DAT + FAS) |
+| `/` | HomePage (20 cards: 7 Likert + 13 tareas) |
+| `/test/:testId` | 20 tests (cualquiera del registro) |
 | `/perfil` | Mapa de Funcionamiento |
 | `/historias` | Historias de Adaptación |
 | `/recursos` | Recursos y ayuda profesional |
@@ -183,20 +178,19 @@ src/
 
 ### Pendiente
 
-1. **Firestore API**: habilitar en Google Cloud Console (`firestore.googleapis.com`) y crear base de datos
-2. **Desplegar reglas de seguridad**: `firebase deploy --only firestore:rules`
-3. **Deploy final** con build actualizado: `npm run build && firebase deploy`
-4. Directorio profesional real en `/recursos`
-5. i18n (multi-idioma)
-6. Modo oscuro (`prefers-color-scheme`)
-7. Tipografía opcional para dislexia (OpenDyslexic)
-8. Span de Dígitos (tarea interactiva de memoria de trabajo)
-9. Mejora tests E2E: reemplazar `dispatchEvent` por `click()`, agregar Firefox/WebKit
-10. Tests unitarios para `wordValidation.js` y `sessionResults.js`
+1. ~~Firestore API + BD + reglas + deploy~~ ✅ Completado 2026-05-15
+2. Directorio profesional real en `/recursos`
+3. i18n (multi-idioma)
+4. Modo oscuro (`prefers-color-scheme`)
+5. Tipografía opcional para dislexia (OpenDyslexic)
+6. Mejora tests E2E: reemplazar `dispatchEvent` por `click()`, agregar Firefox/WebKit
+7. Tests unitarios para `wordValidation.js` y `sessionResults.js`
+8. Eliminar proyecto viejo `neuroscreen-app` de Firebase (manual en consola)
 
 ### Por dónde seguir
 
-1. ~~Inmediato: push, Firestore, deploy~~ ✅ Completado 2026-05-14
-2. **Siguiente iteración (tests de acción)**: Los 11 tests de acción listados en `testMetadata.js` ya tienen componentes y scoring utilities creados, pero varios son stubs (DigitSpanTask, FlankerTask, NavonTask, SART, RMET, SwitchTask, SensoryThreshold, AuditoryDistraction). Completar su implementación funcional.
+1. ~~Inmediato: push, Firestore, deploy~~ ✅ Completado 2026-05-15
+2. ~~Rebrand NeuroScreen → EvaluMind~~ ✅ Completado 2026-05-15
 3. **Mejoras testing**: Reemplazar `dispatchEvent` por `click()` en E2E, agregar Firefox/WebKit, tests unitarios para `wordValidation.js` y `sessionResults.js`
 4. **Features futuras**: directorio profesional real, modo oscuro, i18n, tipografía dislexia
+5. **UX avanzada**: tiempos estimados por test en cards, disclaimer cultural RMET, guardar respuestas detalladas en sessionStorage (RT, errores por tipo)
