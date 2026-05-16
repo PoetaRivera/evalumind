@@ -18,8 +18,8 @@ export default class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '500px', margin: '0 auto' }}>
-          <h2 style={{ color: '#1a1a2e', marginBottom: '16px' }}>Algo salió mal</h2>
-          <p style={{ color: '#6b7280', marginBottom: '24px', lineHeight: 1.6 }}>
+          <h2 style={{ color: 'var(--color-task-heading)', marginBottom: '16px' }}>Algo salió mal</h2>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', lineHeight: 1.6 }}>
             Ocurrió un error inesperado. Puedes intentar volver al inicio o recargar la página.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>

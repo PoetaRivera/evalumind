@@ -114,14 +114,14 @@ export default function SARTTask({ onComplete }) {
   if (!isStarted) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Tarea de Atención Sostenida (SART)
         </h2>
-        <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
+        <div style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Aparecerán dígitos del 1 al 9 en la pantalla, uno tras otro.</p>
           <p><strong>Presiona la barra espaciadora</strong> (o el botón en pantalla) para cada dígito...</p>
-          <p style={{ color: '#dc2626' }}><strong>...EXCEPTO cuando aparezca el número 3.</strong></p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Es rápido: cada dígito aparece solo un instante. La mayoría de las veces DEBES responder. Solo inhibes con el 3.</p>
+          <p style={{ color: 'var(--color-danger)' }}><strong>...EXCEPTO cuando aparezca el número 3.</strong></p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem' }}>Es rápido: cada dígito aparece solo un instante. La mayoría de las veces DEBES responder. Solo inhibes con el 3.</p>
         </div>
         <button className="btn btn-primary" data-testid="sart-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px', fontSize: '1.05rem' }}>
           Comenzar (5 min)
@@ -136,41 +136,41 @@ export default function SARTTask({ onComplete }) {
 
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '400px', margin: '0 auto' }}>
-      <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '8px' }}>
+      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginBottom: '8px' }}>
         {currentTrial} / {TOTAL_TRIALS} ({pct}%)
       </div>
       <div style={{
-        height: '4px', background: '#f3f4f6', borderRadius: '2px',
+        height: '4px', background: 'var(--color-border-light)', borderRadius: '2px',
         marginBottom: '32px', overflow: 'hidden',
       }}>
         <div data-testid="sart-progress" style={{
-          height: '100%', width: `${pct}%`, background: '#4a90d9',
+          height: '100%', width: `${pct}%`, background: 'var(--color-accent)',
           borderRadius: '2px', transition: 'width 0.3s ease',
         }} />
       </div>
 
       <div style={{
         width: '120px', height: '120px', borderRadius: '50%',
-        background: showDigit && !paused ? '#1a1a2e' : '#f3f4f6',
+        background: showDigit && !paused ? 'var(--color-task-heading)' : 'var(--color-border-light)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         margin: '0 auto 16px', transition: 'background 0.05s',
       }}>
         {showDigit && !paused ? (
-          <span data-testid="sart-digit" style={{ fontSize: '3rem', fontWeight: 700, color: currentDigit === NOGO_DIGIT ? '#dc2626' : '#fff' }}>
+          <span data-testid="sart-digit" style={{ fontSize: '3rem', fontWeight: 700, color: currentDigit === NOGO_DIGIT ? 'var(--color-danger)' : 'var(--color-on-accent)' }}>
             {currentDigit}
           </span>
         ) : (
-          <span style={{ fontSize: '2rem', color: '#d0d0d0' }}>+</span>
+          <span style={{ fontSize: '2rem', color: 'var(--color-task-fixation)' }}>+</span>
         )}
       </div>
 
       <div style={{
         width: '80px', height: '80px', borderRadius: '50%',
-        background: fixationOn ? '#10b981' : '#f3f4f6',
+        background: fixationOn ? 'var(--color-bar-low)' : 'var(--color-border-light)',
         margin: '0 auto 8px', transition: 'background 0.05s',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
-        <span style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
           {fixationOn ? '✓' : 'barra'}
         </span>
       </div>
@@ -180,7 +180,7 @@ export default function SARTTask({ onComplete }) {
         onPointerDown={(e) => { e.preventDefault(); respond(); }}
         style={{
           padding: '10px 32px', fontSize: '1rem', fontWeight: 600,
-          background: '#1a1a2e', color: '#fff', border: 'none',
+          background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
           borderRadius: '8px', cursor: 'pointer', marginTop: '8px',
           userSelect: 'none', touchAction: 'manipulation',
         }}
@@ -188,7 +188,7 @@ export default function SARTTask({ onComplete }) {
         Responder
       </button>
 
-      <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '12px' }}>
+      <p style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)', marginTop: '12px' }}>
         Espaciadora o botón · No respondas al {NOGO_DIGIT}
       </p>
 
@@ -198,10 +198,10 @@ export default function SARTTask({ onComplete }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', zIndex: 1000,
         }}>
-          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>
+          <p style={{ color: 'var(--color-on-accent)', fontSize: '1.2rem', marginBottom: '8px' }}>
             Prueba pausada
           </p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem', marginBottom: '20px' }}>
             No cambies de pestaña durante la tarea. Pausas: {pauseCount}
           </p>
           <button

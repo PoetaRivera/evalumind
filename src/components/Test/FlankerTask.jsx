@@ -92,18 +92,18 @@ export default function FlankerTask({ onComplete }) {
   if (!isStarted) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Tarea Flanker
         </h2>
-        <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
+        <div style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Verás una fila de 5 flechas. La del centro es la que importa.</p>
           <p>Si la flecha central apunta <strong>← izquierda</strong>, presiona ← o el botón izquierdo</p>
           <p>Si la flecha central apunta <strong>derecha →</strong>, presiona → o el botón derecho</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Ignora las flechas de los lados. Responde lo más rápido que puedas.</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem' }}>Ignora las flechas de los lados. Responde lo más rápido que puedas.</p>
         </div>
         <div style={{ fontSize: '0.85rem', marginBottom: '20px' }}>
-          <p style={{ color: '#16a34a' }}>← ← ← ← ← Congruente (fácil)</p>
-          <p style={{ color: '#dc2626' }}>← ← → ← ← Incongruente (difícil)</p>
+          <p style={{ color: 'var(--color-success)' }}>← ← ← ← ← Congruente (fácil)</p>
+          <p style={{ color: 'var(--color-danger)' }}>← ← → ← ← Incongruente (difícil)</p>
         </div>
         <button className="btn btn-primary" data-testid="flanker-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px' }}>
           Comenzar (3 min)
@@ -127,14 +127,14 @@ export default function FlankerTask({ onComplete }) {
 
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '400px', margin: '0 auto' }}>
-      <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '4px' }}>
+      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginBottom: '4px' }}>
         {currentTrial} / {TOTAL_TRIALS}
       </div>
       <div style={{
-        height: '4px', background: '#f3f4f6', borderRadius: '2px', marginBottom: '40px',
+        height: '4px', background: 'var(--color-border-light)', borderRadius: '2px', marginBottom: '40px',
         overflow: 'hidden',
       }}>
-        <div data-testid="flanker-progress" style={{ height: '100%', width: `${pct}%`, background: '#4a90d9', borderRadius: '2px', transition: 'width 0.3s ease' }} />
+        <div data-testid="flanker-progress" style={{ height: '100%', width: `${pct}%`, background: 'var(--color-accent)', borderRadius: '2px', transition: 'width 0.3s ease' }} />
       </div>
 
       {showStimulus && !paused ? (
@@ -142,7 +142,7 @@ export default function FlankerTask({ onComplete }) {
           {renderArrows()}
         </div>
       ) : (
-        <div style={{ fontSize: '2rem', color: '#d0d0d0', marginBottom: '8px' }}>+</div>
+        <div style={{ fontSize: '2rem', color: 'var(--color-task-fixation)', marginBottom: '8px' }}>+</div>
       )}
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '12px' }}>
@@ -151,7 +151,7 @@ export default function FlankerTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showStimulus && !paused) handleResponse('left'); }}
           style={{
             padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -163,7 +163,7 @@ export default function FlankerTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showStimulus && !paused) handleResponse('right'); }}
           style={{
             padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -172,7 +172,7 @@ export default function FlankerTask({ onComplete }) {
         </button>
       </div>
 
-      <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '16px' }}>
+      <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '16px' }}>
         ← izquierda &nbsp;|&nbsp; derecha → &nbsp;|&nbsp; También puedes usar las flechas del teclado
       </p>
 
@@ -182,8 +182,8 @@ export default function FlankerTask({ onComplete }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', zIndex: 1000,
         }}>
-          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+          <p style={{ color: 'var(--color-on-accent)', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem', marginBottom: '20px' }}>
             No cambies de pestaña durante la tarea. Pausas: {pauseCount}
           </p>
           <button className="btn btn-primary" data-testid="flanker-resume" onClick={handleResume} style={{ padding: '12px 36px', fontSize: '1rem' }}>

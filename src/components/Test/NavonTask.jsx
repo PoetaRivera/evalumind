@@ -121,13 +121,13 @@ export default function NavonTask({ onComplete }) {
   if (!isStarted) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Figuras de Navon
         </h2>
-        <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
+        <div style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Verás una letra grande formada por letras pequeñas.</p>
           <p>Una pista te dirá si debes fijarte en la <strong>letra GRANDE</strong> o en las <strong>letras pequeñas</strong>.</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Presiona H o S (o los botones) según la letra que corresponda al nivel indicado.</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem' }}>Presiona H o S (o los botones) según la letra que corresponda al nivel indicado.</p>
         </div>
         <button className="btn btn-primary" data-testid="navon-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px' }}>
           Comenzar (4 min)
@@ -143,7 +143,7 @@ export default function NavonTask({ onComplete }) {
 
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '400px', margin: '0 auto' }}>
-      <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '8px' }}>
+      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginBottom: '8px' }}>
         {currentTrial} / {trials.length} ({pct}%)
       </div>
 
@@ -152,23 +152,23 @@ export default function NavonTask({ onComplete }) {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         {cue === 'global' && (
-          <span data-testid="navon-cue" style={{ fontSize: '1.2rem', fontWeight: 700, color: '#4a90d9' }}>
+          <span data-testid="navon-cue" style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-accent)' }}>
             Busca la letra GRANDE
           </span>
         )}
         {cue === 'local' && (
-          <span data-testid="navon-cue" style={{ fontSize: '1.2rem', fontWeight: 700, color: '#8b5cf6' }}>
+          <span data-testid="navon-cue" style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-bar-mid)' }}>
             Busca las letras pequeñas
           </span>
         )}
         {showStimulus && !paused && trial && (
           <div data-testid="navon-stimulus" style={{ position: 'relative', display: 'inline-block' }}>
-            <span style={{ fontSize: '5rem', fontWeight: 900, color: '#1a1a2e', lineHeight: 1, userSelect: 'none' }}>
+            <span style={{ fontSize: '5rem', fontWeight: 900, color: 'var(--color-task-heading)', lineHeight: 1, userSelect: 'none' }}>
               {trial.globalLetter}
             </span>
             <span style={{
               position: 'absolute', top: '30%', left: '33%',
-              fontSize: '1rem', color: '#6b7280', fontWeight: 600,
+              fontSize: '1rem', color: 'var(--color-text-secondary)', fontWeight: 600,
               userSelect: 'none', letterSpacing: '2px',
             }}>
               {Array(7).fill(trial.localLetter).join('')}
@@ -176,7 +176,7 @@ export default function NavonTask({ onComplete }) {
           </div>
         )}
         {!cue && !showStimulus && (
-          <span style={{ fontSize: '2rem', color: '#d0d0d0' }}>+</span>
+          <span style={{ fontSize: '2rem', color: 'var(--color-task-fixation)' }}>+</span>
         )}
       </div>
 
@@ -186,7 +186,7 @@ export default function NavonTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showStimulus && !paused) handleResponse('H'); }}
           style={{
             padding: '14px 36px', fontSize: '1.2rem', fontWeight: 700,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -198,7 +198,7 @@ export default function NavonTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showStimulus && !paused) handleResponse('S'); }}
           style={{
             padding: '14px 36px', fontSize: '1.2rem', fontWeight: 700,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -207,7 +207,7 @@ export default function NavonTask({ onComplete }) {
         </button>
       </div>
 
-      <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '12px' }}>
+      <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '12px' }}>
         Presiona <strong>H</strong> o <strong>S</strong> · También puedes usar el teclado
       </p>
 
@@ -217,8 +217,8 @@ export default function NavonTask({ onComplete }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', zIndex: 1000,
         }}>
-          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+          <p style={{ color: 'var(--color-on-accent)', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem', marginBottom: '20px' }}>
             No cambies de pestaña durante la tarea. Pausas: {pauseCount}
           </p>
           <button className="btn btn-primary" data-testid="navon-resume" onClick={handleResume} style={{ padding: '12px 36px', fontSize: '1rem' }}>

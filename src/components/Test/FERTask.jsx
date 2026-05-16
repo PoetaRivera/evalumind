@@ -2,12 +2,12 @@ import { useState, useCallback, useRef } from 'react';
 import { calculateFERScore } from '../../utils/ferScoring';
 
 const EMOTIONS = [
-  { id: 'alegria', emoji: '😊', label: 'Alegría', color: '#f59e0b' },
-  { id: 'tristeza', emoji: '😢', label: 'Tristeza', color: '#6366f1' },
-  { id: 'miedo', emoji: '😨', label: 'Miedo', color: '#8b5cf6' },
-  { id: 'ira', emoji: '😠', label: 'Ira', color: '#dc2626' },
-  { id: 'asco', emoji: '🤢', label: 'Asco', color: '#16a34a' },
-  { id: 'sorpresa', emoji: '😲', label: 'Sorpresa', color: '#f97316' },
+  { id: 'alegria', emoji: '😊', label: 'Alegría', color: 'var(--color-bar-high)' },
+  { id: 'tristeza', emoji: '😢', label: 'Tristeza', color: 'var(--color-bar-mid)' },
+  { id: 'miedo', emoji: '😨', label: 'Miedo', color: 'var(--color-bar-mid)' },
+  { id: 'ira', emoji: '😠', label: 'Ira', color: 'var(--color-danger)' },
+  { id: 'asco', emoji: '🤢', label: 'Asco', color: 'var(--color-success)' },
+  { id: 'sorpresa', emoji: '😲', label: 'Sorpresa', color: 'var(--color-bar-high)' },
 ];
 
 // 30 situaciones emocionales con emoción correcta
@@ -89,13 +89,13 @@ export default function FERTask({ onComplete }) {
   if (!started) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '550px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Reconocimiento Emocional
         </h2>
-        <p style={{ color: '#6b7280', marginBottom: '8px', fontSize: '0.95rem', lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--color-text-secondary)', marginBottom: '8px', fontSize: '0.95rem', lineHeight: 1.6 }}>
           Lee cada situación e identifica la emoción que sentiría la mayoría de las personas.
         </p>
-        <p style={{ color: '#9ca3af', marginBottom: '24px', fontSize: '0.85rem' }}>
+        <p style={{ color: 'var(--color-text-tertiary)', marginBottom: '24px', fontSize: '0.85rem' }}>
           {TRIALS.length} situaciones · ~{Math.ceil(TRIALS.length / 5)} minutos
         </p>
         <button className="btn btn-primary" onClick={startTask} style={{ padding: '14px 40px', fontSize: '1.05rem' }}>
@@ -111,23 +111,23 @@ export default function FERTask({ onComplete }) {
 
   return (
     <div style={{ maxWidth: '500px', margin: '0 auto', textAlign: 'center' }}>
-      <div style={{ marginBottom: '16px', fontSize: '0.85rem', color: '#6b7280' }}>
+      <div style={{ marginBottom: '16px', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
         {currentIndex + 1} de {TRIALS.length}
       </div>
 
       <div style={{
-        height: '4px', background: '#f3f4f6', borderRadius: '2px',
+        height: '4px', background: 'var(--color-border-light)', borderRadius: '2px',
         marginBottom: '24px', overflow: 'hidden',
       }}>
         <div style={{
           height: '100%', width: `${((currentIndex + 1) / TRIALS.length) * 100}%`,
-          background: '#4a90d9', borderRadius: '2px', transition: 'width 0.2s ease',
+          background: 'var(--color-accent)', borderRadius: '2px', transition: 'width 0.2s ease',
         }} />
       </div>
 
       <div className="question-card" style={{ marginBottom: '20px' }}>
         <p style={{
-          fontSize: '1.15rem', lineHeight: 1.7, color: '#1a1a2e',
+          fontSize: '1.15rem', lineHeight: 1.7, color: 'var(--color-task-heading)',
           marginBottom: '24px',
         }}>
           {trial.text}
@@ -146,16 +146,16 @@ export default function FERTask({ onComplete }) {
                 display: 'flex', flexDirection: 'column', alignItems: 'center',
                 padding: '12px 8px', borderRadius: '10px', border: '2px solid',
                 borderColor: answered && currentResp?.selectedAnswer === em.id
-                  ? '#4a90d9' : '#e5e7eb',
+                  ? 'var(--color-accent)' : 'var(--color-border)',
                 background: answered && currentResp?.selectedAnswer === em.id
-                  ? '#eff6ff' : '#fff',
+                  ? 'var(--color-accent-subtle)' : 'var(--color-on-accent)',
                 cursor: answered ? 'default' : 'pointer',
                 opacity: answered && currentResp?.selectedAnswer !== em.id ? 0.5 : 1,
                 transition: 'all 0.15s ease',
               }}
             >
               <span style={{ fontSize: '2rem', marginBottom: '4px' }}>{em.emoji}</span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#374151' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--color-text)' }}>
                 {em.label}
               </span>
             </button>
@@ -163,7 +163,7 @@ export default function FERTask({ onComplete }) {
         </div>
 
         {answered && currentIndex < TRIALS.length - 1 && (
-          <div style={{ marginTop: '16px', fontSize: '0.85rem', color: '#9ca3af' }}>
+          <div style={{ marginTop: '16px', fontSize: '0.85rem', color: 'var(--color-text-tertiary)' }}>
             Pasando a la siguiente...
           </div>
         )}

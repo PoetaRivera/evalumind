@@ -73,9 +73,9 @@ const CATEGORY_COLORS = {
   'alexitimia-baja': '#2e7d32',
   'alexitimia-moderada': '#e67e22',
   'alexitimia-marcada': '#c0392b',
-  'convergente': '#6366f1',
-  'moderadamente-divergente': '#f59e0b',
-  'altamente-divergente': '#10b981',
+  'convergente': 'var(--color-bar-mid)',
+  'moderadamente-divergente': 'var(--color-bar-high)',
+  'altamente-divergente': 'var(--color-bar-low)',
   'rsd-moderada': '#ec4899',
   'rsd-marcada': '#be185d',
   'bajo-burnout-masking': '#2e7d32',
@@ -84,9 +84,9 @@ const CATEGORY_COLORS = {
   'funciones-ejecutivas-preservadas': '#2e7d32',
   'dificultades-ejecutivas-moderadas': '#e67e22',
   'dificultades-ejecutivas-significativas': '#c0392b',
-  'fluidez-baja': '#f59e0b',
-  'fluidez-moderada': '#6366f1',
-  'fluidez-alta': '#10b981',
+  'fluidez-baja': 'var(--color-bar-high)',
+  'fluidez-moderada': 'var(--color-bar-mid)',
+  'fluidez-alta': 'var(--color-bar-low)',
   'sesgo-bajo': '#2e7d32',
   'sesgo-moderado': '#e67e22',
   'sesgo-alto': '#c0392b',
@@ -97,18 +97,18 @@ const CATEGORY_COLORS = {
   'reconocimiento-moderado': '#e67e22',
   'reconocimiento-bajo': '#c0392b',
   'atencion-optima': '#2e7d32',
-  'atencion-buena': '#10b981',
+  'atencion-buena': 'var(--color-bar-low)',
   'atencion-moderada': '#e67e22',
   'atencion-baja': '#c0392b',
   'inhibicion-optima': '#2e7d32',
-  'inhibicion-buena': '#10b981',
+  'inhibicion-buena': 'var(--color-bar-low)',
   'inhibicion-reducida': '#c0392b',
   'memoria-alta': '#2e7d32',
-  'memoria-moderada': '#6366f1',
+  'memoria-moderada': 'var(--color-bar-mid)',
   'memoria-baja': '#c0392b',
-  'procesamiento-balanceado': '#10b981',
-  'precedencia-global': '#6366f1',
-  'sesgo-local': '#8b5cf6',
+  'procesamiento-balanceado': 'var(--color-bar-low)',
+  'precedencia-global': 'var(--color-bar-mid)',
+  'sesgo-local': 'var(--color-bar-mid)',
   'mentalizacion-alta': '#2e7d32',
   'mentalizacion-moderada': '#e67e22',
   'mentalizacion-baja': '#c0392b',
@@ -117,7 +117,7 @@ const CATEGORY_COLORS = {
   'flexibilidad-baja': '#c0392b',
   'umbral-alto': '#2e7d32',
   'umbral-moderado': '#e67e22',
-  'umbral-bajo': '#8b5cf6',
+  'umbral-bajo': 'var(--color-bar-mid)',
   'baja-distractibilidad': '#2e7d32',
   'distractibilidad-moderada': '#e67e22',
   'alta-distractibilidad': '#c0392b',
@@ -258,16 +258,16 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       {/* FAS: palabras generadas */}
       {result.words && !result.wordsUsed && (
         <div className="results-fas-words" style={{ marginBottom: '20px' }}>
-          <p style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '4px' }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
             Letra: <strong>{result.letter}</strong> · {result.fluency ?? result.words.length} palabras · {result.flexibility ?? '—'} categorías
             {result.hasPerseveration && (
-              <span style={{ color: '#d97706', marginLeft: '8px' }}>⚠️ Tendencia a perseveración</span>
+              <span style={{ color: 'var(--color-warning)', marginLeft: '8px' }}>⚠️ Tendencia a perseveración</span>
             )}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
             {result.words.map((w, i) => (
               <span key={i} style={{
-                background: '#eff6ff', color: '#1e40af', padding: '4px 12px',
+                background: 'var(--color-accent-subtle)', color: 'var(--color-accent-deep)', padding: '4px 12px',
                 borderRadius: '16px', fontSize: '0.85rem', border: '1px solid #bfdbfe',
               }}>
                 {w}
@@ -280,14 +280,14 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       {/* DAT: palabras usadas y métricas */}
       {result.wordsUsed && (
         <div className="results-dat-words" style={{ marginBottom: '20px' }}>
-          <p style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '8px' }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
             {result.distinctCategories !== undefined && `${result.distinctCategories} dominios semánticos distintos`}
             {result.averageDistance !== undefined && ` · Distancia promedio: ${result.averageDistance}`}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
             {result.wordsUsed.map((w, i) => (
               <span key={i} style={{
-                background: '#eff6ff', color: '#1e40af', padding: '4px 12px',
+                background: 'var(--color-accent-subtle)', color: 'var(--color-accent-deep)', padding: '4px 12px',
                 borderRadius: '16px', fontSize: '0.85rem', border: '1px solid #bfdbfe',
               }}>
                 {w}
@@ -335,14 +335,14 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
           <h3 style={{ fontSize: '1rem', marginBottom: '12px' }}>Pares de palabras</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#6b7280', marginBottom: '8px' }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
                 Más cercanos
               </p>
               <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: '#9ca3af' }}>Par</th>
-                    <th style={{ textAlign: 'right', padding: '6px 8px', color: '#9ca3af' }}>Distancia</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--color-text-tertiary)' }}>Par</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--color-text-tertiary)' }}>Distancia</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -358,14 +358,14 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
               </table>
             </div>
             <div>
-              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#6b7280', marginBottom: '8px' }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
                 Más lejanos
               </p>
               <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: '#9ca3af' }}>Par</th>
-                    <th style={{ textAlign: 'right', padding: '6px 8px', color: '#9ca3af' }}>Distancia</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--color-text-tertiary)' }}>Par</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--color-text-tertiary)' }}>Distancia</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -401,10 +401,10 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       {/* Notas de complementariedad entre tests */}
       {complementarityNotes.length > 0 && (
         <div className="results-complementarity" style={{
-          background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '8px',
+          background: 'var(--color-accent-light-bg)', border: '1px solid #bae6fd', borderRadius: '8px',
           padding: '14px 16px', marginBottom: '20px',
         }}>
-          <p style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0369a1', marginBottom: '8px' }}>
+          <p style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-accent-light-text)', marginBottom: '8px' }}>
             Nota sobre tus resultados combinados
           </p>
           {complementarityNotes.map((rule) => (
@@ -494,7 +494,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </button>
       </div>
 
-      <p style={{ textAlign: 'center', fontSize: '0.75rem', color: '#9ca3af', marginTop: '20px' }}>
+      <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-text-tertiary)', marginTop: '20px' }}>
         Tu perfil local se guarda solo en esta sesión del navegador. Si el envío está activo, también se registra una copia anónima sin datos personales.
       </p>
     </div>

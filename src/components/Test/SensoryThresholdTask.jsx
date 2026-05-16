@@ -50,7 +50,7 @@ export default function SensoryThresholdTask({ onComplete }) {
     const trial = trials[currentTrial];
     const noise = trial.noiseLevel / 100;
 
-    ctx.fillStyle = '#f3f4f6';
+    ctx.fillStyle = 'var(--color-border-light)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const squares = Math.floor(noise * 200);
@@ -65,7 +65,7 @@ export default function SensoryThresholdTask({ onComplete }) {
     if (trial.hasSignal) {
       const sigX = canvas.width / 2 - 15;
       const sigY = canvas.height / 2 - 15;
-      ctx.fillStyle = '#4a90d9';
+      ctx.fillStyle = 'var(--color-accent)';
       ctx.fillRect(sigX, sigY, 30, 30);
     }
   }, [showStimulus, currentTrial, trials, paused]);
@@ -138,14 +138,14 @@ export default function SensoryThresholdTask({ onComplete }) {
   if (!isStarted) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Detección en Ruido Visual
         </h2>
-        <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
+        <div style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Verás una pantalla con ruido visual.</p>
-          <p>Algunas veces aparecerá un <strong style={{ color: '#4a90d9' }}>cuadrado azul</strong> entre el ruido.</p>
+          <p>Algunas veces aparecerá un <strong style={{ color: 'var(--color-accent)' }}>cuadrado azul</strong> entre el ruido.</p>
           <p><strong>Presiona la barra espaciadora</strong> o haz clic/toque SOLO cuando veas el cuadrado azul.</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Si no estás seguro/a, no respondas. Mide tu umbral sensorial real.</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem' }}>Si no estás seguro/a, no respondas. Mide tu umbral sensorial real.</p>
         </div>
         <button className="btn btn-primary" data-testid="sensory-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px' }}>
           Comenzar (3 min)
@@ -158,7 +158,7 @@ export default function SensoryThresholdTask({ onComplete }) {
 
   return (
     <div style={{ textAlign: 'center', maxWidth: '400px', margin: '0 auto' }}>
-      <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '8px' }}>
+      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginBottom: '8px' }}>
         {currentTrial + 1} de {TOTAL_TRIALS}
       </div>
 
@@ -176,7 +176,7 @@ export default function SensoryThresholdTask({ onComplete }) {
           <div style={{
             position: 'absolute', inset: 0, display: 'flex',
             alignItems: 'center', justifyContent: 'center',
-            fontSize: '1.5rem', color: '#d0d0d0', background: '#fafafa',
+            fontSize: '1.5rem', color: 'var(--color-task-fixation)', background: 'var(--color-task-key-bg)',
           }}>
             +
           </div>
@@ -185,7 +185,7 @@ export default function SensoryThresholdTask({ onComplete }) {
 
       <div style={{ height: '8px', marginBottom: '8px' }}>
         {feedback === 'detectado' && (
-          <span data-testid="sensory-feedback" style={{ color: '#16a34a', fontSize: '0.9rem', fontWeight: 600 }}>✓ Detectado</span>
+          <span data-testid="sensory-feedback" style={{ color: 'var(--color-success)', fontSize: '0.9rem', fontWeight: 600 }}>✓ Detectado</span>
         )}
       </div>
 
@@ -194,7 +194,7 @@ export default function SensoryThresholdTask({ onComplete }) {
         onPointerDown={(e) => { e.preventDefault(); handleDetect(); }}
         style={{
           padding: '12px 32px', fontSize: '1rem', fontWeight: 600,
-          background: '#1a1a2e', color: '#fff', border: 'none',
+          background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
           borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
           touchAction: 'manipulation', marginBottom: '8px',
         }}
@@ -202,7 +202,7 @@ export default function SensoryThresholdTask({ onComplete }) {
         Veo el cuadrado
       </button>
 
-      <p style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+      <p style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)' }}>
         Barra espaciadora, clic o toque = veo el cuadrado azul
       </p>
 
@@ -212,8 +212,8 @@ export default function SensoryThresholdTask({ onComplete }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', zIndex: 1000,
         }}>
-          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+          <p style={{ color: 'var(--color-on-accent)', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem', marginBottom: '20px' }}>
             No cambies de pestaña durante la tarea. Pausas: {pauseCount}
           </p>
           <button className="btn btn-primary" data-testid="sensory-resume" onClick={handleResume} style={{ padding: '12px 36px', fontSize: '1rem' }}>

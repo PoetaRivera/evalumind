@@ -4,26 +4,26 @@ import { getCompletedTests, clearCompletedTests } from '../../utils/sessionResul
 import { exportResultsToPDF } from '../../utils/pdfExport';
 
 const TEST_LABELS = {
-  'tdah-adult-v2': { name: 'TDAH', color: '#3b82f6' },
-  'tea-adult-v1': { name: 'TEA', color: '#8b5cf6' },
-  'hsp-adult-v1': { name: 'Alta Sensibilidad', color: '#10b981' },
-  'alexitimia-adult-v1': { name: 'Alexitimia', color: '#f59e0b' },
+  'tdah-adult-v2': { name: 'TDAH', color: 'var(--color-accent)' },
+  'tea-adult-v1': { name: 'TEA', color: 'var(--color-bar-mid)' },
+  'hsp-adult-v1': { name: 'Alta Sensibilidad', color: 'var(--color-bar-low)' },
+  'alexitimia-adult-v1': { name: 'Alexitimia', color: 'var(--color-bar-high)' },
   'rsd-adult-v1': { name: 'RSD', color: '#ec4899' },
-  'burnout-masking-v1': { name: 'Burnout Masking', color: '#f97316' },
+  'burnout-masking-v1': { name: 'Burnout Masking', color: 'var(--color-bar-high)' },
   'funciones-ejecutivas-v1': { name: 'F. Ejecutivas', color: '#14b8a6' },
   'dat-v1': { name: 'DAT', color: '#ef4444' },
-  'fas-v1': { name: 'FAS', color: '#6366f1' },
+  'fas-v1': { name: 'FAS', color: 'var(--color-bar-mid)' },
   'social-scenarios-v1': { name: 'Escenarios RSD', color: '#ec4899' },
-  'self-discrepancy-v1': { name: 'Auto-Discrepancia', color: '#f97316' },
-  'fer-v1': { name: 'Reconocimiento Emocional', color: '#f59e0b' },
-  'sart-v1': { name: 'Atención (SART)', color: '#3b82f6' },
-  'flanker-v1': { name: 'Flanker', color: '#3b82f6' },
+  'self-discrepancy-v1': { name: 'Auto-Discrepancia', color: 'var(--color-bar-high)' },
+  'fer-v1': { name: 'Reconocimiento Emocional', color: 'var(--color-bar-high)' },
+  'sart-v1': { name: 'Atención (SART)', color: 'var(--color-accent)' },
+  'flanker-v1': { name: 'Flanker', color: 'var(--color-accent)' },
   'digit-span-v1': { name: 'Span Dígitos', color: '#14b8a6' },
-  'navon-v1': { name: 'Navon', color: '#8b5cf6' },
-  'rmet-v1': { name: 'RMET', color: '#8b5cf6' },
+  'navon-v1': { name: 'Navon', color: 'var(--color-bar-mid)' },
+  'rmet-v1': { name: 'RMET', color: 'var(--color-bar-mid)' },
   'switch-task-v1': { name: 'Flexibilidad', color: '#14b8a6' },
-  'sensory-threshold-v1': { name: 'Umbral Sensorial', color: '#10b981' },
-  'auditory-distraction-v1': { name: 'Distracción Auditiva', color: '#10b981' },
+  'sensory-threshold-v1': { name: 'Umbral Sensorial', color: 'var(--color-bar-low)' },
+  'auditory-distraction-v1': { name: 'Distracción Auditiva', color: 'var(--color-bar-low)' },
 };
 
 const DIMENSION_LABELS = {
@@ -177,9 +177,9 @@ function findStrategies(dimensions, completedTests) {
 }
 
 function getBarColor(pct) {
-  if (pct > 60) return '#f59e0b';
-  if (pct > 40) return '#6366f1';
-  return '#10b981';
+  if (pct > 60) return 'var(--color-bar-high)';
+  if (pct > 40) return 'var(--color-bar-mid)';
+  return 'var(--color-bar-low)';
 }
 
 export default function ProfileMap() {
@@ -199,10 +199,10 @@ export default function ProfileMap() {
       <div className="profile-map" style={{ maxWidth: '700px', margin: '0 auto', padding: '40px 20px' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '16px' }}>Mapa de Funcionamiento</h2>
         <div className="question-card" style={{ textAlign: 'center', padding: '32px' }}>
-          <p style={{ fontSize: '1.05rem', color: '#6b7280', marginBottom: '16px' }}>
+          <p style={{ fontSize: '1.05rem', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
             Completa al menos 2 tests para ver tu mapa de funcionamiento combinado.
           </p>
-          <p style={{ fontSize: '0.9rem', color: '#9ca3af', marginBottom: '24px' }}>
+          <p style={{ fontSize: '0.9rem', color: 'var(--color-text-tertiary)', marginBottom: '24px' }}>
             Tu mapa local se arma con los resultados disponibles en esta sesión del navegador.
           </p>
           <button className="btn btn-primary" onClick={() => navigate('/')}>
@@ -251,17 +251,17 @@ export default function ProfileMap() {
   return (
     <div className="profile-map" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>Mapa de Funcionamiento</h2>
-      <p style={{ textAlign: 'center', color: '#6b7280', fontSize: '0.9rem', marginBottom: '32px' }}>
+      <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '0.9rem', marginBottom: '32px' }}>
         Basado en {testEntries.length} test{testEntries.length > 1 ? 's' : ''} completado{testEntries.length > 1 ? 's' : ''} en esta sesión
       </p>
 
       {/* Tests completados */}
       <div style={{ marginBottom: '32px', display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
         {testEntries.map(([testId]) => {
-          const meta = TEST_LABELS[testId] || { name: testId, color: '#6b7280' };
+          const meta = TEST_LABELS[testId] || { name: testId, color: 'var(--color-text-secondary)' };
           return (
             <span key={testId} style={{
-              background: meta.color, color: '#fff', padding: '6px 14px',
+              background: meta.color, color: 'var(--color-on-accent)', padding: '6px 14px',
               borderRadius: '16px', fontSize: '0.85rem', fontWeight: 500,
             }}>
               {meta.name}
@@ -273,29 +273,29 @@ export default function ProfileMap() {
       {/* Dimensiones combinadas */}
       {dimEntries.length > 0 && (
         <div style={{ marginBottom: '32px' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '16px', color: '#374151' }}>Todas las dimensiones evaluadas</h3>
+          <h3 style={{ fontSize: '1rem', marginBottom: '16px', color: 'var(--color-text)' }}>Todas las dimensiones evaluadas</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {dimEntries.map(([key, pct]) => (
               <div key={key} role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}
                 aria-label={`${DIMENSION_LABELS[key] || key}: ${pct} por ciento`}
                 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ width: '180px', fontSize: '0.85rem', color: '#4b5563', textAlign: 'right', flexShrink: 0 }}>
+                <span style={{ width: '180px', fontSize: '0.85rem', color: 'var(--color-text-secondary)', textAlign: 'right', flexShrink: 0 }}>
                   {DIMENSION_LABELS[key] || key}
                 </span>
-                <div style={{ flex: 1, height: '20px', background: '#f3f4f6', borderRadius: '10px', overflow: 'hidden' }}>
+                <div style={{ flex: 1, height: '20px', background: 'var(--color-border-light)', borderRadius: '10px', overflow: 'hidden' }}>
                   <div style={{
                     width: `${pct}%`, height: '100%', borderRadius: '10px',
                     background: getBarColor(pct),
                     transition: 'width 0.5s ease',
                   }} />
                 </div>
-                <span style={{ width: '40px', fontSize: '0.8rem', color: '#6b7280', fontWeight: 600 }}>
+                <span style={{ width: '40px', fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontWeight: 600 }}>
                   {pct}%
                 </span>
               </div>
             ))}
           </div>
-          <p style={{ fontSize: '0.8rem', color: '#9ca3af', marginTop: '8px', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginTop: '8px', textAlign: 'center' }}>
             Verde = área de fortaleza relativa · Violeta = zona intermedia · Ámbar = área de esfuerzo
           </p>
         </div>
@@ -304,11 +304,11 @@ export default function ProfileMap() {
       {/* Fortalezas + Áreas de esfuerzo */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
         {strengths.length > 0 && (
-          <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '16px' }}>
-            <h3 style={{ fontSize: '0.95rem', color: '#166534', marginBottom: '10px' }}>
+          <div style={{ background: 'var(--color-success-bg)', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '16px' }}>
+            <h3 style={{ fontSize: '0.95rem', color: 'var(--color-success-text)', marginBottom: '10px' }}>
               Fortalezas identificadas
             </h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: '#15803d', lineHeight: 1.8 }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: 'var(--color-success-text)', lineHeight: 1.8 }}>
               {strengths.map((s) => (
                 <li key={s.key}>{s.label}</li>
               ))}
@@ -317,11 +317,11 @@ export default function ProfileMap() {
         )}
 
         {effortAreas.length > 0 && (
-          <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '16px' }}>
-            <h3 style={{ fontSize: '0.95rem', color: '#92400e', marginBottom: '10px' }}>
+          <div style={{ background: 'var(--color-warning-bg)', border: '1px solid #fde68a', borderRadius: '10px', padding: '16px' }}>
+            <h3 style={{ fontSize: '0.95rem', color: 'var(--color-warning-text)', marginBottom: '10px' }}>
               Áreas que requieren estrategia
             </h3>
-            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: '#a16207', lineHeight: 1.8 }}>
+            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: 'var(--color-warning-text)', lineHeight: 1.8 }}>
               {effortAreas.map((a) => (
                 <li key={a.key}>{a.label}</li>
               ))}
@@ -333,15 +333,15 @@ export default function ProfileMap() {
       {/* Estrategias sugeridas */}
       {strategies.length > 0 && (
         <div style={{ marginBottom: '32px' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '16px', color: '#374151' }}>Estrategias sugeridas para tu perfil</h3>
+          <h3 style={{ fontSize: '1rem', marginBottom: '16px', color: 'var(--color-text)' }}>Estrategias sugeridas para tu perfil</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {strategies.map((s) => (
               <div key={s.id} style={{
-                background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px',
+                background: 'var(--color-bg)', border: '1px solid #e2e8f0', borderRadius: '10px',
                 padding: '16px',
               }}>
-                <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', color: '#1e293b' }}>{s.title}</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', margin: 0, lineHeight: 1.6 }}>{s.description}</p>
+                <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', color: 'var(--color-text)' }}>{s.title}</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', margin: 0, lineHeight: 1.6 }}>{s.description}</p>
               </div>
             ))}
           </div>
@@ -350,11 +350,11 @@ export default function ProfileMap() {
 
       {/* DAT especial */}
       {completedTests['dat-v1'] && (
-        <div style={{ marginBottom: '32px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', padding: '16px' }}>
-          <h3 style={{ fontSize: '0.95rem', color: '#991b1b', marginBottom: '8px' }}>
+        <div style={{ marginBottom: '32px', background: 'var(--color-danger-bg)', border: '1px solid #fecaca', borderRadius: '10px', padding: '16px' }}>
+          <h3 style={{ fontSize: '0.95rem', color: 'var(--color-danger-text)', marginBottom: '8px' }}>
             Pensamiento Divergente: {completedTests['dat-v1'].total}/100
           </h3>
-          <p style={{ fontSize: '0.85rem', color: '#7f1d1d', margin: 0 }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--color-danger-text)', margin: 0 }}>
             {completedTests['dat-v1'].category === 'altamente-divergente'
               ? 'Tu mente salta entre dominios con facilidad. Eres un conector natural de ideas.'
               : completedTests['dat-v1'].category === 'moderadamente-divergente'
@@ -383,7 +383,7 @@ export default function ProfileMap() {
         </button>
       </div>
 
-      <p style={{ textAlign: 'center', fontSize: '0.8rem', color: '#9ca3af', marginTop: '32px' }}>
+      <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginTop: '32px' }}>
         Este mapa es orientativo. No constituye un diagnóstico ni un perfil clínico.
         El mapa se guarda solo en esta sesión del navegador.
       </p>

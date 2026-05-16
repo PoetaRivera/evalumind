@@ -50,71 +50,71 @@ export default function SocialScenariosTask({ onComplete }) {
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       <div style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        marginBottom: '16px', fontSize: '0.85rem', color: '#6b7280',
+        marginBottom: '16px', fontSize: '0.85rem', color: 'var(--color-text-secondary)',
       }}>
         <span>Escenario {currentIndex + 1} de {total}</span>
         <span>{allComplete} de {total} respondidos</span>
       </div>
 
       <div style={{
-        height: '4px', background: '#f3f4f6', borderRadius: '2px',
+        height: '4px', background: 'var(--color-border-light)', borderRadius: '2px',
         marginBottom: '24px', overflow: 'hidden',
       }}>
         <div style={{
           height: '100%', width: `${((currentIndex + 1) / total) * 100}%`,
-          background: '#4a90d9', borderRadius: '2px', transition: 'width 0.3s ease',
+          background: 'var(--color-accent)', borderRadius: '2px', transition: 'width 0.3s ease',
         }} />
       </div>
 
       <div className="question-card" style={{ marginBottom: '20px' }}>
         <p style={{
-          fontSize: '1.05rem', lineHeight: 1.7, color: '#1a1a2e',
+          fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--color-task-heading)',
           marginBottom: '24px', fontStyle: 'italic',
         }}>
           "{scenario.scenario}"
         </p>
 
         <div style={{ marginBottom: '20px' }}>
-          <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '10px' }}>
+          <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '10px' }}>
             ¿Cuál es la interpretación más probable?
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <label style={{
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px',
-              border: `2px solid ${currentResp.choice === 'rejection' ? '#dc2626' : '#e5e7eb'}`,
+              border: `2px solid ${currentResp.choice === 'rejection' ? 'var(--color-danger)' : 'var(--color-border)'}`,
               borderRadius: '8px', cursor: 'pointer',
-              background: currentResp.choice === 'rejection' ? '#fef2f2' : '#fff',
+              background: currentResp.choice === 'rejection' ? 'var(--color-danger-bg)' : 'var(--color-on-accent)',
             }}>
               <input
                 type="radio"
                 name={`scenario-${scenario.id}`}
                 checked={currentResp.choice === 'rejection'}
                 onChange={() => updateResponse('choice', 'rejection')}
-                style={{ accentColor: '#dc2626' }}
+                style={{ accentColor: 'var(--color-danger)' }}
               />
-              <span style={{ fontSize: '0.9rem', color: '#991b1b' }}>{scenario.rejection}</span>
+              <span style={{ fontSize: '0.9rem', color: 'var(--color-danger-text)' }}>{scenario.rejection}</span>
             </label>
             <label style={{
               display: 'flex', alignItems: 'center', gap: '10px', padding: '12px',
-              border: `2px solid ${currentResp.choice === 'benign' ? '#16a34a' : '#e5e7eb'}`,
+              border: `2px solid ${currentResp.choice === 'benign' ? 'var(--color-success)' : 'var(--color-border)'}`,
               borderRadius: '8px', cursor: 'pointer',
-              background: currentResp.choice === 'benign' ? '#f0fdf4' : '#fff',
+              background: currentResp.choice === 'benign' ? 'var(--color-success-bg)' : 'var(--color-on-accent)',
             }}>
               <input
                 type="radio"
                 name={`scenario-${scenario.id}`}
                 checked={currentResp.choice === 'benign'}
                 onChange={() => updateResponse('choice', 'benign')}
-                style={{ accentColor: '#16a34a' }}
+                style={{ accentColor: 'var(--color-success)' }}
               />
-              <span style={{ fontSize: '0.9rem', color: '#166534' }}>{scenario.benign}</span>
+              <span style={{ fontSize: '0.9rem', color: 'var(--color-success-text)' }}>{scenario.benign}</span>
             </label>
           </div>
         </div>
 
         {currentResp.choice && (
           <div style={{ marginBottom: '12px' }}>
-            <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>
+            <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '6px' }}>
               ¿Cuánto te afectaría emocionalmente esta situación? (1 = nada, 5 = muchísimo)
             </p>
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -125,9 +125,9 @@ export default function SocialScenariosTask({ onComplete }) {
                   onClick={() => updateResponse('impact', val)}
                   style={{
                     flex: 1, padding: '10px', borderRadius: '8px', border: '2px solid',
-                    borderColor: currentResp.impact === val ? '#4a90d9' : '#e5e7eb',
-                    background: currentResp.impact === val ? '#eff6ff' : '#fff',
-                    color: currentResp.impact === val ? '#1e40af' : '#6b7280',
+                    borderColor: currentResp.impact === val ? 'var(--color-accent)' : 'var(--color-border)',
+                    background: currentResp.impact === val ? 'var(--color-accent-subtle)' : 'var(--color-on-accent)',
+                    color: currentResp.impact === val ? 'var(--color-accent-deep)' : 'var(--color-text-secondary)',
                     cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600,
                   }}
                 >
@@ -166,7 +166,7 @@ export default function SocialScenariosTask({ onComplete }) {
         )}
       </div>
 
-      <p style={{ fontSize: '0.8rem', color: '#9ca3af', textAlign: 'center' }}>
+      <p style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', textAlign: 'center' }}>
         Responde al menos 8 de los 16 escenarios para ver resultados.
       </p>
     </div>

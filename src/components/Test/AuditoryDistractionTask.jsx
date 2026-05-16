@@ -135,14 +135,14 @@ export default function AuditoryDistractionTask({ onComplete }) {
   if (!isStarted) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Distracción Auditiva
         </h2>
-        <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
+        <div style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Aparecerá un punto <strong>verde</strong> a la izquierda o derecha.</p>
           <p>Presiona ← o → (o los botones) lo más rápido que puedas.</p>
           <p>A veces sonarán <strong>distractores auditivos</strong> (murmullos, ruido ambiental).</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Ignora los sonidos y concéntrate en el punto. Recomendado usar auriculares.</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem' }}>Ignora los sonidos y concéntrate en el punto. Recomendado usar auriculares.</p>
         </div>
         <button className="btn btn-primary" data-testid="auditory-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px' }}>
           Comenzar (2 min)
@@ -155,14 +155,14 @@ export default function AuditoryDistractionTask({ onComplete }) {
 
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '400px', margin: '0 auto' }}>
-      <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '16px' }}>
+      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginBottom: '16px' }}>
         {currentTrial + 1} / {TOTAL_TRIALS}
       </div>
 
       <div style={{ width: '300px', height: '200px', margin: '0 auto', position: 'relative' }}>
         <div style={{
           position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          fontSize: '2rem', color: '#d0d0d0',
+          fontSize: '2rem', color: 'var(--color-task-fixation)',
         }}>
           {!showTarget && '+'}
         </div>
@@ -172,7 +172,7 @@ export default function AuditoryDistractionTask({ onComplete }) {
             position: 'absolute', top: '50%', transform: 'translateY(-50%)',
             [dotSide === 'left' ? 'left' : 'right']: '50px',
             width: '24px', height: '24px', borderRadius: '50%',
-            background: '#10b981', boxShadow: '0 0 12px rgba(16,185,129,0.4)',
+            background: 'var(--color-bar-low)', boxShadow: '0 0 12px rgba(16,185,129,0.4)',
           }} />
         )}
       </div>
@@ -183,7 +183,7 @@ export default function AuditoryDistractionTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showTarget && !paused) handleResponse('left'); }}
           style={{
             padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -195,7 +195,7 @@ export default function AuditoryDistractionTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showTarget && !paused) handleResponse('right'); }}
           style={{
             padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -204,7 +204,7 @@ export default function AuditoryDistractionTask({ onComplete }) {
         </button>
       </div>
 
-      <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '16px' }}>
+      <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '16px' }}>
         ← izquierda &nbsp;|&nbsp; derecha → &nbsp;|&nbsp; También puedes usar las flechas del teclado
       </p>
 
@@ -214,8 +214,8 @@ export default function AuditoryDistractionTask({ onComplete }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', zIndex: 1000,
         }}>
-          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+          <p style={{ color: 'var(--color-on-accent)', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem', marginBottom: '20px' }}>
             No cambies de pestaña durante la tarea. Pausas: {pauseCount}
           </p>
           <button className="btn btn-primary" data-testid="auditory-resume" onClick={handleResume} style={{ padding: '12px 36px', fontSize: '1rem' }}>

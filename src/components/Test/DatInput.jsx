@@ -22,10 +22,10 @@ function ExampleAccordion({ example, type }) {
   const [open, setOpen] = useState(false);
 
   const colors = {
-    narrative: { bg: '#fef2f2', border: '#fca5a5', tag: '#dc2626' },
-    convergent: { bg: '#fef2f2', border: '#fca5a5', tag: '#dc2626' },
-    semiDivergent: { bg: '#fffbeb', border: '#fcd34d', tag: '#d97706' },
-    highlyDivergent: { bg: '#f0fdf4', border: '#86efac', tag: '#16a34a' },
+    narrative: { bg: 'var(--color-danger-bg)', border: '#fca5a5', tag: 'var(--color-danger)' },
+    convergent: { bg: 'var(--color-danger-bg)', border: '#fca5a5', tag: 'var(--color-danger)' },
+    semiDivergent: { bg: 'var(--color-warning-bg)', border: '#fcd34d', tag: 'var(--color-warning)' },
+    highlyDivergent: { bg: 'var(--color-success-bg)', border: '#86efac', tag: 'var(--color-success)' },
   };
 
   const style = colors[type] || colors.convergent;
@@ -60,14 +60,14 @@ function ExampleAccordion({ example, type }) {
           <div className="dat-example-words" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
             {example.words.map((w, i) => (
               <span key={i} className="dat-word-chip readonly" style={{
-                background: '#f3f4f6', padding: '4px 12px', borderRadius: '16px',
-                fontSize: '0.85rem', color: '#374151',
+                background: 'var(--color-border-light)', padding: '4px 12px', borderRadius: '16px',
+                fontSize: '0.85rem', color: 'var(--color-text)',
               }}>
                 {w}
               </span>
             ))}
           </div>
-          <p style={{ fontSize: '0.85rem', color: '#6b7280', margin: 0 }}>{example.explanation}</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', margin: 0 }}>{example.explanation}</p>
         </div>
       )}
     </div>
@@ -83,7 +83,7 @@ function StrategyAccordion({ strategy }) {
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         style={{
-          width: '100%', padding: '10px 14px', background: '#fafafa', border: 'none',
+          width: '100%', padding: '10px 14px', background: 'var(--color-task-key-bg)', border: 'none',
           cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           fontSize: '0.9rem', fontWeight: 500, textAlign: 'left',
         }}
@@ -94,7 +94,7 @@ function StrategyAccordion({ strategy }) {
         </span>
       </button>
       {open && (
-        <ul style={{ padding: '8px 14px 14px 32px', margin: 0, fontSize: '0.85rem', lineHeight: 1.8, color: '#4b5563' }}>
+        <ul style={{ padding: '8px 14px 14px 32px', margin: 0, fontSize: '0.85rem', lineHeight: 1.8, color: 'var(--color-text-secondary)' }}>
           {strategy.items.map((item, i) => (
             <li key={i}>{item}</li>
           ))}
@@ -188,11 +188,11 @@ export default function DatInput({ onComplete }) {
         <p style={{ fontSize: '1.05rem', fontWeight: 600, marginBottom: '8px' }}>
           Escribe 10 palabras que NO tengan nada que ver entre sí.
         </p>
-        <p style={{ fontSize: '0.9rem', color: '#6b7280', marginBottom: '8px' }}>
+        <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
           Ninguna conexión. Ninguna historia. Ningún hilo narrativo.
           Imagina 10 cajones de un almacén, cada uno de una tienda distinta.
         </p>
-        <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: 0 }}>
+        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-tertiary)', margin: 0 }}>
           Abres uno, sacas una palabra. Lo cierras. Abres otro completamente diferente. Sin mirar atrás.
         </p>
       </div>
@@ -270,7 +270,7 @@ export default function DatInput({ onComplete }) {
 
       {/* Error de validación */}
       {error && (
-        <p className="dat-validation-error" style={{ color: '#dc2626', fontSize: '0.85rem', margin: '0 0 12px 0' }} role="alert">
+        <p className="dat-validation-error" style={{ color: 'var(--color-danger)', fontSize: '0.85rem', margin: '0 0 12px 0' }} role="alert">
           {error}
         </p>
       )}
@@ -278,8 +278,8 @@ export default function DatInput({ onComplete }) {
       {/* Advertencia de misma categoría */}
       {categoryWarning && !error && (
         <p className="dat-category-warning" style={{
-          color: '#d97706', fontSize: '0.85rem', margin: '0 0 12px 0',
-          background: '#fffbeb', padding: '8px 12px', borderRadius: '6px',
+          color: 'var(--color-warning)', fontSize: '0.85rem', margin: '0 0 12px 0',
+          background: 'var(--color-warning-bg)', padding: '8px 12px', borderRadius: '6px',
           border: '1px solid #fcd34d',
         }} role="alert">
           <span aria-hidden="true">⚠️</span> {categoryWarning}
@@ -289,7 +289,7 @@ export default function DatInput({ onComplete }) {
       {/* Chips de palabras */}
       {words.length > 0 && (
         <div className="dat-words-container" style={{ marginBottom: '24px' }}>
-          <p style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '8px' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
             {words.length} de {VALIDATION_RULES.maxWords} palabras
             {words.length >= VALIDATION_RULES.minWords && ' — mínimo alcanzado'}
           </p>
@@ -297,7 +297,7 @@ export default function DatInput({ onComplete }) {
             {words.map((word, i) => (
               <span key={i} className="dat-word-chip" style={{
                 display: 'inline-flex', alignItems: 'center', gap: '6px',
-                background: '#eff6ff', color: '#1e40af', padding: '6px 8px 6px 14px',
+                background: 'var(--color-accent-subtle)', color: 'var(--color-accent-deep)', padding: '6px 8px 6px 14px',
                 borderRadius: '20px', fontSize: '0.9rem', fontWeight: 500,
                 border: '1px solid #bfdbfe',
               }}>
@@ -307,11 +307,11 @@ export default function DatInput({ onComplete }) {
                   aria-label={`Eliminar ${word}`}
                   style={{
                     background: 'transparent', border: 'none', cursor: 'pointer',
-                    fontSize: '1.1rem', lineHeight: 1, padding: '0 4px', color: '#94a3b8',
+                    fontSize: '1.1rem', lineHeight: 1, padding: '0 4px', color: 'var(--color-text-tertiary)',
                     borderRadius: '50%',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = '#dc2626'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-danger)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-tertiary)'; }}
                 >
                   ×
                 </button>
@@ -324,7 +324,7 @@ export default function DatInput({ onComplete }) {
       {/* Botón Calcular */}
       <div style={{ textAlign: 'center', marginTop: '24px' }}>
         {!canSubmit && words.length > 0 && (
-          <p style={{ fontSize: '0.85rem', color: '#9ca3af', marginBottom: '8px' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-tertiary)', marginBottom: '8px' }}>
             Agrega al menos {VALIDATION_RULES.minWords} palabras para calcular tu resultado
             (te {VALIDATION_RULES.minWords - words.length > 1 ? 'faltan' : 'falta'} {VALIDATION_RULES.minWords - words.length})
           </p>

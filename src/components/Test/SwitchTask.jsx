@@ -112,15 +112,15 @@ export default function SwitchTask({ onComplete }) {
   if (!isStarted) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Cambio de Tarea
         </h2>
-        <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
+        <div style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Verás una figura (círculo o cuadrado) de color rojo o azul.</p>
           <p>Antes de cada figura, una pista te dirá qué hacer:</p>
           <p>🔵 <strong>COLOR</strong>: ← rojo | azul →</p>
           <p>⬜ <strong>FORMA</strong>: ← círculo | cuadrado →</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>La tarea cambia aleatoriamente. Responde con ← o → (o los botones).</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem' }}>La tarea cambia aleatoriamente. Responde con ← o → (o los botones).</p>
         </div>
         <button className="btn btn-primary" data-testid="switch-start" onClick={() => { setIsStarted(true); setIsActive(true); }} style={{ padding: '14px 40px' }}>
           Comenzar (4 min)
@@ -139,20 +139,20 @@ export default function SwitchTask({ onComplete }) {
 
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '400px', margin: '0 auto' }}>
-      <div style={{ fontSize: '0.8rem', color: '#9ca3af', marginBottom: '4px' }}>
+      <div style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginBottom: '4px' }}>
         {currentTrial} / {TOTAL_TRIALS}
       </div>
-      <div style={{ height: '4px', background: '#f3f4f6', borderRadius: '2px', marginBottom: '32px', overflow: 'hidden' }}>
-        <div data-testid="switch-progress" style={{ height: '100%', width: `${pct}%`, background: '#4a90d9', borderRadius: '2px', transition: 'width 0.3s ease' }} />
+      <div style={{ height: '4px', background: 'var(--color-border-light)', borderRadius: '2px', marginBottom: '32px', overflow: 'hidden' }}>
+        <div data-testid="switch-progress" style={{ height: '100%', width: `${pct}%`, background: 'var(--color-accent)', borderRadius: '2px', transition: 'width 0.3s ease' }} />
       </div>
 
       {showCue && (
         <div data-testid="switch-cue" style={{
           fontSize: '1.5rem', fontWeight: 700, marginBottom: '16px',
-          color: currentTask === 'color' ? '#3b82f6' : '#8b5cf6',
+          color: currentTask === 'color' ? 'var(--color-accent)' : 'var(--color-bar-mid)',
         }}>
           {currentTask === 'color' ? '🔵 COLOR' : '⬜ FORMA'}
-          {isSwitchTrial && <span style={{ fontSize: '0.8rem', color: '#f59e0b', marginLeft: '8px' }}>CAMBIO</span>}
+          {isSwitchTrial && <span style={{ fontSize: '0.8rem', color: 'var(--color-bar-high)', marginLeft: '8px' }}>CAMBIO</span>}
         </div>
       )}
 
@@ -160,14 +160,14 @@ export default function SwitchTask({ onComplete }) {
         <div data-testid="switch-stimulus" style={{ marginBottom: '8px' }}>
           <div style={{
             width: '100px', height: '100px', borderRadius: shape === 'circle' ? '50%' : '8px',
-            background: color === 'red' ? '#dc2626' : '#3b82f6',
+            background: color === 'red' ? 'var(--color-danger)' : 'var(--color-accent)',
             margin: '0 auto', boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
           }} />
         </div>
       )}
 
       {!showCue && !showStimulus && (
-        <div style={{ fontSize: '2rem', color: '#d0d0d0' }}>+</div>
+        <div style={{ fontSize: '2rem', color: 'var(--color-task-fixation)' }}>+</div>
       )}
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '12px' }}>
@@ -176,7 +176,7 @@ export default function SwitchTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showStimulus && !paused) handleResponse('left'); }}
           style={{
             padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -188,7 +188,7 @@ export default function SwitchTask({ onComplete }) {
           onPointerDown={(e) => { e.preventDefault(); if (showStimulus && !paused) handleResponse('right'); }}
           style={{
             padding: '12px 28px', fontSize: '1.1rem', fontWeight: 600,
-            background: '#1a1a2e', color: '#fff', border: 'none',
+            background: 'var(--color-task-heading)', color: 'var(--color-on-accent)', border: 'none',
             borderRadius: '8px', cursor: 'pointer', userSelect: 'none',
             touchAction: 'manipulation',
           }}
@@ -197,7 +197,7 @@ export default function SwitchTask({ onComplete }) {
         </button>
       </div>
 
-      <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '16px' }}>
+      <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', marginTop: '16px' }}>
         ← izquierda &nbsp;|&nbsp; derecha → &nbsp;|&nbsp; También puedes usar las flechas del teclado
       </p>
 
@@ -207,8 +207,8 @@ export default function SwitchTask({ onComplete }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', zIndex: 1000,
         }}>
-          <p style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '20px' }}>
+          <p style={{ color: 'var(--color-on-accent)', fontSize: '1.2rem', marginBottom: '8px' }}>Prueba pausada</p>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem', marginBottom: '20px' }}>
             No cambies de pestaña durante la tarea. Pausas: {pauseCount}
           </p>
           <button className="btn btn-primary" data-testid="switch-resume" onClick={handleResume} style={{ padding: '12px 36px', fontSize: '1rem' }}>

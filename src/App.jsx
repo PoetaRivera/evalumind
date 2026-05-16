@@ -12,7 +12,7 @@ const NotFound = lazy(() => import('./components/Common/NotFound'));
 
 function Loading() {
   return (
-    <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
+    <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--color-text-secondary)' }}>
       Cargando...
     </div>
   );

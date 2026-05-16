@@ -80,23 +80,23 @@ export default function FasTask({ letter, onComplete }) {
   );
 
   const pct = ((FAS_DURATION - timeLeft) / FAS_DURATION) * 100;
-  const urgencyColor = timeLeft <= 10 ? '#dc2626' : timeLeft <= 20 ? '#f59e0b' : '#6366f1';
+  const urgencyColor = timeLeft <= 10 ? 'var(--color-danger)' : timeLeft <= 20 ? 'var(--color-bar-high)' : 'var(--color-bar-mid)';
 
   if (!isActive && !isFinished) {
     return (
       <div className="fas-intro" style={{ textAlign: 'center', padding: '32px 20px' }}>
         <div style={{
-          width: '80px', height: '80px', borderRadius: '50%', background: '#eff6ff',
+          width: '80px', height: '80px', borderRadius: '50%', background: 'var(--color-accent-subtle)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
-          fontSize: '2rem', fontWeight: 700, color: '#3b82f6',
+          fontSize: '2rem', fontWeight: 700, color: 'var(--color-accent)',
         }}>
           {letter}
         </div>
         <h2 style={{ fontSize: '1.3rem', marginBottom: '8px' }}>Fluencia Verbal: Letra "{letter}"</h2>
-        <p style={{ color: '#6b7280', marginBottom: '16px' }}>
+        <p style={{ color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
           Tienes {FAS_DURATION} segundos. Escribe todas las palabras que comiencen con la letra <strong>{letter}</strong>.
         </p>
-        <ul style={{ textAlign: 'left', maxWidth: '400px', margin: '0 auto 24px', fontSize: '0.85rem', color: '#4b5563', lineHeight: 1.8 }}>
+        <ul style={{ textAlign: 'left', maxWidth: '400px', margin: '0 auto 24px', fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
           {FAS_RULES.map((r, i) => (
             <li key={i}>{r}</li>
           ))}
@@ -127,10 +127,10 @@ export default function FasTask({ letter, onComplete }) {
           }}>
             {timeLeft}
           </span>
-          <span style={{ fontSize: '0.95rem', color: '#6b7280' }}>s</span>
+          <span style={{ fontSize: '0.95rem', color: 'var(--color-text-secondary)' }}>s</span>
         </div>
         <div style={{
-          width: '200px', height: '4px', background: '#f3f4f6', borderRadius: '2px',
+          width: '200px', height: '4px', background: 'var(--color-border-light)', borderRadius: '2px',
           margin: '0 auto', overflow: 'hidden',
         }}>
           <div style={{
@@ -164,7 +164,7 @@ export default function FasTask({ letter, onComplete }) {
 
       {/* Error */}
       {error && (
-        <p role="alert" style={{ color: '#dc2626', fontSize: '0.85rem', marginBottom: '8px' }}>{error}</p>
+        <p role="alert" style={{ color: 'var(--color-danger)', fontSize: '0.85rem', marginBottom: '8px' }}>{error}</p>
       )}
 
       {/* Flash visual de feedback */}
@@ -172,9 +172,9 @@ export default function FasTask({ letter, onComplete }) {
         <div style={{
           display: 'inline-block', padding: '4px 14px', borderRadius: '16px',
           fontSize: '0.85rem', marginBottom: '8px', fontWeight: 500,
-          background: flash.type === 'success' ? '#dcfce7' : '#fef2f2',
-          color: flash.type === 'success' ? '#16a34a' : '#dc2626',
-          border: `1px solid ${flash.type === 'success' ? '#bbf7d0' : '#fecaca'}`,
+          background: flash.type === 'success' ? 'var(--color-success-bg)' : 'var(--color-danger-bg)',
+          color: flash.type === 'success' ? 'var(--color-success)' : 'var(--color-danger)',
+          border: `1px solid ${flash.type === 'success' ? 'var(--color-success-border)' : 'var(--color-danger-border)'}`,
           animation: 'fadeIn 0.2s ease',
         }}>
           {flash.type === 'success' ? `+ ${flash.word}` : `✕ ${flash.word}`}
@@ -182,7 +182,7 @@ export default function FasTask({ letter, onComplete }) {
       )}
 
       {/* Contador */}
-      <p style={{ fontSize: '0.95rem', color: '#6b7280', marginBottom: '12px' }}>
+      <p style={{ fontSize: '0.95rem', color: 'var(--color-text-secondary)', marginBottom: '12px' }}>
         {words.length} palabra{words.length !== 1 ? 's' : ''}
       </p>
 
@@ -191,7 +191,7 @@ export default function FasTask({ letter, onComplete }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center', maxWidth: '500px', margin: '0 auto' }}>
           {words.map((w, i) => (
             <span key={i} style={{
-              background: '#eff6ff', color: '#1e40af', padding: '4px 12px',
+              background: 'var(--color-accent-subtle)', color: 'var(--color-accent-deep)', padding: '4px 12px',
               borderRadius: '16px', fontSize: '0.9rem', border: '1px solid #bfdbfe',
             }}>
               {w}
@@ -205,7 +205,7 @@ export default function FasTask({ letter, onComplete }) {
         <button
           className="btn btn-link"
           onClick={finishTask}
-          style={{ marginTop: '20px', fontSize: '0.85rem', color: '#9ca3af' }}
+          style={{ marginTop: '20px', fontSize: '0.85rem', color: 'var(--color-text-tertiary)' }}
         >
           Terminar y ver resultados
         </button>

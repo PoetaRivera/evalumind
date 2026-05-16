@@ -123,14 +123,14 @@ export default function DigitSpanTask({ onComplete }) {
   if (phase === 'intro') {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
-        <h2 style={{ fontSize: '1.2rem', color: '#1a1a2e', marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '1.2rem', color: 'var(--color-task-heading)', marginBottom: '12px' }}>
           Span de Dígitos
         </h2>
-        <div style={{ color: '#6b7280', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
+        <div style={{ color: 'var(--color-text-secondary)', marginBottom: '24px', fontSize: '0.9rem', lineHeight: 1.7, textAlign: 'left' }}>
           <p>Verás secuencias de dígitos, uno por uno.</p>
           <p><strong>Fase 1 (Directo):</strong> Repite los números en el mismo orden.</p>
           <p><strong>Fase 2 (Inverso):</strong> Repite los números en orden inverso.</p>
-          <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+          <p style={{ color: 'var(--color-text-tertiary)', fontSize: '0.85rem' }}>
             Las secuencias empiezan con 2 dígitos y aumentan progresivamente.
           </p>
         </div>
@@ -145,20 +145,20 @@ export default function DigitSpanTask({ onComplete }) {
 
   return (
     <div style={{ maxWidth: '400px', margin: '0 auto', textAlign: 'center' }}>
-      <div style={{ fontSize: '0.85rem', color: '#6b7280', marginBottom: '8px' }}>
+      <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
         {isForward ? 'Fase 1: Directo' : 'Fase 2: Inverso'} · Longitud {currentLength}
       </div>
 
       <div style={{
         width: '120px', height: '120px', borderRadius: '50%',
-        background: feedback === 'correct' ? '#dcfce7' : feedback === 'incorrect' ? '#fef2f2' : '#f3f4f6',
+        background: feedback === 'correct' ? 'var(--color-success-bg)' : feedback === 'incorrect' ? 'var(--color-danger-bg)' : 'var(--color-border-light)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         margin: '0 auto 24px', transition: 'background 0.2s',
       }}>
         <span style={{
           fontSize: showing && currentSeqIndex < sequence.length ? '3rem' : '2rem',
           fontWeight: 700,
-          color: feedback === 'correct' ? '#16a34a' : feedback === 'incorrect' ? '#dc2626' : '#1a1a2e',
+          color: feedback === 'correct' ? 'var(--color-success)' : feedback === 'incorrect' ? 'var(--color-danger)' : 'var(--color-task-heading)',
         }}>
           {feedback
             ? (feedback === 'correct' ? '✓' : '✗')
@@ -183,7 +183,7 @@ export default function DigitSpanTask({ onComplete }) {
                 onClick={() => handleDigitClick(d)}
                 style={{
                   width: '56px', height: '56px', borderRadius: '10px',
-                  border: '2px solid #e5e7eb', background: '#fff',
+                  border: '2px solid #e5e7eb', background: 'var(--color-on-accent)',
                   fontSize: '1.3rem', fontWeight: 600, cursor: 'pointer',
                 }}
               >
@@ -205,7 +205,7 @@ export default function DigitSpanTask({ onComplete }) {
         </>
       )}
 
-      <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '16px' }}>
+      <p style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)', marginTop: '16px' }}>
         {isForward ? 'Teclea en el MISMO orden' : 'Teclea en orden INVERSO'}
       </p>
     </div>
