@@ -77,6 +77,7 @@ src/
 - **Firebase**: proyecto `evalumind-app`, Firestore `(default)` en nam5, reglas desplegadas
 - **Producción**: https://evalumind-app.web.app
 - **GitHub**: https://github.com/PoetaRivera/evalumind
+- **Modo oscuro**: `prefers-color-scheme: dark` con 44 custom properties
 - **20 tests completamente implementados** (ninguno es stub)
 - **data-testid** en cards, navegación, resultados, estímulos y overlays de pausa
 - **Pausa por visibilidad** en los 6 tests cronometrados (usePageVisibility)

@@ -186,7 +186,7 @@ src/
 1. ~~Firestore API + BD + reglas + deploy~~ ✅ Completado 2026-05-15
 2. Directorio profesional real en `/recursos`
 3. i18n (multi-idioma)
-4. Modo oscuro (`prefers-color-scheme`)
+4. ~~Modo oscuro (`prefers-color-scheme`)~~ ✅ Completado 2026-05-15
 5. Tipografía opcional para dislexia (OpenDyslexic)
 6. ~~Mejora tests E2E: reemplazar `dispatchEvent` por `click()`, agregar Firefox/WebKit~~ ✅ Completado 2026-05-15
 7. ~~Tests unitarios para `wordValidation.js` y `sessionResults.js`~~ ✅ Completado 2026-05-15
