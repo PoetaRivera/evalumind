@@ -7,8 +7,8 @@ Proyecto React/Vite de screening cognitivo orientativo para adultos. 20 tests (7
 ```bash
 npm run dev          # Desarrollo (Vite)
 npm run build        # Build producción → dist/
-npm test             # 82 tests unitarios (Vitest)
-npm run test:e2e     # 31 tests E2E (Playwright)
+npm test             # 125 tests unitarios (Vitest)
+npm run test:e2e     # 93 tests E2E (Playwright, 3 navegadores)
 npm run lint         # ESLint
 firebase deploy      # Deploy a evalumind-app
 ```
@@ -73,7 +73,7 @@ src/
 
 ## Estado actual (2026-05-15)
 
-- **82 tests unitarios** pasando, **31 E2E** (28 pass, 3 skip)
+- **125 tests unitarios** pasando, **93 E2E** (84 pass, 9 skip en Chromium, Firefox y WebKit)
 - **Firebase**: proyecto `evalumind-app`, Firestore `(default)` en nam5, reglas desplegadas
 - **Producción**: https://evalumind-app.web.app
 - **GitHub**: https://github.com/PoetaRivera/evalumind

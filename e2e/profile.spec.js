@@ -49,7 +49,7 @@ test.describe('Complementarity notes', () => {
 
     await page.reload();
     // Answer the last question and finish
-    await page.locator('.likert-options label').nth(4).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(4).click();
     await page.waitForTimeout(200);
     await page.locator('button:has-text("Finalizar")').click({ force: true });
 

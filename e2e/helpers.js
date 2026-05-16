@@ -7,7 +7,7 @@ export async function acceptDisclaimer(page) {
 
 export async function answerAllQuestions(page, count) {
   for (let i = 1; i <= count; i++) {
-    await page.locator('.likert-options label').nth(2).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(2).click();
     if (i < count) {
       await expect(page.locator('button:has-text("Siguiente")')).toBeEnabled({ timeout: 5000 });
       await page.locator('button:has-text("Siguiente")').click({ force: true });

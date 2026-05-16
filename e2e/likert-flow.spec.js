@@ -12,7 +12,7 @@ test.describe('Likert test flow', () => {
 
     // Answer and advance through 5 questions to verify navigation
     for (let i = 1; i <= 5; i++) {
-      await page.locator('.likert-options label').nth(2).dispatchEvent('click');
+      await page.locator('.likert-options label').nth(2).click();
       // Wait briefly for state update
       await page.waitForTimeout(200);
       if (i < 5) {
@@ -31,7 +31,7 @@ test.describe('Likert test flow', () => {
     await expect(prevBtn).toBeDisabled();
 
     // Answer Q1 and advance to Q2
-    await page.locator('.likert-options label').nth(1).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(1).click();
     await page.waitForTimeout(200);
     await page.locator('button:has-text("Siguiente")').click({ force: true });
     await page.waitForTimeout(300);
@@ -50,7 +50,7 @@ test.describe('Likert test flow', () => {
     await page.goto('/test/tdah-adulto');
     await acceptDisclaimer(page);
     await expect(page.locator('button:has-text("Siguiente")')).toBeDisabled();
-    await page.locator('.likert-options label').nth(2).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(2).click();
     await page.waitForTimeout(200);
     await expect(page.locator('button:has-text("Siguiente")')).toBeEnabled();
   });
@@ -60,7 +60,7 @@ test.describe('Likert test flow', () => {
     await acceptDisclaimer(page);
 
     // Answer Q1 and Q2, advance once to Q2
-    await page.locator('.likert-options label').nth(2).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(2).click();
     await page.waitForTimeout(200);
     await page.locator('button:has-text("Siguiente")').click({ force: true });
     await page.waitForTimeout(300);
@@ -85,7 +85,7 @@ test.describe('Likert test flow', () => {
     await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 1 de 18');
 
     // Answer first 3 questions to verify rendering
-    await page.locator('.likert-options label').nth(2).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(2).click();
     await page.waitForTimeout(200);
     await page.locator('button:has-text("Siguiente")').click({ force: true });
     await page.waitForTimeout(300);
@@ -98,7 +98,7 @@ test.describe('Likert test flow', () => {
     await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 1 de 13');
 
     // Navigate a few questions
-    await page.locator('.likert-options label').nth(2).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(2).click();
     await page.waitForTimeout(200);
     await page.locator('button:has-text("Siguiente")').click({ force: true });
     await page.waitForTimeout(300);
@@ -122,7 +122,7 @@ test.describe('Likert test flow', () => {
 
     await page.reload();
     // Should be on last question
-    await page.locator('.likert-options label').nth(2).dispatchEvent('click');
+    await page.locator('.likert-options label').nth(2).click();
     await page.waitForTimeout(200);
     await page.locator('button:has-text("Finalizar")').click({ force: true });
 

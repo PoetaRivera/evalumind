@@ -114,12 +114,17 @@ Evaluación con 5 agentes en paralelo encontró 36 issues. Plan de implementaci�
 |---|---|---|---|---|
 | Unitarios (scoring) | Unit | Vitest | 71 | 71 pass |
 | Unitarios (FAS scoring) | Unit | Vitest | 11 | 11 pass |
-| **Total unitarios** | | | **82** | **82 pass** |
-| E2E (flujos completos) | E2E | Playwright | 31 | 28 pass, 3 skip, 0 fail |
+| Unitarios (wordValidation) | Unit | Vitest | 20 | 20 pass |
+| Unitarios (sessionResults) | Unit | Vitest | 23 | 23 pass |
+| **Total unitarios** | | | **125** | **125 pass** |
+| E2E (flujos completos) | E2E | Playwright | 93 | 84 pass, 9 skip, 0 fail |
+| | | Chromium | 31 | 28 pass, 3 skip |
+| | | Firefox | 31 | 28 pass, 3 skip |
+| | | WebKit | 31 | 28 pass, 3 skip |
 
 ```
-npm run test         # 82 tests unitarios (<1s)
-npm run test:e2e     # 31 tests de flujo (~10s)
+npm run test         # 125 tests unitarios (<2s)
+npm run test:e2e     # 93 tests de flujo (~2 min en 3 navegadores)
 ```
 
 ### Despliegue
@@ -183,14 +188,14 @@ src/
 3. i18n (multi-idioma)
 4. Modo oscuro (`prefers-color-scheme`)
 5. Tipografía opcional para dislexia (OpenDyslexic)
-6. Mejora tests E2E: reemplazar `dispatchEvent` por `click()`, agregar Firefox/WebKit
-7. Tests unitarios para `wordValidation.js` y `sessionResults.js`
+6. ~~Mejora tests E2E: reemplazar `dispatchEvent` por `click()`, agregar Firefox/WebKit~~ ✅ Completado 2026-05-15
+7. ~~Tests unitarios para `wordValidation.js` y `sessionResults.js`~~ ✅ Completado 2026-05-15
 8. Eliminar proyecto viejo `neuroscreen-app` de Firebase (manual en consola)
 
 ### Por dónde seguir
 
 1. ~~Inmediato: push, Firestore, deploy~~ ✅ Completado 2026-05-15
 2. ~~Rebrand NeuroScreen → EvaluMind~~ ✅ Completado 2026-05-15
-3. **Mejoras testing**: Reemplazar `dispatchEvent` por `click()` en E2E, agregar Firefox/WebKit, tests unitarios para `wordValidation.js` y `sessionResults.js`
+3. ~~**Mejoras testing**: Reemplazar `dispatchEvent` por `click()` en E2E, agregar Firefox/WebKit, tests unitarios para `wordValidation.js` y `sessionResults.js`~~ ✅ Completado 2026-05-15
 4. **Features futuras**: directorio profesional real, modo oscuro, i18n, tipografía dislexia
 5. **UX avanzada**: tiempos estimados por test en cards, disclaimer cultural RMET, guardar respuestas detalladas en sessionStorage (RT, errores por tipo)
