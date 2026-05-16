@@ -190,7 +190,7 @@ src/
 5. Tipografía opcional para dislexia (OpenDyslexic)
 6. ~~Mejora tests E2E: reemplazar `dispatchEvent` por `click()`, agregar Firefox/WebKit~~ ✅ Completado 2026-05-15
 7. ~~Tests unitarios para `wordValidation.js` y `sessionResults.js`~~ ✅ Completado 2026-05-15
-8. Eliminar proyecto viejo `neuroscreen-app` de Firebase (manual en consola)
+8. ~~Eliminar proyecto viejo `neuroscreen-app` de Firebase (manual en consola)~~ ✅ Completado 2026-05-15
 
 ### Por dónde seguir
 
@@ -202,4 +202,4 @@ src/
 6. **i18n**: Descartado 2026-05-15 — demasiado invasivo para el estado actual del proyecto
 7. **Tipografía dislexia** (OpenDyslexic opcional)
 8. **UX avanzada**: tiempos estimados en cards, disclaimer cultural RMET, guardar respuestas detalladas en sessionStorage
-9. **Eliminar proyecto viejo** `neuroscreen-app` de Firebase (manual en consola)
+9. ~~Eliminar proyecto viejo `neuroscreen-app` de Firebase~~ ✅ Completado 2026-05-15
