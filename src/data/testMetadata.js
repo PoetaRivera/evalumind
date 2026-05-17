@@ -1,9 +1,9 @@
 const TEST_CARDS = [
   {
     id: 'tdah-adulto',
-    title: 'Screening de TDAH en Adultos',
-    description: 'Evaluación orientativa de rasgos de TDAH basada en criterios de atención, hiperactividad e impulsividad.',
-    questionCount: 16,
+    title: 'Screening de TDAH en Adultos (ASRS-5)',
+    description: 'Evaluación orientativa de rasgos de TDAH según el ASRS-5 (DSM-5). 18 ítems con screener validado de 6 ítems.',
+    questionCount: 18,
     isTask: false,
   },
   {

@@ -50,67 +50,80 @@ function createLikertScorer({ maxScores, thresholds, dimensionConfig, profileMap
 // ═══════════════════════════════════════════════════
 // TDAH ADULTO
 // ═══════════════════════════════════════════════════
+// TDAH — ASRS-5 (DSM-5)
+// Kessler et al. (2005), Psychol Med, 35(2), 245-256
+// Ustun et al. (2017), JAMA Psychiatry, 74(5), 520-527
+// DOI: 10.1017/S0033291704002892
+// DOI: 10.1001/jamapsychiatry.2017.0298
+// ═══════════════════════════════════════════════════
 
-const TDAH_MAX = {
-  inattention: 32,
-  hyperactivityPhysical: 12,
-  impulsivityVerbal: 20,
-  total: 64,
+const TDAH_MAX = { inattention: 36, hyperactivityImpulsivity: 36, total: 72 };
+
+// ASRS-5: 18 items. Ítems intercalados por diseño (Part A screener primero).
+// Índices 0-based:
+const TDAH_INATTENTION = [0, 1, 2, 3, 6, 7, 8, 16, 17];        // 9 items: A1-A4, B7-B9, B18
+const TDAH_HYPERACTIVITY = [4, 5, 9, 10, 11, 12, 13, 14, 15];    // 9 items: A5-A6, B10-B17
+const TDAH_SCREENER = [0, 1, 2, 3, 4, 5];                         // Part A (6 items)
+
+const TDAH_THRESHOLDS = { inattention: 18, hyperactivityImpulsivity: 18 };
+
+export const calculateTdahScore = (answers) => {
+  const inattentionScore = TDAH_INATTENTION.reduce((s, i) => s + (answers[i] || 0), 0);
+  const hyperactivityScore = TDAH_HYPERACTIVITY.reduce((s, i) => s + (answers[i] || 0), 0);
+  const total = inattentionScore + hyperactivityScore;
+
+  // Screener: Part A (6 items). ≥4 items with score ≥2 = positive
+  const screenerPositiveCount = TDAH_SCREENER.filter((i) => (answers[i] || 0) >= 2).length;
+  const screenerPositive = screenerPositiveCount >= 4;
+
+  // Perfiles por dimensión
+  const profiles = [];
+  if (inattentionScore >= TDAH_THRESHOLDS.inattention) {
+    profiles.push({ id: 'inatencion-predominante', label: 'Inatención predominante', dimension: 'inattention' });
+  }
+  if (hyperactivityScore >= TDAH_THRESHOLDS.hyperactivityImpulsivity) {
+    profiles.push({ id: 'hiperactivo-impulsivo-predominante', label: 'Hiperactividad-Impulsividad predominante', dimension: 'hyperactivityImpulsivity' });
+  }
+  if (profiles.length === 2) {
+    profiles.length = 0;
+    profiles.push({ id: 'tdah-combinado', label: 'Presentación combinada', dimension: 'combined' });
+  }
+
+  // Categorías validadas ASRS
+  let category;
+  let description;
+
+  if (total <= 17) {
+    category = 'baja-probabilidad';
+    description = 'Tus respuestas no sugieren un patrón consistente con TDAH según los criterios del ASRS-5 (Kessler et al., 2005; Ustun et al., 2017). Algunos síntomas aislados pueden deberse a estrés, ansiedad, agotamiento o alteraciones del estado de ánimo.';
+  } else if (total <= 23) {
+    category = 'moderada-probabilidad';
+    description = 'Presentas un patrón que merece exploración profesional según el ASRS-5. Te recomendamos consultar con un psicólogo o psiquiatra para una evaluación diferencial, especialmente si estos síntomas han estado presentes desde la infancia (antes de los 12 años).';
+  } else {
+    category = 'alta-probabilidad';
+    description = 'Tus respuestas indican un patrón significativo de rasgos de TDAH según los criterios del ASRS-5. Es altamente recomendable que busques evaluación profesional para confirmar o descartar TDAH y evaluar otras condiciones (ansiedad, TEA, trastorno del estado de ánimo). El TDAH requiere que los síntomas estén presentes desde la infancia.';
+  }
+
+  const dimensions = [
+    { key: 'inattention', label: 'Inatención', score: inattentionScore, max: TDAH_MAX.inattention },
+    { key: 'hyperactivityImpulsivity', label: 'Hiperactividad-Impulsividad', score: hyperactivityScore, max: TDAH_MAX.hyperactivityImpulsivity },
+  ];
+
+  return {
+    total,
+    dimensions,
+    maxScores: TDAH_MAX,
+    profiles,
+    category,
+    description,
+    screenerPositive,
+    screenerPositiveCount,
+    childhoodNote:
+      'El TDAH requiere que los síntomas estén presentes desde la infancia (antes de los 12 años). ' +
+      'Si estos patrones aparecieron solo en los últimos meses, el agotamiento (burnout), la ansiedad ' +
+      'o la depresión pueden causar síntomas similares. Instrumento: ASRS-5 (Kessler et al., 2005; Ustun et al., 2017).',
+  };
 };
-
-const TDAH_THRESHOLDS = {
-  inattention: 16,
-  hyperactivityPhysical: 6,
-  impulsivityVerbal: 10,
-};
-
-export const calculateTdahScore = createLikertScorer({
-  maxScores: TDAH_MAX,
-  thresholds: TDAH_THRESHOLDS,
-  profileMap: {
-    inattention: 'inatencion-marcada',
-    hyperactivityPhysical: 'hiperactividad-marcada',
-    impulsivityVerbal: 'impulsividad-marcada',
-  },
-  dimensionConfig: [
-    { key: 'inattention', label: 'Inatención', start: 0, count: 8 },
-    { key: 'hyperactivityPhysical', label: 'Hiperactividad física', start: 8, count: 3 },
-    { key: 'impulsivityVerbal', label: 'Impulsividad verbal', start: 11, count: 5 },
-  ],
-  categoryRules: {
-    default: 'baja-probabilidad',
-    rules: [
-      {
-        max: 22,
-        category: 'baja-probabilidad',
-        description: () =>
-          'Tus respuestas no sugieren de forma destacada un patrón consistente con TDAH. ' +
-          'Algunos síntomas aislados pueden deberse a estrés, ansiedad, agotamiento (burnout) o ' +
-          'alteraciones del estado de ánimo. Si estos síntomas aparecieron recientemente, ' +
-          'considera también estas posibilidades.',
-      },
-      {
-        max: 36,
-        category: 'moderada-probabilidad',
-        description: (_p, labels) =>
-          `Presentas un patrón ${labels.length > 0 ? labels.join(' y ') : 'moderado'} ` +
-          'que merece exploración profesional. Te recomendamos consultar con un psicólogo o psiquiatra ' +
-          'para una evaluación diferencial, especialmente si estos síntomas han estado presentes desde la infancia.',
-      },
-      {
-        max: 64,
-        category: 'alta-probabilidad',
-        description: (_p, labels) =>
-          `Tus respuestas indican un patrón significativo ${labels.length > 0 ? 'de ' + labels.join(' y ') : 'de rasgos de TDAH'} ` +
-          '. Es altamente recomendable que busques evaluación profesional para descartar o confirmar TDAH ' +
-          'y descartar otras condiciones (ansiedad, TEA, trastorno del estado de ánimo). ' +
-          'Recuerda que el TDAH requiere que estos síntomas estén presentes desde la infancia.',
-      },
-    ],
-  },
-  childhoodNote:
-    'El TDAH requiere que los síntomas estén presentes desde la infancia (antes de los 12 años). Si estos patrones aparecieron solo en los últimos meses, el agotamiento (burnout), la ansiedad o la depresión pueden causar síntomas similares.',
-});
 
 // ═══════════════════════════════════════════════════
 // TEA ADULTO

@@ -1,470 +1,517 @@
+// ═══════════════════════════════════════════════════
+// ASRS-5 — Adult ADHD Self-Report Scale (DSM-5)
+// Kessler et al. (2005), Psychol Med, 35(2), 245-256
+// Ustun et al. (2017), JAMA Psychiatry, 74(5), 520-527
+// DOI: 10.1017/S0033291704002892
+// DOI: 10.1001/jamapsychiatry.2017.0298
+// Adaptación española: Ramos-Quiroga et al. (2009)
+// ═══════════════════════════════════════════════════
+
 const tdahQuestions = [
-  // ═══════════ SECCIÓN A: INATENCIÓN (8 ítems) ═══════════
+  // ═══════════ PARTE A — SCREENER (6 ítems) ═══════════
+
+  // A1 — Inatención
   {
     id: 1,
     section: 'A',
-    sectionTitle: 'Inatención — Errores por descuido',
+    sectionTitle: 'Parte A — Screener',
     dimension: 'inattention',
+    domain: 'dsm5-inattention',
+    text: 'Tengo dificultad para concentrarme en lo que me dicen, incluso cuando me hablan directamente.',
+    examples: [
+      {
+        label: 'Conversaciones',
+        description: 'En una charla cara a cara, mi mente se va a otro tema y pierdo el hilo de lo que me están diciendo.',
+      },
+      {
+        label: 'Reuniones',
+        description: 'En el trabajo o estudio, alguien me explica algo y me doy cuenta de que no escuché los últimos segundos; asiento por inercia.',
+      },
+      {
+        label: 'Instrucciones',
+        description: 'Recibo indicaciones verbales y después no recuerdo detalles clave que eran importantes.',
+      },
+      {
+        label: 'Videollamadas',
+        description: 'En una llamada virtual, termino revisando otra pestaña y pierdo información relevante.',
+      },
+    ],
+  },
+
+  // A2 — Inatención
+  {
+    id: 2,
+    section: 'A',
+    sectionTitle: 'Parte A — Screener',
+    dimension: 'inattention',
+    domain: 'dsm5-inattention',
+    text: 'Me cuesta terminar los detalles finales de un proyecto una vez que las partes más difíciles están resueltas.',
+    examples: [
+      {
+        label: 'Trabajo / estudio',
+        description: 'Completo el análisis o la parte creativa pero dejo pendiente la revisión final, el formato o el envío.',
+      },
+      {
+        label: 'Proyectos personales',
+        description: 'El mueble está armado pero falta atornillar las manijas; el curso está hecho pero no pedí el certificado.',
+      },
+      {
+        label: 'Trámites',
+        description: 'Junto todos los papeles pero no los entrego; lleno el formulario pero olvido adjuntar algo.',
+      },
+      {
+        label: 'Hogar',
+        description: 'Lavo la ropa pero se queda en la lavadora; cocino pero no limpio la cocina después.',
+      },
+    ],
+  },
+
+  // A3 — Inatención
+  {
+    id: 3,
+    section: 'A',
+    sectionTitle: 'Parte A — Screener',
+    dimension: 'inattention',
+    domain: 'dsm5-inattention',
+    text: 'Tengo dificultad para recordar citas, compromisos u obligaciones.',
+    examples: [
+      {
+        label: 'Citas',
+        description: 'Olvido reuniones agendadas aunque las tenga en el calendario; necesito múltiples recordatorios.',
+      },
+      {
+        label: 'Compromisos sociales',
+        description: 'Digo que voy a un evento y se me pasa la fecha; o acuerdo llamar a alguien y me entero días después.',
+      },
+      {
+        label: 'Pagos / fechas límite',
+        description: 'Recuerdo que debía pagar algo el día después del vencimiento; entrego trabajos fuera de plazo.',
+      },
+      {
+        label: 'Mensajes',
+        description: 'Leo un mensaje, pienso "respondo después" y lo olvido por completo; dejo conversaciones sin cerrar.',
+      },
+    ],
+  },
+
+  // A4 — Inatención
+  {
+    id: 4,
+    section: 'A',
+    sectionTitle: 'Parte A — Screener',
+    dimension: 'inattention',
+    domain: 'dsm5-inattention',
+    text: 'Tengo dificultad para organizar tareas o actividades que requieren varios pasos.',
+    examples: [
+      {
+        label: 'Priorización',
+        description: 'Con varias tareas pendientes, no sé por dónde empezar; termino haciendo algo que no era urgente.',
+      },
+      {
+        label: 'Planificación',
+        description: 'Subestimo el tiempo necesario y termino apurado o entregando incompleto.',
+      },
+      {
+        label: 'Secuenciación',
+        description: 'Me pierdo en los pasos de un trámite o proyecto porque no sigo un orden lógico.',
+      },
+      {
+        label: 'Materiales',
+        description: 'Pierdo tiempo buscando documentos, herramientas o recursos que debería tener preparados.',
+      },
+    ],
+  },
+
+  // A5 — Hiperactividad-Impulsividad
+  {
+    id: 5,
+    section: 'A',
+    sectionTitle: 'Parte A — Screener',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Muevo o retuerzo las manos o los pies, o me retuerzo en el asiento cuando tengo que estar sentado por mucho tiempo.',
+    examples: [
+      {
+        label: 'Reuniones / clases',
+        description: 'Cambio de postura constantemente; tamborileo con los dedos; muevo la pierna sin darme cuenta.',
+      },
+      {
+        label: 'Cine / teatro',
+        description: 'A la media hora ya estoy inquieto, cruzando y descruzando piernas.',
+      },
+      {
+        label: 'Transporte',
+        description: 'En viajes largos necesito parar o moverme; me siento físicamente incómodo.',
+      },
+      {
+        label: 'Trabajo de escritorio',
+        description: 'Me levanto frecuentemente con cualquier excusa; prefiero trabajar de pie o caminando.',
+      },
+    ],
+  },
+
+  // A6 — Hiperactividad-Impulsividad
+  {
+    id: 6,
+    section: 'A',
+    sectionTitle: 'Parte A — Screener',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Me siento excesivamente activo o impulsado a hacer cosas, como si tuviera un motor interno que no se apaga.',
+    examples: [
+      {
+        label: 'Sensación física',
+        description: 'Siento una energía interna constante; incluso estando cansado, mi cuerpo quiere estar en movimiento.',
+      },
+      {
+        label: 'Mental',
+        description: 'Mi mente no se detiene: ideas, planes, preocupaciones en bucle, especialmente al intentar dormir.',
+      },
+      {
+        label: 'Descanso',
+        description: 'Los fines de semana o vacaciones me cuesta "apagar"; siento que debería estar haciendo algo productivo.',
+      },
+      {
+        label: 'Otros lo notan',
+        description: 'Me han dicho que parezco acelerado, que voy "a mil por hora" o que transmito inquietud.',
+      },
+    ],
+  },
+
+  // ═══════════ PARTE B — ÍTEMS ADICIONALES (12 ítems) ═══════════
+
+  // B7 — Inatención
+  {
+    id: 7,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'inattention',
+    domain: 'dsm5-inattention',
     text: 'Cometo errores por descuido en tareas que requieren atención a los detalles, aunque las conozca bien.',
     examples: [
       {
         label: 'Escritura / digital',
-        description:
-          'Al escribir mensajes, correos o documentos, me como palabras, letras o signos de puntuación sin darme cuenta hasta que alguien me lo señala o los releo después.',
+        description: 'Al escribir mensajes o documentos, omito palabras, letras o signos sin darme cuenta hasta que alguien lo señala.',
       },
       {
         label: 'Números / datos',
-        description:
-          'En matemáticas, hojas de cálculo o finanzas personales, me salto números, copio mal cifras o olvido cambiar el signo (+ por −).',
+        description: 'En hojas de cálculo o finanzas, copio mal cifras o me salto celdas.',
       },
       {
         label: 'Revisión',
-        description:
-          'Reviso un trabajo "con cuidado" y aun así no veo errores obvios que otros detectan inmediatamente.',
+        description: 'Reviso un trabajo "con cuidado" y aun así no veo errores obvios que otros detectan de inmediato.',
       },
       {
-        label: 'Instrucciones',
-        description:
-          'Leo una receta, manual o indicación y después descubro que omití un paso sin querer.',
+        label: 'Lectura de instrucciones',
+        description: 'Leo un manual o una receta y después descubro que omití un paso importante sin querer.',
       },
     ],
   },
+
+  // B8 — Inatención
   {
-    id: 2,
-    section: 'A',
-    sectionTitle: 'Inatención — Desconexión mental',
+    id: 8,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
     dimension: 'inattention',
-    text: 'Mi mente se desconecta durante conversaciones, lecturas o reuniones, aunque intente prestar atención.',
+    domain: 'dsm5-inattention',
+    text: 'Tengo dificultad para mantener la atención en tareas o actividades recreativas.',
     examples: [
       {
-        label: 'Conversaciones uno a uno',
-        description:
-          'La otra persona sigue hablando y yo me doy cuenta de que no escuché los últimos 30 segundos; asiento por inercia.',
+        label: 'Lectura',
+        description: 'Leo tres páginas y no puedo resumir de qué trataban; necesito releer varias veces.',
       },
       {
-        label: 'Lecturas',
-        description:
-          'Leo tres páginas de un libro o artículo y no puedo resumir de qué trataban; tengo que releer varias veces.',
+        label: 'Documentos largos',
+        description: 'Evito leer informes extensos o los escaneo superficialmente perdiendo información clave.',
       },
       {
-        label: 'Reuniones / videollamadas',
-        description:
-          'Termino la reunión sin saber qué se decidió; me descubro revisando el celular o pensando en otra cosa.',
+        label: 'Pasatiempos',
+        description: 'Incluso en actividades que disfruto, mi atención se desvía después de un rato.',
       },
       {
         label: 'Películas / series',
-        description:
-          'Pierdo el hilo de la trama y tengo que rebobinar o preguntar qué pasó.',
-      },
-    ],
-  },
-  {
-    id: 3,
-    section: 'A',
-    sectionTitle: 'Inatención — Proyectos sin terminar',
-    dimension: 'inattention',
-    text: 'Empiezo tareas o proyectos con entusiasmo pero me cuesta enormemente terminarlos.',
-    examples: [
-      {
-        label: 'Proyectos personales',
-        description:
-          'Tengo libros empezados, cursos sin terminar, hobbies abandonados a mitad de camino.',
-      },
-      {
-        label: 'Laborales / escolares',
-        description:
-          'Dejo informes, tareas o proyectos al 80 %; el "último empujón" me cuesta semanas.',
-      },
-      {
-        label: 'Domésticos',
-        description:
-          'Empiezo a limpiar u organizar una habitación, me distraigo con otra cosa, y queda peor que al principio.',
-      },
-      {
-        label: 'Creativos',
-        description:
-          'Tengo diez ideas empezadas y ninguna publicada o terminada; el perfeccionismo o el aburrimiento me bloquean al final.',
-      },
-    ],
-  },
-  {
-    id: 4,
-    section: 'A',
-    sectionTitle: 'Inatención — Organización y plazos',
-    dimension: 'inattention',
-    text: 'Me cuesta organizar tareas complejas, establecer prioridades o cumplir plazos.',
-    examples: [
-      {
-        label: 'Priorización',
-        description:
-          'Tengo diez cosas urgentes y no sé por cuál empezar; termino haciendo una undécima que no era importante.',
-      },
-      {
-        label: 'Planificación',
-        description:
-          'Subestimo sistemáticamente el tiempo que toman las cosas ("me da tiempo"); termino apurado o entregando tarde.',
-      },
-      {
-        label: 'Secuenciación',
-        description:
-          'Me pierdo en los pasos de una receta, un trámite o un proyecto porque no sigo el orden lógico.',
-      },
-      {
-        label: 'Materiales',
-        description:
-          'Pierdo tiempo buscando herramientas, documentos o recursos que debería tener a mano.',
-      },
-    ],
-  },
-  {
-    id: 5,
-    section: 'A',
-    sectionTitle: 'Inatención — Evitación de esfuerzo mental',
-    dimension: 'inattention',
-    text: 'Evito o postergo tareas que requieren esfuerzo mental sostenido.',
-    examples: [
-      {
-        label: 'Tareas "pesadas"',
-        description:
-          'Dejo el informe, la declaración de impuestos o el estudio difícil para "más tarde" hasta que es urgente.',
-      },
-      {
-        label: 'Lecturas extensas',
-        description:
-          'Necesito leer un documento largo y busco cualquier excusa para no empezar (revisar correos, redes, etc.).',
-      },
-      {
-        label: 'Formularios / trámites',
-        description:
-          'Un papeleo que toma 30 minutos me puede llevar semanas por la resistencia inicial.',
-      },
-      {
-        label: 'Conversaciones difíciles',
-        description:
-          'Difiero llamadas o mensajes que requieren pensar la respuesta con cuidado.',
-      },
-    ],
-  },
-  {
-    id: 6,
-    section: 'A',
-    sectionTitle: 'Inatención — Pérdida de objetos',
-    dimension: 'inattention',
-    text: 'Pierdo objetos de uso diario con una frecuencia que me frustra o me retrasa.',
-    examples: [
-      {
-        label: 'Salida de casa',
-        description:
-          'Busco llaves, celular, billetera o gafas casi todos los días; tengo rutinas de "¿dónde lo dejé?".',
-      },
-      {
-        label: 'En el trabajo / estudio',
-        description:
-          'Pierdo documentos, lapiceros, cables, auriculares; compro reemplazos y luego encuentro los originales.',
-      },
-      {
-        label: 'Estacionamiento',
-        description:
-          'Olvido dónde estacioné el coche o en qué nivel dejé algo.',
-      },
-      {
-        label: '"Lógico"',
-        description:
-          'Dejo algo en un lugar "para no olvidarlo" y después no recuerdo cuál era ese lugar.',
-      },
-    ],
-  },
-  {
-    id: 7,
-    section: 'A',
-    sectionTitle: 'Inatención — Distracción por estímulos',
-    dimension: 'inattention',
-    text: 'Me distraigo fácilmente por estímulos externos o pensamientos internos.',
-    examples: [
-      {
-        label: 'Estímulos externos',
-        description:
-          'Un ruido lejano, alguien pasando, una notificación visual me sacan de lo que hacía.',
-      },
-      {
-        label: 'Pensamientos intrusivos',
-        description:
-          'Estoy trabajando y de repente estoy planeando las vacaciones, recordando una conversación de ayer o imaginando una respuesta a un correo no enviado.',
-      },
-      {
-        label: 'Internet / digital',
-        description:
-          'Abro una pestaña para buscar algo específico y veinte minutos después estoy en un artículo totalmente ajeno.',
-      },
-      {
-        label: 'Conversaciones',
-        description:
-          'Alguien me habla y mi cerebro conecta una palabra con una idea que tengo que anotar antes de que se me olvide.',
-      },
-    ],
-  },
-  {
-    id: 8,
-    section: 'A',
-    sectionTitle: 'Inatención — Olvidos cotidianos',
-    dimension: 'inattention',
-    text: 'Soy olvidadizo en citas, compromisos, pagos o devolver llamadas y mensajes.',
-    examples: [
-      {
-        label: 'Citas',
-        description:
-          'Olvido reuniones aunque las tenga en el calendario; necesito recordatorios múltiples.',
-      },
-      {
-        label: 'Compromisos sociales',
-        description:
-          'Digo que voy a algo y se me pasa; o acuerdo llamar a alguien y me entero días después.',
-      },
-      {
-        label: 'Pagos',
-        description:
-          'Recuerdo que debía pagar algo el día después de la fecha límite.',
-      },
-      {
-        label: 'Mensajes',
-        description:
-          'Leo un mensaje, pienso "respondo después" y se me olvida por completo; o respondo mentalmente sin escribir.',
+        description: 'Pierdo el hilo de la trama y tengo que rebobinar o pregunto qué pasó.',
       },
     ],
   },
 
-  // ═══════════ SECCIÓN B: HIPERACTIVIDAD FÍSICA (3 ítems) ═══════════
+  // B9 — Inatención
   {
     id: 9,
     section: 'B',
-    sectionTitle: 'Hiperactividad — Inquietud física',
-    dimension: 'hyperactivityPhysical',
-    text: 'Siento inquietud física constante: muevo las manos, pateo, retuerzo el cuerpo o cambio de postura sin darme cuenta.',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'inattention',
+    domain: 'dsm5-inattention',
+    text: 'Me distraigo fácilmente por estímulos externos o pensamientos no relacionados.',
     examples: [
       {
-        label: 'Manos',
-        description:
-          'Tamborileo con los dedos, toco objetos, hago clic con bolígrafos, juego con el celular sin propósito.',
+        label: 'Ruidos',
+        description: 'Un sonido leve —un teléfono vibrando, alguien tosiendo— me saca completamente de lo que estaba haciendo.',
       },
       {
-        label: 'Piernas',
-        description:
-          'Muevo la pierna sentado, pateo el aire, camino de un lado a otro cuando hablo por teléfono.',
+        label: 'Pensamientos intrusivos',
+        description: 'Estoy trabajando y de repente estoy planeando algo totalmente ajeno; mi mente deriva sin control.',
       },
       {
-        label: 'Postura',
-        description:
-          'Cambio de posición en la silla cada dos minutos; prefiero ir de pie a sentarme; me acurruco de formas extrañas.',
+        label: 'Notificaciones',
+        description: 'Una notificación me lleva a revisar el celular y pierdo el hilo de la tarea original.',
       },
       {
-        label: 'Dormir',
-        description:
-          'Me cuesta encontrar una posición cómoda; me doy vueltas en la cama antes de dormir.',
-      },
-    ],
-  },
-  {
-    id: 10,
-    section: 'B',
-    sectionTitle: 'Hiperactividad — Malestar al estar quieto',
-    dimension: 'hyperactivityPhysical',
-    text: 'Me resulta físicamente incómodo quedarme quieto o quieta en situaciones que lo requieren.',
-    examples: [
-      {
-        label: 'Eventos formales',
-        description:
-          'Ceremonias, funerales, conferencias largas: siento la urgencia de levantarme o estirar algo.',
-      },
-      {
-        label: 'Transporte',
-        description:
-          'Viajes largos en avión, bus o coche; prefiero parar cada hora aunque no sea necesario.',
-      },
-      {
-        label: 'Esperas médicas / oficinas',
-        description:
-          'El tiempo de espera sentado se siente físicamente agobiante.',
-      },
-      {
-        label: 'Cine / teatro',
-        description:
-          'A los cuarenta minutos ya estoy cambiando de postura, cruzando y descruzando piernas.',
-      },
-    ],
-  },
-  {
-    id: 11,
-    section: 'B',
-    sectionTitle: 'Hiperactividad — "Motor encendido"',
-    dimension: 'hyperactivityPhysical',
-    text: 'Siento una sensación interna de "motor encendido" que no me deja descansar mentalmente.',
-    examples: [
-      {
-        label: 'Físico',
-        description:
-          'Aunque estoy exhausto, mi cuerpo quiere hacer algo; es difícil quedarme en el sofá un domingo.',
-      },
-      {
-        label: 'Mental',
-        description:
-          'Mi cerebro sigue acelerado aunque quiera dormir; repaso mentalmente conversaciones, pendientes, ideas.',
-      },
-      {
-        label: 'Fines de semana',
-        description:
-          'No logro "apagar"; siento que debería ser productivo aunque sea sábado.',
-      },
-      {
-        label: 'Vacaciones',
-        description:
-          'Me cuesta desconectar del trabajo o las responsabilidades; termino revisando correos "solo por si acaso".',
+        label: 'Conversaciones',
+        description: 'En una charla, una palabra dispara una idea y dejo de escuchar mientras desarrollo ese pensamiento.',
       },
     ],
   },
 
-  // ═══════════ SECCIÓN C: IMPULSIVIDAD VERBAL / INTERPERSONAL (5 ítems) ═══════════
+  // B10 — Hiperactividad-Impulsividad
   {
-    id: 12,
-    section: 'C',
-    sectionTitle: 'Impulsividad — Habla excesiva',
-    dimension: 'impulsivityVerbal',
-    text: 'Hablo más de lo necesario, doy vueltas a las explicaciones o me "desbordo" verbalmente.',
+    id: 10,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Me levanto de mi asiento en situaciones donde se espera que permanezca sentado.',
     examples: [
       {
-        label: 'Explicaciones',
-        description:
-          'Doy contexto excesivo para responder algo simple; la otra persona pierde el hilo.',
+        label: 'Reuniones',
+        description: 'Encuentro excusas para levantarme: ir al baño, servir agua, buscar algo.',
       },
       {
-        label: 'Presión por hablar',
-        description:
-          'En una reunión siento la presión de aportar algo y termino ocupando más tiempo del que me corresponde.',
+        label: 'Eventos formales',
+        description: 'En ceremonias, conferencias o funerales, siento una urgencia física de ponerme de pie.',
       },
       {
-        label: 'Mensajes largos',
-        description:
-          'Escribo párrafos cuando una frase bastaría; después me arrepiento de no haber sido más conciso.',
+        label: 'Comidas',
+        description: 'No logro permanecer sentado durante toda una comida; me levanto entre platos.',
       },
       {
-        label: 'Se me escapa',
-        description:
-          'No es que interrumpa para imponerme, sino que la respuesta se me escapa antes de que terminen.',
+        label: 'Cine / teatro',
+        description: 'A los 40 minutos ya estoy de pie o caminando por el pasillo.',
       },
     ],
   },
+
+  // B11 — Hiperactividad-Impulsividad
   {
-    id: 13,
-    section: 'C',
-    sectionTitle: 'Impulsividad — Respuestas precipitadas',
-    dimension: 'impulsivityVerbal',
-    text: 'Respondo antes de que la otra persona termine de hablar, como si la respuesta me "quemara".',
+    id: 11,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Me siento inquieto o con dificultad para relajarme durante el tiempo libre.',
     examples: [
       {
-        label: 'Terminar frases',
-        description:
-          'Completo las oraciones de los demás porque "ya sé lo que van a decir".',
+        label: 'Fines de semana',
+        description: 'No logro estar sin hacer nada; necesito llenar el tiempo con actividades o estímulos.',
       },
       {
-        label: 'Respuestas apresuradas',
-        description:
-          'Contesto una pregunta sin haberla escuchado completa; luego me doy cuenta de que no era eso.',
+        label: 'Vacaciones',
+        description: 'Me cuesta desconectar; termino revisando correos o planificando en vez de descansar.',
       },
       {
-        label: 'Debate / discusión',
-        description:
-          'Replico inmediatamente sin procesar lo que acaban de decirme.',
+        label: 'Tiempo en casa',
+        description: 'Ver una película entera o leer un rato sin interrupciones me resulta casi imposible.',
+      },
+      {
+        label: 'Antes de dormir',
+        description: 'Mi mente sigue activa repasando el día o planificando el siguiente; tardo en "apagarme".',
+      },
+    ],
+  },
+
+  // B12 — Hiperactividad-Impulsividad
+  {
+    id: 12,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Hablo en exceso o tengo dificultad para guardar silencio en situaciones que lo requieren.',
+    examples: [
+      {
+        label: 'Conversaciones',
+        description: 'Ocupo más tiempo del que me corresponde hablando; doy detalles innecesarios.',
+      },
+      {
+        label: 'Reuniones',
+        description: 'Siento presión por aportar algo y termino hablando más que los demás.',
+      },
+      {
+        label: 'Mensajes',
+        description: 'Escribo párrafos largos cuando una frase bastaría; envío múltiples mensajes seguidos.',
+      },
+      {
+        label: 'Silencio incómodo',
+        description: 'Lleno los silencios en conversaciones aunque no tenga nada relevante que decir.',
+      },
+    ],
+  },
+
+  // B13 — Hiperactividad-Impulsividad
+  {
+    id: 13,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Respondo abruptamente o completo las frases de otros antes de que terminen de hablar.',
+    examples: [
+      {
+        label: 'Anticipación',
+        description: '"Ya sé lo que vas a decir" — y respondo antes de escuchar la pregunta completa.',
+      },
+      {
+        label: 'Conversaciones',
+        description: 'Interrumpo sin darme cuenta; luego me disculpo porque "se me escapó".',
+      },
+      {
+        label: 'Debates',
+        description: 'Replico inmediatamente sin procesar lo que acaban de decir; después me doy cuenta de que malinterpreté.',
       },
       {
         label: 'Instrucciones',
-        description:
-          'Empiezo a actuar antes de que terminen de explicarme; luego tengo que deshacer o preguntar de nuevo.',
+        description: 'Empiezo a hacer algo antes de que terminen de explicármelo; luego tengo que preguntar de nuevo.',
       },
     ],
   },
+
+  // B14 — Hiperactividad-Impulsividad
   {
     id: 14,
-    section: 'C',
-    sectionTitle: 'Impulsividad — Intolerancia a la lentitud',
-    dimension: 'impulsivityVerbal',
-    text: 'Me cuesta tolerar que otros hablen o actúen a un ritmo más lento que el mío.',
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Tengo dificultad para esperar mi turno en situaciones grupales.',
     examples: [
       {
-        label: 'Historias largas',
-        description:
-          'Alguien cuenta algo con demasiados detalles y siento urgencia interna de que "llegue al punto"; puedo parecer impaciente aunque no lo exteriorice.',
+        label: 'Filas',
+        description: 'Hacer cola me genera una impaciencia desproporcionada; busco atajos o me voy.',
       },
       {
-        label: 'Explicaciones lentas',
-        description:
-          'En una capacitación o tutorial siento que avanza demasiado lento y salto secciones, a veces perdiendo información importante.',
+        label: 'Conversaciones grupales',
+        description: 'Me cuesta esperar a que otros terminen para hablar; intervengo antes de mi turno.',
       },
       {
-        label: 'Trabajo en equipo',
-        description:
-          'Me frustra cuando otros necesitan más tiempo para entender algo que yo capté rápido.',
+        label: 'Tráfico',
+        description: 'La espera en congestión vehicular me resulta particularmente frustrante.',
       },
       {
-        label: 'Espera pasiva',
-        description:
-          'Ver a alguien buscar algo lentamente (archivos, llaves, palabras) me genera tensión física.',
+        label: 'Turnos',
+        description: 'En juegos, presentaciones o dinámicas grupales, me adelanto sin darme cuenta.',
       },
     ],
   },
+
+  // B15 — Hiperactividad-Impulsividad
   {
     id: 15,
-    section: 'C',
-    sectionTitle: 'Impulsividad — Intromisión',
-    dimension: 'impulsivityVerbal',
-    text: 'Interrumpo, me entrometo o tomo el control de situaciones grupales sin planearlo.',
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Interrumpo o me entrometo en las actividades de otros.',
     examples: [
       {
         label: 'Conversaciones ajenas',
-        description:
-          'Escucho una discusión cercana y "entro" con mi opinión sin ser parte.',
+        description: 'Escucho una discusión cercana y "entro" con mi opinión sin que me la pidan.',
       },
       {
-        label: 'Tareas grupales',
-        description:
-          '"Es más rápido si lo hago yo" y termino asumiendo el control, a veces sin consultar.',
+        label: 'Trabajo en equipo',
+        description: '"Es más rápido si lo hago yo" y asumo el control sin consultar al grupo.',
       },
       {
-        label: 'Correcciones',
-        description:
-          'Corrijo a alguien en público porque "no puedo dejar pasar el error".',
+        label: 'Espacio personal',
+        description: 'Tomo objetos prestados sin preguntar o uso el espacio de otro sin notar que estoy invadiendo.',
       },
       {
-        label: 'Planes',
-        description:
-          'Cambio el plan de otros porque mi alternativa me parece más eficiente, aunque no me hayan pedido opinión.',
+        label: 'Planes ajenos',
+        description: 'Cambio o "optimizo" planes que otros han hecho sin considerar si quieren mi intervención.',
       },
     ],
   },
+
+  // B16 — Hiperactividad-Impulsividad
   {
     id: 16,
-    section: 'C',
-    sectionTitle: 'Impulsividad — Decisiones apresuradas',
-    dimension: 'impulsivityVerbal',
-    text: 'Tomo decisiones apresuradas sin considerar consecuencias, especialmente bajo estrés o emoción intensa.',
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Tomo decisiones impulsivas sin considerar plenamente las consecuencias a largo plazo.',
     examples: [
       {
         label: 'Compras',
-        description:
-          'Compro algo caro por impulso y me arrepiento después; o me convenzo de que lo necesito en el momento.',
+        description: 'Compro algo costoso por impulso y me arrepiento después; gasto más de lo planeado.',
       },
       {
-        label: 'Mensajes / correos',
-        description:
-          'Envío mensajes en caliente, sarcásticos o definitivos que luego no puedo retractar.',
+        label: 'Mensajes / redes',
+        description: 'Publico o envío algo en caliente que luego borro o lamento.',
       },
       {
         label: 'Compromisos',
-        description:
-          'Digo "sí" a invitaciones, proyectos o favores sin revisar mi agenda; luego me veo sobrecargado.',
+        description: 'Digo "sí" sin revisar mi disponibilidad real; me sobrecargo de obligaciones.',
       },
       {
-        label: 'Cambios drásticos',
-        description:
-          'Renuncio, corto relaciones o cambio de ciudad o planes sin evaluar adecuadamente.',
+        label: 'Cambios de vida',
+        description: 'Renuncio, termino relaciones o tomo decisiones importantes sin un período de reflexión.',
+      },
+    ],
+  },
+
+  // B17 — Hiperactividad-Impulsividad
+  {
+    id: 17,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'hyperactivityImpulsivity',
+    domain: 'dsm5-hyperactivity-impulsivity',
+    text: 'Me describirían como una persona que actúa sin pensar o "primero actúa, después piensa".',
+    examples: [
+      {
+        label: 'Reacciones',
+        description: 'Respondo a un correo o mensaje inmediatamente y después me doy cuenta de que debí esperar.',
+      },
+      {
+        label: 'Situaciones sociales',
+        description: 'Digo algo inapropiado sin filtro; luego me disculpo o me arrepiento.',
+      },
+      {
+        label: 'Tareas',
+        description: 'Empiezo a hacer algo sin leer las instrucciones y después tengo que deshacer y volver a empezar.',
+      },
+      {
+        label: 'Autopercepción',
+        description: 'Reconozco que mi primer impulso suele dominar sobre mi capacidad de frenar y evaluar.',
+      },
+    ],
+  },
+
+  // B18 — Inatención
+  {
+    id: 18,
+    section: 'B',
+    sectionTitle: 'Parte B — Evaluación complementaria',
+    dimension: 'inattention',
+    domain: 'dsm5-inattention',
+    text: 'Evito o postergo tareas que requieren esfuerzo mental sostenido.',
+    examples: [
+      {
+        label: 'Tareas complejas',
+        description: 'Dejo el informe, los impuestos o el estudio para "más tarde" hasta que la urgencia me obliga.',
+      },
+      {
+        label: 'Lectura extensa',
+        description: 'Necesito leer un documento largo y busco cualquier distracción para no empezar.',
+      },
+      {
+        label: 'Formularios',
+        description: 'Un trámite de 30 minutos puede llevarme semanas por la resistencia inicial a enfrentarlo.',
+      },
+      {
+        label: 'Conversaciones difíciles',
+        description: 'Postergo llamadas o mensajes que requieren pensar la respuesta con cuidado o confrontar un tema.',
       },
     ],
   },
@@ -479,9 +526,12 @@ export const LIKERT_OPTIONS = [
 ];
 
 export const SECTIONS = [
-  { id: 'A', title: 'Inatención', range: [0, 7] },
-  { id: 'B', title: 'Hiperactividad física', range: [8, 10] },
-  { id: 'C', title: 'Impulsividad verbal e interpersonal', range: [11, 15] },
+  { id: 'A', title: 'Parte A — Screener', range: [0, 5] },
+  { id: 'B', title: 'Parte B — Evaluación complementaria', range: [6, 17] },
 ];
+
+// Fuente: ASRS-5. Kessler et al. (2005), Psychol Med, 35(2), 245-256.
+// Actualización DSM-5: Ustun et al. (2017), JAMA Psychiatry, 74(5), 520-527.
+// Validación española: Ramos-Quiroga et al. (2009).
 
 export default tdahQuestions;

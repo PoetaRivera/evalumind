@@ -647,7 +647,7 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 |---|---|---|---|---|
 | 🔴 P0 | 9 | DAT | Implementar GloVe real, citar Olson et al. (2021) | Alto (rearquitectura del scoring) |
 | 🔴 P0 | 18 | RMET | Usar 36 fotos reales o renombrar + citar Baron-Cohen et al. (2001) | Alto (requiere assets con licencia) |
-| 🔴 P0 | 1 | TDAH | Migrar al ASRS-5 con 18 ítems y scoring validado | Medio (reescritura de ítems) |
+| ✅ P0 | 1 | TDAH | ~~Migrar al ASRS-5 con 18 ítems y scoring validado~~ Completado 2026-05-17 | Medio |
 | 🟡 P1 | 2 | TEA | Migrar al AQ-50 o RAADS-R | Alto (50-80 ítems nuevos) |
 | 🟡 P1 | 4 | Alexitimia | Migrar al TAS-20 con 20 ítems y 3 subescalas | Medio |
 | 🟡 P1 | 8 | FAS | 3 letras (no 1), scoring COWAT, normas Loonstra et al. (2001) | Medio |

@@ -19,14 +19,16 @@ const DISCLAIMER_GENERAL =
 const TEST_REGISTRY = {
   // ─── Likert ─────────────────────────────────────
   'tdah-adulto': {
-    testId: 'tdah-adult-v2', title: 'Screening de TDAH en Adultos',
-    description: 'Evaluación orientativa de rasgos de TDAH basada en criterios de atención, hiperactividad e impulsividad.',
+    testId: 'tdah-adult-v2', title: 'Screening de TDAH en Adultos (ASRS-5)',
+    description: 'Evaluación orientativa de rasgos de TDAH basada en el ASRS-5 (Adult ADHD Self-Report Scale, DSM-5). Kessler et al. (2005), Ustun et al. (2017).',
     instructions: [
       'Cada pregunta describe una situación con ejemplos de distintos contextos.',
       'No necesitas identificarte con todos los ejemplos. Si al menos uno describe algo que te ocurre con la frecuencia indicada, responde basándote en ese ejemplo.',
       'Piensa en los últimos 6 meses, no en excepciones puntuales.',
+      'Los primeros 6 ítems constituyen un screener validado (Parte A).',
     ],
     questions: tdahQuestions, sections: TDAH_SECTIONS, scoringFn: calculateTdahScore,
+    source: 'ASRS-5 (Kessler et al., 2005; Ustun et al., 2017). DOI: 10.1017/S0033291704002892',
     disclaimerText: `${DISCLAIMER_GENERAL} Si tus resultados sugieren rasgos significativos, te recomendamos buscar evaluación con un psicólogo o psiquiatra especializado.`,
   },
   'tea-adulto': {

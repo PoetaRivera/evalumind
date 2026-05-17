@@ -14,73 +14,109 @@ import {
 
 const all = (n, value) => new Array(n).fill(value);
 
-// ─── TDAH ────────────────────────────────────────
+// ─── TDAH (ASRS-5) ────────────────────────────────────────
 
 describe('calculateTdahScore', () => {
-  it('all zeros → baja probabilidad, score 0', () => {
-    const r = calculateTdahScore(all(16, 0));
+  it('all zeros → baja probabilidad, score 0, screener negativo', () => {
+    const r = calculateTdahScore(all(18, 0));
     expect(r.total).toBe(0);
     expect(r.category).toBe('baja-probabilidad');
     expect(r.profiles).toHaveLength(0);
+    expect(r.screenerPositive).toBe(false);
+    expect(r.screenerPositiveCount).toBe(0);
   });
 
-  it('all max (4) → alta probabilidad, score 64, 3 profiles', () => {
-    const r = calculateTdahScore(all(16, 4));
-    expect(r.total).toBe(64);
+  it('all max (4) → alta probabilidad, score 72, combined', () => {
+    const r = calculateTdahScore(all(18, 4));
+    expect(r.total).toBe(72);
     expect(r.category).toBe('alta-probabilidad');
-    expect(r.profiles).toHaveLength(3);
+    expect(r.profiles).toHaveLength(1);
+    expect(r.profiles[0].id).toBe('tdah-combinado');
+    expect(r.screenerPositive).toBe(true);
   });
 
-  it('detects inattention profile at threshold ≥16', () => {
-    // 8 inattention questions at value 2 each = 16 (threshold)
-    const answers = [...all(8, 2), ...all(8, 0)];
+  it('ASRS: 17 puntos → baja probabilidad', () => {
+    const answers = new Array(18).fill(0);
+    for (let i = 0; i < 17; i++) answers[i] = 1;
     const r = calculateTdahScore(answers);
-    expect(r.dimensions[0].score).toBe(16);
-    expect(r.profiles.some((p) => p.id === 'inatencion-marcada')).toBe(true);
+    expect(r.total).toBe(17);
+    expect(r.category).toBe('baja-probabilidad');
   });
 
-  it('inattention at 15 → no profile detected', () => {
-    const answers = [2, 2, 2, 2, 2, 2, 2, 1, ...all(8, 0)];
-    const r = calculateTdahScore(answers);
-    expect(r.profiles.some((p) => p.id === 'inatencion-marcada')).toBe(false);
-  });
-
-  it('dimensions have correct keys and max values', () => {
-    const r = calculateTdahScore(all(16, 2));
-    expect(r.dimensions).toHaveLength(3);
-    expect(r.dimensions[0]).toEqual({ key: 'inattention', label: 'Inatención', score: 16, max: 32 });
-    expect(r.dimensions[1]).toEqual({ key: 'hyperactivityPhysical', label: 'Hiperactividad física', score: 6, max: 12 });
-    expect(r.dimensions[2]).toEqual({ key: 'impulsivityVerbal', label: 'Impulsividad verbal', score: 10, max: 20 });
-  });
-
-  it('moderada at boundary ≤36', () => {
-    // 9 questions at value 4 = 36 (exactly the boundary)
-    const answers = [...all(9, 4), ...all(7, 0)];
-    const r = calculateTdahScore(answers);
-    expect(r.total).toBe(36);
+  it('ASRS: 18 puntos → moderada probabilidad', () => {
+    const r = calculateTdahScore(all(18, 1));
+    expect(r.total).toBe(18);
     expect(r.category).toBe('moderada-probabilidad');
   });
 
-  it('alta at 37+', () => {
-    const answers = [...all(9, 4), 1, ...all(6, 0)];
+  it('ASRS: 24 puntos → alta probabilidad', () => {
+    const answers = new Array(18).fill(0);
+    for (let i = 0; i < 12; i++) answers[i] = 2;
     const r = calculateTdahScore(answers);
-    expect(r.total).toBe(37);
+    expect(r.total).toBe(24);
     expect(r.category).toBe('alta-probabilidad');
   });
 
-  it('childhoodNote is present', () => {
-    const r = calculateTdahScore(all(16, 2));
+  it('screener: 3 items ≥2 → negativo', () => {
+    const answers = new Array(18).fill(0);
+    answers[0] = 2; answers[1] = 2; answers[2] = 2;
+    const r = calculateTdahScore(answers);
+    expect(r.screenerPositiveCount).toBe(3);
+    expect(r.screenerPositive).toBe(false);
+  });
+
+  it('screener: 4 items ≥2 → positivo', () => {
+    const answers = new Array(18).fill(0);
+    answers[0] = 2; answers[1] = 2; answers[2] = 2; answers[3] = 2;
+    const r = calculateTdahScore(answers);
+    expect(r.screenerPositiveCount).toBe(4);
+    expect(r.screenerPositive).toBe(true);
+  });
+
+  it('dimensions have 2 DSM-5 keys with correct max', () => {
+    const r = calculateTdahScore(all(18, 2));
+    expect(r.dimensions).toHaveLength(2);
+    expect(r.dimensions[0]).toEqual({ key: 'inattention', label: 'Inatención', score: 18, max: 36 });
+    expect(r.dimensions[1]).toEqual({ key: 'hyperactivityImpulsivity', label: 'Hiperactividad-Impulsividad', score: 18, max: 36 });
+  });
+
+  it('inattention profile: items at 2 each = 18 = threshold', () => {
+    const answers = new Array(18).fill(0);
+    // Inattention indices: 0,1,2,3,6,7,8,16,17
+    [0, 1, 2, 3, 6, 7, 8, 16, 17].forEach((i) => { answers[i] = 2; });
+    const r = calculateTdahScore(answers);
+    expect(r.dimensions[0].score).toBe(18);
+    expect(r.profiles.some((p) => p.id === 'inatencion-predominante')).toBe(true);
+  });
+
+  it('hyperactivity profile: items at 2 each = 18 = threshold', () => {
+    const answers = new Array(18).fill(0);
+    // Hyperactivity indices: 4,5,9,10,11,12,13,14,15
+    [4, 5, 9, 10, 11, 12, 13, 14, 15].forEach((i) => { answers[i] = 2; });
+    const r = calculateTdahScore(answers);
+    expect(r.dimensions[1].score).toBe(18);
+    expect(r.profiles.some((p) => p.id === 'hiperactivo-impulsivo-predominante')).toBe(true);
+  });
+
+  it('both above threshold → combined presentation', () => {
+    const r = calculateTdahScore(all(18, 2));
+    expect(r.profiles).toHaveLength(1);
+    expect(r.profiles[0].id).toBe('tdah-combinado');
+  });
+
+  it('childhoodNote mentions ASRS-5', () => {
+    const r = calculateTdahScore(all(18, 2));
     expect(r.childhoodNote).toBeTruthy();
     expect(r.childhoodNote).toContain('12 años');
+    expect(r.childhoodNote).toContain('ASRS-5');
   });
 
   it('maxScores matches expected', () => {
-    const r = calculateTdahScore(all(16, 0));
+    const r = calculateTdahScore(all(18, 0));
     expect(r.maxScores).toEqual({
-      inattention: 32,
-      hyperactivityPhysical: 12,
-      impulsivityVerbal: 20,
-      total: 64,
+      inattention: 36,
+      hyperactivityImpulsivity: 36,
+      total: 72,
     });
   });
 });
@@ -425,7 +461,7 @@ describe('unified scoring interface', () => {
   });
 
   const allFunctions = [
-    { name: 'TDAH', fn: calculateTdahScore, input: all(16, 2) },
+    { name: 'TDAH', fn: calculateTdahScore, input: all(18, 2) },
     { name: 'TEA', fn: calculateTeaScore, input: all(16, 2) },
     { name: 'HSP', fn: calculateHspScore, input: all(16, 2) },
     { name: 'Alexitimia', fn: calculateAlexithymiaScore, input: all(16, 2) },
