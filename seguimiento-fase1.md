@@ -203,3 +203,7 @@ src/
 7. **Tipografía dislexia** (OpenDyslexic opcional)
 8. **UX avanzada**: tiempos estimados en cards, disclaimer cultural RMET, guardar respuestas detalladas en sessionStorage
 9. ~~Eliminar proyecto viejo `neuroscreen-app` de Firebase~~ ✅ Completado 2026-05-15
+10. ~~Auditoría científica de los 20 tests~~ ✅ `auditoria-tests.md` creado 2026-05-17
+11. ~~P0: DAT migrado a Olson et al. (2021)~~ ✅ GloVe SBWC real, 20K vectores español, 130 tests
+12. ~~P0: TDAH migrado a ASRS-5~~ ✅ 18 ítems DSM-5, screener validado, 130 tests
+13. **P0 pendiente: RMET** → necesita fotos reales o renombrar como versión textual. KDEF/Radboud disponibles con licencia académica gratuita.
