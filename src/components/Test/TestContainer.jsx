@@ -22,14 +22,9 @@ import RMETTask from './RMETTask';
 import SwitchTask from './SwitchTask';
 import SensoryThresholdTask from './SensoryThresholdTask';
 import AuditoryDistractionTask from './AuditoryDistractionTask';
-import { FAS_LETTERS } from '../../data/fasConfig';
 import './TestContainer.css';
 
 const TASK_TYPES = ['dat', 'fas', 'social-scenarios', 'self-discrepancy', 'fer', 'sart', 'flanker', 'digit-span', 'navon', 'rmet', 'switch-task', 'sensory-threshold', 'auditory-distraction'];
-
-function randomFasLetter() {
-  return FAS_LETTERS[Math.floor(Math.random() * FAS_LETTERS.length)];
-}
 
 function makeEmptyAnswers(count) {
   return new Array(count).fill(null);
@@ -61,7 +56,6 @@ function TestContainer() {
   const [finished, setFinished] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(!saved?.accepted);
   const [taskResult, setTaskResult] = useState(null);
-  const [fasLetter, setFasLetter] = useState(() => randomFasLetter());
   const [datEmbeddings, setDatEmbeddings] = useState(null);
   const [datLoading, setDatLoading] = useState(false);
   const embeddingsRef = useRef(null);
@@ -210,8 +204,8 @@ function TestContainer() {
     case 'fas':
       return (
           <div className="test-container">
-            <InstructionsBanner instructions={test.instructions} />
-          <FasTask letter={fasLetter} onComplete={handleTaskComplete} />
+            <InstructionsBanner instructions={test.instructions} source={test.source} />
+          <FasTask onComplete={handleTaskComplete} />
           </div>
       );
     case 'social-scenarios':
@@ -266,7 +260,7 @@ function TestContainer() {
     case 'rmet':
       return (
         <div className="test-container">
-          <InstructionsBanner instructions={test.instructions} />
+          <InstructionsBanner instructions={test.instructions} source={test.source} />
           <RMETTask {...taskProps} />
         </div>
       );

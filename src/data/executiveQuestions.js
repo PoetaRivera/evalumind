@@ -1,3 +1,19 @@
+// ═══════════════════════════════════════════════════════
+// Funciones Ejecutivas — EvaluMind (18 ítems)
+// Marco conceptual: BRIEF-A (Gioia, Isquith, Guy & Kenworthy)
+// Behavior Rating Inventory of Executive Function — Adult
+// 75 ítems, 9 subescalas, 2 índices (BRI + MI) → GEC
+//
+// Este test es una versión abreviada de screening con
+// 4 dominios ejecutivos: inhibición, memoria de trabajo,
+// planificación y flexibilidad cognitiva.
+// Referencia: Toplak, M.E., West, R.F., & Stanovich, K.E.
+// (2013). Practitioner review: Do performance-based
+// measures and ratings of executive function assess the
+// same construct? J Child Psychol Psychiatry, 54(2),
+// 131-143. DOI: 10.1111/jcpp.12001
+// ═══════════════════════════════════════════════════════
+
 const executiveQuestions = [
   // ═══════════ SECCIÓN A: INHIBICIÓN (4 ítems) ═══════════
   {

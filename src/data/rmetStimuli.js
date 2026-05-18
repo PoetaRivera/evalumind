@@ -1,4 +1,21 @@
-// Reading the Mind in the Eyes Test — versión textual adaptada
+// ============================================================
+// Test Textual de Estados Mentales
+// Versión textual inspirada en el Reading the Mind in the Eyes
+// Test (RMET) de Baron-Cohen et al. (2001).
+//
+// Referencia original:
+// Baron-Cohen, S., Wheelwright, S., Hill, J., Raste, Y., &
+// Plumb, I. (2001). The "Reading the Mind in the Eyes" Test
+// Revised Version: A Study with Normal Adults, and Adults with
+// Asperger Syndrome or High-Functioning Autism. Journal of
+// Child Psychology and Psychiatry, 42(2), 241-251.
+// DOI: 10.1111/1469-7610.00715
+//
+// NOTA: Esta es una adaptación textual. No utiliza las 36
+// fotografías originales del RMET (copyright protegido).
+// Los estímulos son descripciones de miradas, no imágenes.
+// ============================================================
+//
 // Descripciones de miradas con opciones de estado mental
 const RMET_STIMULI = [
   { id: 1, description: 'Ojos que miran fijamente con las cejas ligeramente levantadas, los párpados abiertos y la boca formando una línea tensa.', options: ['Juguetón', 'Irritado', 'Aterrorizado', 'Arrogante'], correct: 1 },

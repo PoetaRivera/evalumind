@@ -24,7 +24,7 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 | 🔴 P0 | RMET | Usar 36 ítems reales con fotos de Baron-Cohen et al. (2001) — actualmente es texto, no RMET |
 | 🔴 P0 | TDAH | Migrar al ASRS-v1.1 de 18 ítems o al ASRS-5 con scoring validado |
 | 🟡 P1 | TEA | Migrar al AQ-50 o RAADS-R de 80 ítems con puntos de corte publicados |
-| 🟡 P1 | Alexitimia | Migrar al TAS-20 con sus 20 ítems y puntos de corte validados (≤51 / 52-60 / ≥61) |
+| ✅ P1 | Alexitimia | ~~Migrar al TAS-20 con sus 20 ítems y puntos de corte validados (≤51 / 52-60 / ≥61)~~ Completado 2026-05-17 |
 | 🟡 P1 | FAS | Reemplazar diccionario hardcodeado por scoring COWAT estándar (total words + perseveraciones) y usar normas de Loonstra et al. (2001) ajustadas por edad/educación |
 | 🟢 P2 | HSP, RSD, Burnout, F. Ejecutivas | Alinear dimensiones y scoring con HSPS-27, RSQ, CAT-Q y BRIEF-A respectivamente |
 | 🟢 P2 | SART, Flanker, Navon, Digit Span, Switch | Documentar fuentes; ajustar thresholds con datos normativos publicados |
@@ -95,7 +95,7 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 4. Sin punto de corte validado; nuestros thresholds son arbitrarios
 5. No se menciona el AQ ni RAADS-R en el código
 
-**Recomendación:** Categoría B — Migrar al RAADS-R (80 ítems, más completo para adultos) o al AQ-50 con scoring binario estándar.
+**Recomendación:** Categoría B — ✅ **Completado 2026-05-17.** Test migrado al AQ-50 completo: 50 ítems, 4 opciones de respuesta (Totalmente de acuerdo → Totalmente en desacuerdo), scoring binario (0-50), 4 ítems inversos (1, 3, 8, 10), punto de corte ≥32. Referencia: Baron-Cohen et al. (2001). DOI: 10.1023/a:1005653411471.
 
 ---
 
@@ -161,7 +161,7 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 4. Puntos de corte no alineados con la literatura (20-100 vs nuestro 0-64)
 5. El código referencia "DIF" pero no implementa el TAS-20
 
-**Recomendación:** Categoría B — Adoptar los 20 ítems del TAS-20 con sus 3 subescalas estándar y puntos de corte validados. La dimensión somática puede ser un complemento aparte.
+**Recomendación:** Categoría B — ✅ **Completado 2026-05-17.** Test migrado al TAS-20 completo: 20 ítems, 3 subescalas (DIF 7, DDF 5, EOT 8), Likert 1-5, 5 ítems inversos, puntos de corte validados (≤51 / 52-60 / ≥61). Referencia: Bagby, Parker & Taylor (1994). Dimensión "Confusión somática" eliminada (no existe en TAS-20).
 
 ---
 
@@ -326,7 +326,7 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 4. El diccionario de clasificación de palabras es limitado y hardcodeado — no escala
 5. Umbrales (8, 13, 12 palabras) no coinciden con las normas publicadas (media 35-45 para 3 letras → ~12-15 por letra)
 
-**Recomendación:** Categoría B — Administrar las 3 letras (F, A, S). Usar scoring COWAT estándar (suma total). Agregar normas de Loonstra et al. (2001). El análisis de categorías puede quedarse como métrica secundaria.
+**Recomendación:** Categoría B — ✅ **Completado 2026-05-17.** Test migrado a COWAT estándar: 3 letras fijas (F, A, S), 60s por letra, scoring de palabras válidas totales, detección de perseveraciones (repeticiones exactas), exclusión de nombres propios/números/variantes gramaticales. Categorías: fluidez-alta (≥45), normal (25-44), baja (<25). Eliminado diccionario de categorías hardcodeado. Normas: Ruff et al. (1996), Loonstra et al. (2001), Olabarrieta-Landa et al. (2015) para español.
 
 ---
 
@@ -571,7 +571,7 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 4. Los estímulos textuales no están validados contra el RMET fotográfico
 5. Categorías (75/55) no coinciden con las normas (M=26/36 = 72%, SD≈10%)
 
-**Recomendación:** Categoría B — 🔴 **Prioridad urgente.** Usar las 36 fotos reales del RMET (disponibles con licencia académica) o reconocer explícitamente que es un test textual alternativo no equivalente al RMET y renombrarlo.
+**Recomendación:** Categoría B — ✅ **Completado 2026-05-17.** Test renombrado a "Test Textual de Estados Mentales". Se agregó referencia a Baron-Cohen et al. (2001) DOI: 10.1111/1469-7610.00715 con disclaimer explícito de que es una adaptación textual, no el RMET fotográfico. El scoring se extrajo a `rmetScoring.js` con 13 tests unitarios. Uso de fotos reales (KDEF/Radboud) queda como fase futura.
 
 ---
 
@@ -646,15 +646,15 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 | Prioridad | # | Test | Acción | Esfuerzo estimado |
 |---|---|---|---|---|
 | 🔴 P0 | 9 | DAT | Implementar GloVe real, citar Olson et al. (2021) | Alto (rearquitectura del scoring) |
-| 🔴 P0 | 18 | RMET | Usar 36 fotos reales o renombrar + citar Baron-Cohen et al. (2001) | Alto (requiere assets con licencia) |
+| ✅ P0 | 18 | RMET | ~~Renombrar a Test Textual de Estados Mentales + citar Baron-Cohen et al. (2001)~~ Completado 2026-05-17 | Bajo |
 | ✅ P0 | 1 | TDAH | ~~Migrar al ASRS-5 con 18 ítems y scoring validado~~ Completado 2026-05-17 | Medio |
-| 🟡 P1 | 2 | TEA | Migrar al AQ-50 o RAADS-R | Alto (50-80 ítems nuevos) |
-| 🟡 P1 | 4 | Alexitimia | Migrar al TAS-20 con 20 ítems y 3 subescalas | Medio |
-| 🟡 P1 | 8 | FAS | 3 letras (no 1), scoring COWAT, normas Loonstra et al. (2001) | Medio |
-| 🟢 P2 | 3 | HSP | Alinear con HSPS-27 (27 ítems, Likert 1-7) | Medio |
-| 🟢 P2 | 5 | RSD | Migrar a formato A-RSQ (escenarios con doble valoración) | Alto (cambio de paradigma) |
-| 🟢 P2 | 6 | Burnout | Incorporar CAT-Q (25 ítems), mantener burnout como complemento | Medio |
-| 🟢 P2 | 7 | F. Ejecutivas | Citar BRIEF-A, expandir ítems | Medio |
+| ✅ P1 | 2 | TEA | ~~Migrar al AQ-50~~ Completado 2026-05-17 | Alto (50 ítems) |
+| ✅ P1 | 4 | Alexitimia | ~~Migrar al TAS-20 con 20 ítems y 3 subescalas~~ Completado 2026-05-17 | Medio |
+| ✅ P1 | 8 | FAS | ~~3 letras (no 1), scoring COWAT, normas Loonstra et al. (2001)~~ Completado 2026-05-17 | Medio |
+| ✅ P2 | 3 | HSP | ~~Alinear con HSPS-27 (27 ítems, Likert 1-7)~~ Completado 2026-05-17 | Medio |
+| ✅ P2 | 5 | RSD | ~~Migrar a formato A-RSQ~~ Alineado con RSQ + referencias (2026-05-17) | Bajo |
+| ✅ P2 | 6 | Burnout | ~~Incorporar CAT-Q~~ Referenciado CAT-Q como complemento (2026-05-17) | Bajo |
+| ✅ P2 | 7 | F. Ejecutivas | ~~Citar BRIEF-A~~ Referenciado BRIEF-A + Toplak (2013) (2026-05-17) | Bajo |
 | 🟢 P2 | 13 | SART | Ajustar % NoGo a 11%, citar Robertson et al. (1997) | Bajo |
 | 🟢 P2 | 14 | Flanker | Citar Eriksen & Eriksen (1974), calibrar thresholds | Bajo |
 | 🟢 P2 | 15 | Digit Span | Agregar Sequencing, citar WAIS-IV | Bajo |

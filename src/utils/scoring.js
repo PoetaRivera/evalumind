@@ -126,88 +126,92 @@ export const calculateTdahScore = (answers) => {
 };
 
 // ═══════════════════════════════════════════════════
-// TEA ADULTO
+// TEA — AQ-50 (Autism-Spectrum Quotient)
+// Baron-Cohen et al. (2001), DOI: 10.1023/a:1005653411471
+// 50 ítems, scoring binario (0-50), punto de corte ≥32
+// 4 ítems reverse: índices 0, 11, 40, 41 (AQ items 1, 3, 8, 10)
 // ═══════════════════════════════════════════════════
 
-const TEA_MAX = {
-  socialCommunication: 16,
-  relationships: 16,
-  routinesFlexibility: 16,
-  sensoryInterests: 16,
-  total: 64,
-};
+const TEA_REVERSE_INDICES = new Set([0, 11, 40, 41]);
 
-const TEA_THRESHOLDS = {
-  socialCommunication: 8,
-  relationships: 9,
-  routinesFlexibility: 9,
-  sensoryInterests: 9,
-};
+export function calculateTeaScore(answers) {
+  if (!answers || answers.length === 0) {
+    return {
+      error: 'No hay respuestas',
+      total: 0, dimensions: [], maxScores: {}, profiles: [],
+      category: '', description: '', childhoodNote: '',
+    };
+  }
 
-export const calculateTeaScore = createLikertScorer({
-  maxScores: TEA_MAX,
-  thresholds: TEA_THRESHOLDS,
-  profileMap: {
-    socialCommunication: 'comunicacion-social',
-    relationships: 'relaciones-interpersonales',
-    routinesFlexibility: 'rutinas-flexibilidad',
-    sensoryInterests: 'intereses-sensorialidad',
-  },
-  dimensionConfig: [
-    { key: 'socialCommunication', label: 'Comunicación social', start: 0, count: 4 },
-    { key: 'relationships', label: 'Relaciones interpersonales', start: 4, count: 4 },
-    { key: 'routinesFlexibility', label: 'Rutinas y flexibilidad', start: 8, count: 4 },
-    { key: 'sensoryInterests', label: 'Intereses y sensorialidad', start: 12, count: 4 },
-  ],
-  categoryRules: {
-    default: 'baja-probabilidad',
-    rules: [
-      {
-        max: 24,
-        category: 'baja-probabilidad',
-        description: () =>
-          'Tus respuestas no sugieren un patrón consistente con rasgos del espectro autista. ' +
-          'Algunas dificultades puntuales pueden deberse a timidez, ansiedad social o agotamiento.',
-      },
-      {
-        max: 40,
-        category: 'moderada-probabilidad',
-        description: (_p, labels) =>
-          `Presentas un patrón ${labels.length > 0 ? 'destacado en ' + labels.join(' y ') : 'moderado'} ` +
-          'que merece exploración profesional. Te recomendamos consultar con un psicólogo o neurólogo ' +
-          'especializado en diagnóstico de adultos.',
-      },
-      {
-        max: 64,
-        category: 'alta-probabilidad',
-        description: (_p, labels) =>
-          `Tus respuestas indican un patrón significativo ${labels.length > 0 ? 'en ' + labels.join(', ') : 'de rasgos del espectro autista'} ` +
-          '. Es altamente recomendable que busques evaluación profesional especializada en TEA en adultos, ' +
-          'preferiblemente con experiencia en mujeres y personas con masking si aplica a tu caso.',
-      },
+  let total = 0;
+  for (let i = 0; i < answers.length; i++) {
+    const v = answers[i];
+    const isAgree = v === 0 || v === 1; // "Totalmente" o "Parcialmente de acuerdo"
+    const reverse = TEA_REVERSE_INDICES.has(i);
+    if (reverse ? !isAgree : isAgree) total++;
+  }
+
+  let category;
+  let description;
+
+  if (total >= 32) {
+    category = 'alta-probabilidad';
+    description =
+      `Tu puntuación en el AQ-50 es de ${total}/50, por encima del punto de corte clínico (≥32). ` +
+      'Este resultado sugiere un patrón consistente con rasgos del espectro autista. ' +
+      'Es altamente recomendable que busques evaluación profesional especializada en TEA en adultos, ' +
+      'preferiblemente con experiencia en mujeres y personas con masking si aplica a tu caso.';
+  } else if (total >= 26) {
+    category = 'moderada-probabilidad';
+    description =
+      `Tu puntuación en el AQ-50 es de ${total}/50, en la zona intermedia (26-31). ` +
+      'Este resultado sugiere algunos rasgos del espectro autista que merecen exploración profesional. ' +
+      'Te recomendamos consultar con un psicólogo o neurólogo especializado en diagnóstico de adultos.';
+  } else {
+    category = 'baja-probabilidad';
+    description =
+      `Tu puntuación en el AQ-50 es de ${total}/50, por debajo del umbral clínico. ` +
+      'No se observa un patrón consistente con rasgos del espectro autista. ' +
+      'Algunas dificultades puntuales pueden deberse a timidez, ansiedad social o agotamiento.';
+  }
+
+  return {
+    total,
+    dimensions: [
+      { key: 'aqTotal', label: 'AQ-50', score: total, max: 50 },
     ],
-  },
-  childhoodNote:
-    'El TEA es una condición del neurodesarrollo presente desde la infancia. Si estos patrones aparecieron solo en la adultez, la ansiedad social, el agotamiento (burnout) o la depresión pueden causar síntomas similares. Un profesional especializado en TEA en adultos puede ayudarte a diferenciarlos, incluso si has aprendido a camuflar estos rasgos.',
-});
+    maxScores: { total: 50 },
+    profiles: total >= 32
+      ? [{ id: 'aq-clinico', label: 'Puntaje clínico AQ-50', dimension: 'aqTotal' }]
+      : [],
+    category,
+    description,
+    childhoodNote:
+      'El TEA es una condición del neurodesarrollo presente desde la infancia. Si estos patrones aparecieron solo en la adultez, la ansiedad social, el agotamiento (burnout) o la depresión pueden causar síntomas similares. Un profesional especializado en TEA en adultos puede ayudarte a diferenciarlos, incluso si has aprendido a camuflar estos rasgos. El AQ-50 (Baron-Cohen et al., 2001) es un instrumento de screening, no diagnóstico. Punto de corte: ≥32.',
+  };
+}
 
-// ═══════════════════════════════════════════════════
-// ALTA SENSIBILIDAD (HSP)
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// HSP — HSPS-27 (Highly Sensitive Person Scale)
+// Aron & Aron (1997), DOI: 10.1037/0022-3514.73.2.345
+// 27 ítems, 4 dimensiones DOES, Likert 1-7
+// Punto de corte: percentil 80 (~119/189 en escala original)
+// Prevalencia poblacional: 15-20%
+// ═══════════════════════════════════════════════════════
 
 const HSP_MAX = {
-  deepProcessing: 16,
-  overStimulation: 16,
-  emotionalIntensity: 16,
-  sensorySensitivity: 16,
-  total: 64,
+  deepProcessing: 42,
+  overStimulation: 42,
+  emotionalIntensity: 42,
+  sensorySensitivity: 36,
+  total: 162,
 };
 
 const HSP_THRESHOLDS = {
-  deepProcessing: 9,
-  overStimulation: 9,
-  emotionalIntensity: 9,
-  sensorySensitivity: 9,
+  deepProcessing: 25,
+  overStimulation: 25,
+  emotionalIntensity: 25,
+  sensorySensitivity: 22,
 };
 
 export const calculateHspScore = createLikertScorer({
@@ -220,114 +224,135 @@ export const calculateHspScore = createLikertScorer({
     sensorySensitivity: 'sensibilidad-sensorial',
   },
   dimensionConfig: [
-    { key: 'deepProcessing', label: 'Procesamiento profundo', start: 0, count: 4 },
-    { key: 'overStimulation', label: 'Sobrestimulación', start: 4, count: 4 },
-    { key: 'emotionalIntensity', label: 'Intensidad emocional', start: 8, count: 4 },
-    { key: 'sensorySensitivity', label: 'Sensibilidad sensorial', start: 12, count: 4 },
+    { key: 'deepProcessing', label: 'Procesamiento profundo', start: 0, count: 7 },
+    { key: 'overStimulation', label: 'Sobrestimulación', start: 7, count: 7 },
+    { key: 'emotionalIntensity', label: 'Intensidad emocional', start: 14, count: 7 },
+    { key: 'sensorySensitivity', label: 'Sensibilidad sensorial', start: 21, count: 6 },
   ],
   categoryRules: {
     default: 'sensibilidad-promedio',
     rules: [
       {
-        max: 28,
+        max: 100,
         category: 'sensibilidad-promedio',
         description: () =>
-          'Tu perfil sugiere un procesamiento de información de intensidad media. Probablemente toleras bien la sobrecarga sensorial ' +
-          'y social, y recuperas energía rápidamente de los estímulos. La alta sensibilidad no parece ser un rasgo dominante en tu temperamento.',
+          'Tu puntuación no sugiere alta sensibilidad como rasgo dominante. Probablemente toleras bien la sobrecarga sensorial y social, y te recuperas rápidamente de los estímulos.',
       },
       {
-        max: 44,
+        max: 130,
         category: 'alta-sensibilidad-moderada',
         description: (_p, labels) =>
           `Presentas un perfil de alta sensibilidad ${labels.length > 0 ? 'con énfasis en ' + labels.join(' y ') : 'moderado'}. ` +
-          'Esto explica por qué ciertos entornos te agotan más que a otros, y por qué necesitas tiempo de procesamiento. ' +
-          'La alta sensibilidad es un temperamento presente en ~20-30 % de la población, no una debilidad ni un trastorno.',
+          'Esto explica por qué ciertos entornos te agotan más que a otros y por qué necesitas tiempo de procesamiento. ' +
+          'La alta sensibilidad es un temperamento presente en ~15-20 % de la población, no una debilidad ni un trastorno.',
       },
       {
-        max: 64,
+        max: 162,
         category: 'alta-sensibilidad-marcada',
         description: (_p, labels) =>
-          `Tu perfil indica una alta sensibilidad muy pronunciada ${labels.length > 0 ? 'en ' + labels.join(', ') : ''}. ` +
-          'Es fundamental que aprendas a gestionar tu entorno, tus límites y tus ritmos de descanso. ' +
-          'Considera leer sobre el rasgo HSP (Highly Sensitive Person) o consultar con un terapeuta familiarizado con este temperamento. ' +
-          'Recuerda: no es un trastorno, es una forma de procesar el mundo más profundamente.',
+          `Tu perfil indica alta sensibilidad muy pronunciada ${labels.length > 0 ? 'en ' + labels.join(', ') : ''}. ` +
+          'Es fundamental gestionar tu entorno, límites y ritmos de descanso. ' +
+          'Considera informarte sobre el rasgo HSP o consultar con un terapeuta familiarizado con este temperamento. ' +
+          'No es un trastorno: es una forma de procesar el mundo con mayor profundidad.',
       },
     ],
   },
   childhoodNote:
-    'La alta sensibilidad es un temperamento presente desde la infancia. Si estos patrones solo aparecen en contextos de estrés reciente, pueden deberse a agotamiento o ansiedad. La alta sensibilidad no es un trastorno: es una característica de temperamento que afecta aproximadamente al 20-30 % de la población y tiene ventajas adaptativas junto con sus desafíos.',
+    'La alta sensibilidad es un temperamento presente desde la infancia, no un trastorno. Afecta aproximadamente al 15-20 % de la población y tiene bases biológicas (estudios fMRI de Acevedo et al., 2018). Si estos patrones solo aparecen en contextos de estrés reciente, pueden deberse a agotamiento o ansiedad. El HSPS-27 (Aron & Aron, 1997) es el instrumento de referencia.',
 });
 
 // ═══════════════════════════════════════════════════
-// ALEXITIMIA
+// ALEXITIMIA — TAS-20 (Toronto Alexithymia Scale)
+// Bagby, Parker & Taylor (1994), DOI: 10.1016/0022-3999(94)90005-1
+// 20 ítems, 3 subescalas, 5 ítems inversos, Likert 1-5
+// Puntos de corte: ≤51 sin alexitimia, 52-60 posible, ≥61 presente
 // ═══════════════════════════════════════════════════
+
+const ALEXITHYMIA_REVERSE_INDICES = new Set([8, 12, 14, 17, 18]);
+
+const ALEXITHYMIA_DIM_CONFIG = [
+  { key: 'identifyingFeelings', label: 'Identificación emocional (DIF)', start: 0, count: 7 },
+  { key: 'describingFeelings', label: 'Descripción emocional (DDF)', start: 7, count: 5 },
+  { key: 'externallyOriented', label: 'Pensamiento externo (EOT)', start: 12, count: 8 },
+];
 
 const ALEXITHYMIA_MAX = {
-  identifyingFeelings: 16,
-  describingFeelings: 16,
-  externallyOriented: 16,
-  somaticConfusion: 16,
-  total: 64,
+  identifyingFeelings: 35,
+  describingFeelings: 25,
+  externallyOriented: 40,
+  total: 100,
 };
 
-const ALEXITHYMIA_THRESHOLDS = {
-  identifyingFeelings: 9,
-  describingFeelings: 9,
-  externallyOriented: 9,
-  somaticConfusion: 9,
-};
+export function calculateAlexithymiaScore(answers) {
+  if (!answers || answers.length === 0) {
+    return {
+      error: 'No hay respuestas',
+      total: 0, dimensions: [], maxScores: {}, profiles: [],
+      category: '', description: '', childhoodNote: '',
+    };
+  }
 
-export const calculateAlexithymiaScore = createLikertScorer({
-  maxScores: ALEXITHYMIA_MAX,
-  thresholds: ALEXITHYMIA_THRESHOLDS,
-  profileMap: {
-    identifyingFeelings: 'identificacion-emocional',
-    describingFeelings: 'descripcion-emocional',
-    externallyOriented: 'pensamiento-externo',
-    somaticConfusion: 'confusion-somatica',
-  },
-  dimensionConfig: [
-    { key: 'identifyingFeelings', label: 'Identificación emocional', start: 0, count: 4 },
-    { key: 'describingFeelings', label: 'Descripción emocional', start: 4, count: 4 },
-    { key: 'externallyOriented', label: 'Pensamiento externo', start: 8, count: 4 },
-    { key: 'somaticConfusion', label: 'Confusión somática', start: 12, count: 4 },
-  ],
-  categoryRules: {
-    default: 'alexitimia-baja',
-    rules: [
-      {
-        max: 24,
-        category: 'alexitimia-baja',
-        description: () =>
-          'Tienes un acceso fluido a tus emociones, las identificas con relativa claridad y puedes describirlas. ' +
-          'Esto no significa que no tengas dificultades emocionales, pero la alexitimia no parece ser tu patrón predominante.',
-      },
-      {
-        max: 40,
-        category: 'alexitimia-moderada',
-        description: (_p, labels) =>
-          `Presentas un perfil de alexitimia ${labels.length > 0 ? 'con énfasis en ' + labels.join(' y ') : 'moderado'}. ` +
-          'Esto puede dificultar la comunicación emocional en relaciones o la regulación del estrés. ' +
-          'La terapia focalizada en conciencia emocional y corporal puede ser útil.',
-      },
-      {
-        max: 64,
-        category: 'alexitimia-marcada',
-        description: (_p, labels) =>
-          `Tu perfil sugiere una alexitimia significativa ${labels.length > 0 ? 'en ' + labels.join(', ') : ''}. ` +
-          'Esto puede estar asociado a TEA, TDAH, trauma o ser un estilo de procesamiento propio. ' +
-          'Te recomendamos evaluación con un terapeuta especializado en regulación emocional o psicosomática. ' +
-          'No es una enfermedad, pero sí un patrón que puede mejorarse con intervención.',
-      },
-    ],
-  },
-  childhoodNote:
-    'La alexitimia puede tener raíces en la infancia: entornos familiares donde no se hablaba de emociones, trauma temprano, o características del neurodesarrollo como el TEA. No es un trastorno: es un estilo de procesamiento emocional que puede modificarse con intervención terapéutica.',
-});
+  const converted = answers.map((v, i) => {
+    const score = v + 1;
+    return ALEXITHYMIA_REVERSE_INDICES.has(i) ? 6 - score : score;
+  });
+
+  const dimensions = ALEXITHYMIA_DIM_CONFIG.map((dim) => {
+    const slice = converted.slice(dim.start, dim.start + dim.count);
+    const score = slice.reduce((a, b) => a + b, 0);
+    return { key: dim.key, label: dim.label, score, max: ALEXITHYMIA_MAX[dim.key] };
+  });
+
+  const total = dimensions.reduce((sum, d) => sum + d.score, 0);
+
+  const profiles = [];
+  const profileLabels = [];
+  if (dimensions[0].score >= 25) { profiles.push({ id: 'identificacion-emocional', label: 'Identificación emocional', dimension: 'identifyingFeelings' }); profileLabels.push('identificación emocional'); }
+  if (dimensions[1].score >= 18) { profiles.push({ id: 'descripcion-emocional', label: 'Descripción emocional', dimension: 'describingFeelings' }); profileLabels.push('descripción emocional'); }
+  if (dimensions[2].score >= 28) { profiles.push({ id: 'pensamiento-externo', label: 'Pensamiento externo', dimension: 'externallyOriented' }); profileLabels.push('pensamiento orientado externamente'); }
+
+  let category;
+  let description;
+  const dimText = profileLabels.length > 0 ? 'con énfasis en ' + profileLabels.join(' y ') : '';
+
+  if (total <= 51) {
+    category = 'alexitimia-baja';
+    description =
+      'Tu puntuación no sugiere alexitimia. Tienes un acceso relativamente fluido a tus emociones, las identificas con claridad y puedes describirlas. ' +
+      'Esto no significa que no tengas dificultades emocionales, pero la alexitimia no parece ser tu patrón predominante.';
+  } else if (total <= 60) {
+    category = 'alexitimia-moderada';
+    description =
+      `Tu puntuación se encuentra en la zona de posible alexitimia ${dimText}. `.trim() +
+      ' Esto puede reflejar dificultad para identificar y expresar emociones en ciertas situaciones. ' +
+      'La terapia focalizada en conciencia emocional puede ser útil.';
+  } else {
+    category = 'alexitimia-marcada';
+    description =
+      `Tu puntuación sugiere alexitimia significativa ${dimText ? 'en ' + profileLabels.join(', ') : ''}. `.trim() +
+      ' Esto puede estar asociado a TEA, TDAH, trauma o ser un estilo de procesamiento propio. ' +
+      'Te recomendamos buscar evaluación con un profesional especializado en regulación emocional.';
+  }
+
+  return {
+    total,
+    dimensions,
+    maxScores: ALEXITHYMIA_MAX,
+    profiles,
+    category,
+    description,
+    childhoodNote:
+      'La alexitimia puede tener raíces en la infancia: entornos familiares donde no se hablaba de emociones, trauma temprano, o características del neurodesarrollo como el TEA. No es un trastorno: es un estilo de procesamiento emocional que puede modificarse con intervención terapéutica. El TAS-20 (Bagby, Parker & Taylor, 1994) es el instrumento de referencia para esta evaluación.',
+  };
+}
 
 // ═══════════════════════════════════════════════════
-// RSD
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// RSD — Rejection Sensitivity (adaptación RSQ)
+// Downey & Feldman (1996), DOI: 10.1037/0022-3514.70.6.1327
+// Berenson et al. (2009) — A-RSQ (Adult Rejection Sensitivity)
+// 16 ítems Likert 0-4, 4 dimensiones
+// ═══════════════════════════════════════════════════════
 
 const RSD_MAX = {
   rejectionPerception: 16,
@@ -392,8 +417,12 @@ export const calculateRsdScore = createLikertScorer({
 });
 
 // ═══════════════════════════════════════════════════
-// BURNOUT POR MASKING
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// BURNOUT POR MASKING — EvaluMind (13 ítems)
+// Constructo complementario al CAT-Q (Hull et al., 2019)
+// DOI: 10.1007/s10803-018-3792-6
+// Mide consecuencias del camuflaje, no la conducta de camuflaje
+// ═══════════════════════════════════════════════════════
 
 const MASKING_MAX = {
   physicalExhaustion: 16,
@@ -457,8 +486,12 @@ export const calculateMaskingBurnoutScore = createLikertScorer({
 });
 
 // ═══════════════════════════════════════════════════
-// FUNCIONES EJECUTIVAS
-// ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// FUNCIONES EJECUTIVAS — EvaluMind (18 ítems)
+// Marco conceptual: BRIEF-A (Gioia et al.)
+// Toplak et al. (2013), DOI: 10.1111/jcpp.12001
+// Versión abreviada de screening, 4 dominios ejecutivos
+// ═══════════════════════════════════════════════════════
 
 const EXECUTIVE_MAX = {
   inhibition: 16,

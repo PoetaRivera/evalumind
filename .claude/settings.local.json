@@ -13,7 +13,15 @@
       "Bash(firebase deploy *)",
       "Bash(npm run *)",
       "Bash(npm test *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(gh repo *)",
+      "Bash(git remote *)",
+      "Bash(firebase projects:create *)",
+      "Bash(firebase firestore:databases:create *)",
+      "Bash(firebase apps:create *)",
+      "Bash(firebase apps:sdkconfig *)",
+      "Bash(firebase projects:delete *)",
+      "Bash(firebase projects:list *)"
     ]
   }
 }

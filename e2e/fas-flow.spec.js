@@ -4,82 +4,83 @@ import { acceptDisclaimer, clearStorage } from './helpers';
 test.describe('FAS flow', () => {
   test.beforeEach(async ({ page }) => clearStorage(page));
 
-  test('shows letter and start button', async ({ page }) => {
+  test('shows intro with 3 letters and start button', async ({ page }) => {
     await page.goto('/test/fas');
     await acceptDisclaimer(page);
     await expect(page.locator('.fas-intro')).toBeVisible();
-    await expect(page.getByRole('button', { name: /comenzar.*s/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /comenzar.*3 rondas/i })).toBeVisible();
   });
 
-  test('starts task and shows timer', async ({ page }) => {
+  test('starts task and shows first round (F)', async ({ page }) => {
     await page.goto('/test/fas');
     await acceptDisclaimer(page);
-    await page.getByRole('button', { name: /comenzar.*s/i }).click({ force: true });
+    await page.locator('[data-testid="fas-start"]').click({ force: true });
 
-    // Timer should be visible
-    await expect(page.getByText(/\d{1,2}s/)).toBeVisible();
-
-    // Input field should be present
-    await expect(page.getByPlaceholder(/palabra con/i)).toBeVisible();
+    await expect(page.locator('[data-testid="fas-round"]')).toContainText('Ronda 1 de 3');
+    await expect(page.locator('[data-testid="fas-letter"]')).toContainText('F');
+    await expect(page.locator('[data-testid="fas-timer"]')).toBeVisible();
+    await expect(page.locator('[data-testid="fas-input"]')).toBeVisible();
   });
 
-  test('validates letter', async ({ page }) => {
+  test('validates letter in first round', async ({ page }) => {
     await page.goto('/test/fas');
     await acceptDisclaimer(page);
-    await page.getByRole('button', { name: /comenzar.*s/i }).click({ force: true });
+    await page.locator('[data-testid="fas-start"]').click({ force: true });
 
-    const taskText = await page.locator('.fas-task').textContent();
-    const letterMatch = taskText.match(/^([FAS])\s/);
-    const letter = letterMatch ? letterMatch[1] : 'F';
-
-    const input = page.getByPlaceholder(/palabra con/i);
-    await input.fill((letter === 'F' ? 'z' : 'f') + 'test');
+    const input = page.locator('[data-testid="fas-input"]');
+    await input.fill('gato');
     await input.press('Enter');
     await expect(page.getByText(/debe empezar con/i)).toBeVisible();
   });
 
-  test.skip('can finish early (inject words)', async ({ page }) => {
+  test('accepts valid word and shows chips', async ({ page }) => {
     await page.goto('/test/fas');
     await acceptDisclaimer(page);
+    await page.locator('[data-testid="fas-start"]').click({ force: true });
 
-    // Inject FAS state with pre-filled words
-    await page.evaluate(() => {
-      localStorage.setItem('evalumind_fas_state', JSON.stringify({
-        accepted: true,
-        answers: ['foco', 'fresa', 'fuerza', 'fuego'],
-        currentIndex: 0,
-      }));
-    });
-    await page.reload();
-
-    // Start the task
-    await page.getByRole('button', { name: /comenzar.*s/i }).click({ force: true });
-
-    // Type a few more words to get past the min threshold
-    const taskText = await page.locator('.fas-task').textContent();
-    const letterMatch = taskText.match(/^([FAS])\s/);
-    const letter = letterMatch ? letterMatch[1] : 'F';
-    const wordStarts = { F: 'foco', A: 'aro', S: 'sol' };
-    const input = page.getByPlaceholder(/palabra con/i);
-
-    await input.fill(wordStarts[letter] || 'foco');
+    const input = page.locator('[data-testid="fas-input"]');
+    await input.fill('fresa');
     await input.press('Enter');
-    await page.waitForTimeout(200);
 
-    // The "Terminar y ver resultados" button should appear after 1+ word
-    // But the component starts fresh on reload so we just type 3 words
-    await input.fill((wordStarts[letter] || 'foco') + '2');
+    await expect(page.locator('[data-testid="fas-word-chips"]')).toContainText('fresa');
+  });
+
+  test('shows next round button after 3 words', async ({ page }) => {
+    await page.goto('/test/fas');
+    await acceptDisclaimer(page);
+    await page.locator('[data-testid="fas-start"]').click({ force: true });
+
+    const input = page.locator('[data-testid="fas-input"]');
+    await input.fill('fresa');
     await input.press('Enter');
-    await page.waitForTimeout(200);
-    await input.fill((wordStarts[letter] || 'foco') + '3');
+    await page.waitForTimeout(100);
+    await input.fill('flor');
     await input.press('Enter');
-    await page.waitForTimeout(200);
+    await page.waitForTimeout(100);
+    await input.fill('fuego');
+    await input.press('Enter');
 
-    // Now click Terminar
-    await page.locator('button:has-text("Terminar")').click({ force: true });
-    await page.waitForTimeout(500);
+    await expect(page.locator('[data-testid="fas-next-round"]')).toBeVisible();
+  });
 
-    // Results should show
-    await expect(page.locator('.results-view')).toBeVisible();
+  test('advances to round 2 (A) when clicking next', async ({ page }) => {
+    await page.goto('/test/fas');
+    await acceptDisclaimer(page);
+    await page.locator('[data-testid="fas-start"]').click({ force: true });
+
+    const input = page.locator('[data-testid="fas-input"]');
+    await input.fill('fresa');
+    await input.press('Enter');
+    await page.waitForTimeout(100);
+    await input.fill('flor');
+    await input.press('Enter');
+    await page.waitForTimeout(100);
+    await input.fill('fuego');
+    await input.press('Enter');
+
+    await page.locator('[data-testid="fas-next-round"]').click({ force: true });
+
+    await expect(page.locator('[data-testid="fas-round"]')).toContainText('Ronda 2 de 3');
+    await expect(page.locator('[data-testid="fas-letter"]')).toContainText('A');
   });
 });

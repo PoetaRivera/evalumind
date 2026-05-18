@@ -20,7 +20,7 @@ const TEST_LABELS = {
   'flanker-v1': { name: 'Flanker', color: 'var(--color-accent)' },
   'digit-span-v1': { name: 'Span Dígitos', color: '#14b8a6' },
   'navon-v1': { name: 'Navon', color: 'var(--color-bar-mid)' },
-  'rmet-v1': { name: 'RMET', color: 'var(--color-bar-mid)' },
+  'rmet-v1': { name: 'Estados Mentales', color: 'var(--color-bar-mid)' },
   'switch-task-v1': { name: 'Flexibilidad', color: '#14b8a6' },
   'sensory-threshold-v1': { name: 'Umbral Sensorial', color: 'var(--color-bar-low)' },
   'auditory-distraction-v1': { name: 'Distracción Auditiva', color: 'var(--color-bar-low)' },
@@ -30,18 +30,14 @@ const DIMENSION_LABELS = {
   inattention: 'Inatención',
   hyperactivityPhysical: 'Hiperactividad física',
   impulsivityVerbal: 'Impulsividad verbal',
-  socialCommunication: 'Comunicación social',
-  relationships: 'Relaciones',
-  routinesFlexibility: 'Rutinas/flexibilidad',
-  sensoryInterests: 'Sensorial/intereses',
+  aqTotal: 'AQ-50',
   deepProcessing: 'Procesamiento profundo',
   overStimulation: 'Sobrestimulación',
   emotionalIntensity: 'Intensidad emocional',
   sensorySensitivity: 'Sensibilidad sensorial',
-  identifyingFeelings: 'Identificación emocional',
-  describingFeelings: 'Descripción emocional',
-  externallyOriented: 'Pensamiento externo',
-  somaticConfusion: 'Confusión somática',
+  identifyingFeelings: 'Identificación emocional (DIF)',
+  describingFeelings: 'Descripción emocional (DDF)',
+  externallyOriented: 'Pensamiento externo (EOT)',
   rejectionPerception: 'Hipersensibilidad al rechazo',
   anticipatoryAvoidance: 'Evitación anticipatoria',
   rumination: 'Rumia y autocrítica',
@@ -85,7 +81,7 @@ const STRATEGIES = [
   },
   {
     id: 'masking-recovery',
-    condition: (dims) => (dims.socialCommunication || 0) > 40 && ((dims.identifyingFeelings || 0) > 40 || (dims.describingFeelings || 0) > 40),
+    condition: (dims) => (dims.aqTotal || 0) > 60 && ((dims.identifyingFeelings || 0) > 40 || (dims.describingFeelings || 0) > 40),
     title: 'Recuperación del camuflaje',
     description:
       'Gastas mucha energía interpretando señales sociales y traduciendo emociones. Programa tiempos diarios sin máscara social. ' +
@@ -101,7 +97,7 @@ const STRATEGIES = [
   },
   {
     id: 'sensory-design',
-    condition: (dims) => ((dims.sensorySensitivity || 0) > 50 || (dims.somaticConfusion || 0) > 50),
+    condition: (dims) => ((dims.sensorySensitivity || 0) > 50 || (dims.identifyingFeelings || 0) > 55),
     title: 'Diseño sensorial del entorno',
     description:
       'Tu sistema nervioso capta lo que otros filtran. Diseña tu espacio: luces cálidas, ruido controlado, ' +

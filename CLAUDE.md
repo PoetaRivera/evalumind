@@ -78,6 +78,7 @@ src/
 - **Producción**: https://evalumind-app.web.app
 - **GitHub**: https://github.com/PoetaRivera/evalumind
 - **Modo oscuro**: `prefers-color-scheme: dark` con 44 custom properties
+- **OpenDyslexic**: toggle en header (localStorage), hook `useDyslexicFont`, clase `font-dyslexic` en `<html>`
 - **20 tests completamente implementados** (ninguno es stub)
 - **data-testid** en cards, navegación, resultados, estímulos y overlays de pausa
 - **Pausa por visibilidad** en los 6 tests cronometrados (usePageVisibility)

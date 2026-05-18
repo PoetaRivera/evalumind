@@ -1,3 +1,18 @@
+// ═══════════════════════════════════════════════════════
+// Burnout por Masking — EvaluMind (13 ítems)
+// Constructo complementario al CAT-Q (Hull et al., 2019)
+// CAT-Q: Camouflaging Autistic Traits Questionnaire
+// Hull, L., Mandy, W., Lai, M.C., et al. (2019). J Autism
+// Dev Disord, 49(3), 819-833. DOI: 10.1007/s10803-018-3792-6
+//
+// El CAT-Q mide comportamiento de camuflaje (3 subescalas:
+// Compensation, Masking, Assimilation, 25 ítems Likert 1-7).
+// Este test mide las CONSECUENCIAS del camuflaje sostenido:
+// el agotamiento (burnout) resultante. Constructos distintos
+// y complementarios. No existe instrumento validado para
+// "burnout por masking" — este test es original de EvaluMind.
+// ═══════════════════════════════════════════════════════
+
 const burnoutMaskingQuestions = [
   // ═══════════ SECCIÓN A: AGOTAMIENTO FÍSICO Y COGNITIVO POST-SOCIAL (4 ítems) ═══════════
   {

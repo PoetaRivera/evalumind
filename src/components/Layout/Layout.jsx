@@ -1,4 +1,5 @@
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import FontToggle from '../Common/FontToggle';
 import './Layout.css';
 
 const NAV_LINKS = [
@@ -29,6 +30,7 @@ function Layout() {
               {link.label}
             </NavLink>
           ))}
+          <FontToggle />
         </nav>
       </header>
 

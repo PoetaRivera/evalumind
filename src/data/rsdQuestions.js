@@ -1,482 +1,257 @@
+// ═══════════════════════════════════════════════════════
+// RSD — Rejection Sensitivity (adaptación del RSQ)
+// Downey, G. & Feldman, S. (1996). J Pers Soc Psychol, 70(6)
+// DOI: 10.1037/0022-3514.70.6.1327
+// Berenson et al. (2009). A-RSQ (Adult Rejection Sensitivity)
+//
+// 4 dimensiones, 16 ítems, Likert 0-4
+// NOTA: El RSQ original usa 18 escenarios con doble valoración
+// (ansiedad × expectativa). Esta es una adaptación Likert
+// para screening orientativo. El test complementario
+// "Escenarios Sociales" usa un paradigma similar al RSQ.
+// ═══════════════════════════════════════════════════════
+
 const rsdQuestions = [
-  // ═══════════ SECCIÓN A: HIPERSENSIBILIDAD AL RECHAZO PERCIBIDO ═══════════
+  // ═══ SECCIÓN A — Percepción de rechazo (4 ítems) ═══
+
   {
     id: 1,
     section: 'A',
-    sectionTitle: 'Hipersensibilidad — Interpretación de señales neutras',
+    sectionTitle: 'Percepción de rechazo en situaciones ambiguas',
     dimension: 'rejectionPerception',
-    text: 'Interpreto como rechazo, crítica o desinterés señales que otros considerarían neutras o inocentes.',
+    text: 'Tiendo a interpretar comentarios neutros o ambiguos como críticas hacia mí.',
     examples: [
-      {
-        label: 'Mensajes',
-        description:
-          'Alguien me responde con un "ok" corto o sin emoji y mi primer pensamiento es "se enojó conmigo" o "ya no le caigo bien".',
-      },
-      {
-        label: 'Redes sociales',
-        description:
-          'Publico algo y no recibo likes o comentarios de cierta persona; asumo que me ignora intencionalmente o que mi publicación fue inadecuada.',
-      },
-      {
-        label: 'Miradas',
-        description:
-          'Alguien me mira con una expresión neutra y siento que me juzga negativamente, aunque no haya dicho nada.',
-      },
-      {
-        label: 'Cancelaciones',
-        description:
-          'Alguien cancela un plan con una excusa lógica y mi primer instinto es pensar que realmente no quiere verme, aunque la excusa sea plausible.',
-      },
+      { label: 'Trabajo', description: 'Tu jefe dice "hablamos luego" y vos asumís que es algo negativo.' },
+      { label: 'Mensajes', description: 'Alguien tarda en responder y pensás que está enojado/a con vos.' },
+      { label: 'Tono', description: 'Un cambio sutil en el tono de voz de alguien te hace pensar que hiciste algo mal.' },
+      { label: 'Silencio', description: 'El silencio de otra persona lo interpretás como desaprobación o molestia.' },
     ],
   },
+
   {
     id: 2,
     section: 'A',
-    sectionTitle: 'Hipersensibilidad — Lectura entre líneas',
+    sectionTitle: 'Percepción de rechazo en situaciones ambiguas',
     dimension: 'rejectionPerception',
-    text: '"Leo entre líneas" buscando indicios de que alguien está molesto, decepcionado o a punto de abandonarme.',
+    text: 'Me preocupa que las personas importantes en mi vida me rechacen o me abandonen.',
     examples: [
-      {
-        label: 'Tono de voz',
-        description:
-          'Noto un cambio mínimo en el tono de mi pareja, amigo o jefe y paso horas analizando si es enfado, frialdad o cansancio conmigo.',
-      },
-      {
-        label: 'Demoras en respuesta',
-        description:
-          'Si alguien tarda más de lo habitual en responder un mensaje, asumo que está distanciándose de mí antes de considerar que simplemente está ocupado.',
-      },
-      {
-        label: 'Lenguaje corporal',
-        description:
-          'Detecto microexpresiones de fastidio que otros no ven; o invento significados negativos en gestos inocentes.',
-      },
-      {
-        label: 'Silencios',
-        description:
-          'Un silencio incómodo en una conversación lo interpreto como mi culpa, como si yo hubiera dicho algo inaceptable.',
-      },
+      { label: 'Pareja', description: 'Temés que tu pareja pierda interés o encuentre a alguien mejor.' },
+      { label: 'Amistades', description: 'Cuando un amigo hace nuevos amigos, temés que te excluya.' },
+      { label: 'Trabajo', description: 'Temés que tus compañeros o jefe piensen que no sos competente.' },
+      { label: 'Familia', description: 'Sentís que si cometés errores, tu familia te va a juzgar o distanciarse.' },
     ],
   },
+
   {
     id: 3,
     section: 'A',
-    sectionTitle: 'Hipersensibilidad — Sensación de ser tolerado',
+    sectionTitle: 'Percepción de rechazo en situaciones ambiguas',
     dimension: 'rejectionPerception',
-    text: 'Siento que las personas se cansan de mí o que mis amistades/relaciones están a punto de terminar, aunque no haya evidencia clara.',
+    text: 'Cuando pido ayuda o un favor, espero que me digan que no o que me juzguen.',
     examples: [
-      {
-        label: 'Amistades',
-        description:
-          'Tengo la sensación constante de que mis amigos "toleran" mi presencia pero que realmente preferirían no incluirme; evito ser el que propone planes para no "molestar".',
-      },
-      {
-        label: 'Pareja',
-        description:
-          'Siento que mi pareja en cualquier momento descubrirá que no valgo la pena y me dejará, aunque la relación sea estable.',
-      },
-      {
-        label: 'Trabajo',
-        description:
-          'Creo que mis compañeros me consideran un estorbo o que mi jefe me tiene en la lista de despidos, sin señales objetivas de ello.',
-      },
-      {
-        label: 'Familia',
-        description:
-          'Siento que mis padres o hermanos me quieren "por obligación" y que si no fuera familiar, no me elegirían.',
-      },
+      { label: 'Trabajo', description: 'No pedís ayuda aunque la necesités porque asumís que van a pensar que sos incompetente.' },
+      { label: 'Amigos', description: 'Evitás pedir favores porque asumís que les molestás o que te deben ver como una carga.' },
+      { label: 'Familia', description: 'Preferís resolver las cosas solo/a antes que pedir apoyo y arriesgarte a una negativa.' },
+      { label: 'Salud', description: 'Posponés pedir ayuda profesional porque creés que no te van a tomar en serio.' },
     ],
   },
+
   {
     id: 4,
     section: 'A',
-    sectionTitle: 'Hipersensibilidad — Necesidad de validación externa',
+    sectionTitle: 'Percepción de rechazo en situaciones ambiguas',
     dimension: 'rejectionPerception',
-    text: 'Necesito constantes señales de validación externa para sentirme seguro/a de que no soy una carga o un problema para los demás.',
+    text: 'Siento que los demás me evalúan y me juzgan constantemente.',
     examples: [
-      {
-        label: 'Reconfirmación',
-        description:
-          'Pregunto repetidamente a mi pareja o amigos "¿estás seguro/a de que no te molesté?" o "¿todavía te caigo bien?" después de interacciones normales.',
-      },
-      {
-        label: 'Lectura de señales',
-        description:
-          'Si alguien no me da un cumplido o una demostración de afecto explícita durante varios días, siento que algo va mal en la relación.',
-      },
-      {
-        label: 'Trabajo',
-        description:
-          'Necesito que mi jefe me diga explícitamente que mi trabajo es bueno; las ausencias de feedback las interpreto como desaprobación tácita.',
-      },
-      {
-        label: 'Redes sociales',
-        description:
-          'Busco activamente reacciones positivas en redes o grupos como "prueba" de que no soy rechazado/a.',
-      },
+      { label: 'Público', description: 'Al hablar en grupo, sentís que todos están notando tus errores.' },
+      { label: 'Redes sociales', description: 'Publicar algo te genera ansiedad por cómo será recibido.' },
+      { label: 'Rendimiento', description: 'Creés que tu valor como persona depende de no cometer errores visibles.' },
+      { label: 'Apariencia', description: 'Sentís que la gente nota y juzga cada detalle de tu aspecto o comportamiento.' },
     ],
   },
 
-  // ═══════════ SECCIÓN B: RESPUESTA EMOCIONAL INTENSA ═══════════
+  // ═══ SECCIÓN B — Intensidad emocional ante el rechazo (4 ítems) ═══
+
   {
     id: 5,
     section: 'B',
-    sectionTitle: 'Intensidad emocional — Oleada física ante la crítica',
+    sectionTitle: 'Respuesta emocional al rechazo',
     dimension: 'emotionalIntensity',
-    text: 'Cuando siento que alguien me rechaza o critica, experimento una oleada emocional intensa que se siente físicamente abrumadora.',
+    text: 'Una crítica o comentario negativo me afecta durante horas o días.',
     examples: [
-      {
-        label: 'Físico',
-        description:
-          'Un comentario crítico o una mirada de desaprobación me generan calor en el pecho, nudo en la garganta, taquicardia o ganas de llorar inmediatas.',
-      },
-      {
-        label: 'Duración',
-        description:
-          'Una crítica leve de hace horas sigue resonando en mi cuerpo como si acabara de pasar; no logro "sacármela de encima".',
-      },
-      {
-        label: 'Intensidad desproporcionada',
-        description:
-          'Reconozco que la crítica fue menor o constructiva, pero mi reacción emocional fue de nivel 10 sobre una escala de 1 a 10.',
-      },
-      {
-        label: 'Vergüenza',
-        description:
-          'La sensación dominante no es tristeza, sino una vergüenza profunda y paralizante, como si me hubieran "descubierto" como defectuoso/a.',
-      },
+      { label: 'Rumia', description: 'Después de una crítica, repasás la situación una y otra vez en tu cabeza.' },
+      { label: 'Físico', description: 'Sentís el rechazo en el cuerpo: nudo en el estómago, opresión en el pecho, náuseas.' },
+      { label: 'Sueño', description: 'Una interacción social negativa te quita el sueño o te despierta de madrugada.' },
+      { label: 'Estado', description: 'Un solo comentario puede arruinarte el día entero.' },
     ],
   },
+
   {
     id: 6,
     section: 'B',
-    sectionTitle: 'Intensidad emocional — Reacción abrupta o explosiva',
+    sectionTitle: 'Respuesta emocional al rechazo',
     dimension: 'emotionalIntensity',
-    text: 'Reacciono de forma abrupta o explosiva (externa o internamente) cuando percibo que alguien me ignora, contradice o descarta.',
+    text: 'Cuando siento que alguien me rechaza, mi reacción emocional es intensa y difícil de controlar.',
     examples: [
-      {
-        label: 'Externa',
-        description:
-          'Respondo con un tono más agudo de lo que quiero, me defiendo agresivamente, o cierro la conversación de golpe antes de que empeore.',
-      },
-      {
-        label: 'Interna',
-        description:
-          'Externamente me quedo callado/a o sonrío, pero internamente siento una furia o desesperación que me ciega por segundos.',
-      },
-      {
-        label: 'Llanto',
-        description:
-          'Críticas inesperadas, aunque sean menores, me hacen llorar de forma incontrolable, especialmente si son públicas o en el trabajo.',
-      },
-      {
-        label: 'Cortar relaciones',
-        description:
-          'Mi instinto de autoprotección me dice "termina esta relación ahora antes de que te lastimen más", aunque la ofensa sea leve.',
-      },
+      { label: 'Llanto', description: 'Una discusión o desaire te hace llorar aunque intentes contenerte.' },
+      { label: 'Ira', description: 'El rechazo percibido te provoca una oleada de ira que te sorprende a vos mismo/a.' },
+      { label: 'Colapso', description: 'Te "apagás" o desconectás emocionalmente como mecanismo de protección.' },
+      { label: 'Desproporción', description: 'Tu reacción emocional es más intensa de lo que la situación objetivamente justificaría.' },
     ],
   },
+
   {
     id: 7,
     section: 'B',
-    sectionTitle: 'Intensidad emocional — Tiempo de recuperación prolongado',
+    sectionTitle: 'Respuesta emocional al rechazo',
     dimension: 'emotionalIntensity',
-    text: 'Después de una interacción donde percibí rechazo, necesito horas o días para recuperar mi equilibrio emocional.',
+    text: 'Me cuesta recuperarme emocionalmente después de un conflicto interpersonal.',
     examples: [
-      {
-        label: 'Rumia',
-        description:
-          'No puedo dejar de pensar en lo que pasó; repito la escena mentalmente una y otra vez.',
-      },
-      {
-        label: 'Aislamiento',
-        description:
-          'Me encierro en mi habitación o evito contacto humano durante horas porque "no puedo con nadie más hoy".',
-      },
-      {
-        label: 'Funcionalidad',
-        description:
-          'Mi capacidad para trabajar, estudiar o cuidarme se reduce drásticamente después de uno de estos episodios.',
-      },
-      {
-        label: 'Sueño',
-        description:
-          'Me cuesta dormir porque mi cerebro reproduce la conversación en bucle buscando qué hice mal.',
-      },
+      { label: 'Tiempo', description: 'Necesitás horas o días para volver a sentirte estable después de una discusión.' },
+      { label: 'Rencor', description: 'Te cuesta soltar el malestar aunque la otra persona ya se haya disculpado.' },
+      { label: 'Confianza', description: 'Después de un conflicto, tardás en volver a confiar en que la relación está bien.' },
+      { label: 'Energía', description: 'Un conflicto interpersonal te deja agotado/a físicamente.' },
     ],
   },
+
   {
     id: 8,
     section: 'B',
-    sectionTitle: 'Intensidad emocional — Confusión persona vs. idea',
+    sectionTitle: 'Respuesta emocional al rechazo',
     dimension: 'emotionalIntensity',
-    text: 'Tengo dificultad para distinguir entre "no le gustó mi idea" y "no le gusto yo como persona".',
+    text: 'Siento una oleada de vergüenza o humillación cuando percibo desaprobación.',
     examples: [
-      {
-        label: 'Trabajo',
-        description:
-          'Si rechazan mi propuesta en una reunión, siento que rechazaron a mí como profesional y como ser humano; es todo una sola cosa.',
-      },
-      {
-        label: 'Opiniones',
-        description:
-          'Si alguien discrepa de mi punto de vista político o de gusto, siento que está atacando mi valía personal, no solo debatiendo ideas.',
-      },
-      {
-        label: 'Pareja',
-        description:
-          'Si mi pareja prefiere no ver la película que yo sugerí, siento que está rechazando mi gusto y, por extensión, a mí.',
-      },
-      {
-        label: 'Creatividad',
-        description:
-          'Si alguien critica algo que hice (un dibujo, una cena, un texto), no es "la obra" la que falló, sino yo como creador/a.',
-      },
+      { label: 'Físico', description: 'Te sonrojás, te tiembla la voz o te paralizás cuando alguien te critica.' },
+      { label: 'Recuerdo', description: 'Recordás situaciones embarazosas de hace años y sentís la misma vergüenza que en el momento.' },
+      { label: 'Exposición', description: 'Ser el centro de atención en una situación de evaluación te resulta insoportable.' },
+      { label: 'Escape', description: 'Tu primer impulso ante la desaprobación es huir de la situación.' },
     ],
   },
 
-  // ═══════════ SECCIÓN C: EVITACIÓN POR ANTICIPACIÓN DEL RECHAZO ═══════════
+  // ═══ SECCIÓN C — Evitación anticipatoria (4 ítems) ═══
+
   {
     id: 9,
     section: 'C',
-    sectionTitle: 'Evitación — No iniciar, no pedir, no expresar',
+    sectionTitle: 'Evitación por anticipación del rechazo',
     dimension: 'anticipatoryAvoidance',
-    text: 'Evito iniciar conversaciones, pedir ayuda o expresar necesidades por miedo a ser una carga o a que me rechacen.',
+    text: 'Evito situaciones sociales o profesionales donde podría ser evaluado/a o rechazado/a.',
     examples: [
-      {
-        label: 'Pedir ayuda',
-        description:
-          'Necesito algo pero no pido ayuda porque "molestaría" o "me verían como débil"; prefiero sufrir solo/a.',
-      },
-      {
-        label: 'Expresar desacuerdo',
-        description:
-          'No digo cuando algo no me gusta en una relación o trabajo porque el conflicto potencial me parece insoportable.',
-      },
-      {
-        label: 'Contacto primero',
-        description:
-          'Rara vez soy yo quien escribe primero, propone quedar o dice "te extraño" porque el silencio del otro me confirmaría mi peor temor.',
-      },
-      {
-        label: 'Necesidades emocionales',
-        description:
-          'No digo "necesito que me escuches" o "necesito un abrazo" porque siento que es exigente y que la otra persona dirá que no.',
-      },
+      { label: 'Trabajo', description: 'No postulás a un ascenso o proyecto porque anticipás el rechazo.' },
+      { label: 'Social', description: 'Cancelás planes o evitás eventos sociales donde no conocés a todos.' },
+      { label: 'Romántico', description: 'No expresás interés por alguien por miedo a no ser correspondido/a.' },
+      { label: 'Creativo', description: 'No compartís tus creaciones o ideas por miedo a la crítica.' },
     ],
   },
+
   {
     id: 10,
     section: 'C',
-    sectionTitle: 'Evitación — Postergación de proyectos por miedo al juicio',
+    sectionTitle: 'Evitación por anticipación del rechazo',
     dimension: 'anticipatoryAvoidance',
-    text: 'Postergo o abandono proyectos, metas o expresiones personales por miedo a que el resultado sea juzgado negativamente.',
+    text: 'Prefiero no expresar mis opiniones si creo que pueden generar desacuerdo o rechazo.',
     examples: [
-      {
-        label: 'Perfeccionismo paralizante',
-        description:
-          'No entrego un trabajo o no publico algo creativo porque "aún no está lo suficientemente bueno" (en realidad, porque el juicio externo me aterroriza).',
-      },
-      {
-        label: 'Evitación social',
-        description:
-          'No voy a eventos donde no conozco a nadie porque la posibilidad de quedarme solo/a o ser excluido/a es insoportable.',
-      },
-      {
-        label: 'Relaciones románticas',
-        description:
-          'No me acerco a alguien que me interesa porque anticipo el rechazo; prefiero no intentar a arriesgarme.',
-      },
-      {
-        label: 'Opinión pública',
-        description:
-          'No participo en debates, foros o reuniones donde deba exponer una opinión porque la contradicción me sentiría como un ataque personal.',
-      },
+      { label: 'Reuniones', description: 'En el trabajo o en grupos, preferís callar antes que arriesgarte a que tu opinión sea rechazada.' },
+      { label: 'Familia', description: 'Evitás temas controvertidos en reuniones familiares para no generar conflicto.' },
+      { label: 'Redes', description: 'Escribís y borrás comentarios o publicaciones por miedo a reacciones negativas.' },
+      { label: 'Defensa', description: 'No defendés tus necesidades o límites para evitar la confrontación.' },
     ],
   },
+
   {
     id: 11,
     section: 'C',
-    sectionTitle: 'Evitación — Dificultad para poner límites',
+    sectionTitle: 'Evitación por anticipación del rechazo',
     dimension: 'anticipatoryAvoidance',
-    text: 'Me cuesta establecer límites o decir "no" porque temo que la otra persona se enoje o me rechace.',
+    text: 'Me cuesta decir que no o poner límites por miedo a dañar la relación.',
     examples: [
-      {
-        label: 'Trabajo',
-        description:
-          'Acepto tareas que no me corresponden, horarios abusivos o peticiones fuera de mi rol porque decir que no me parece peligroso socialmente.',
-      },
-      {
-        label: 'Amistades',
-        description:
-          'Voy a eventos que no quiero, presto dinero que no puedo prestar o escucho problemas que me sobrecargan porque "si digo no, me dejarán de querer".',
-      },
-      {
-        label: 'Familia',
-        description:
-          'Sigo tradiciones o expectativas familiares que no comparto porque el conflicto me parece más doloroso que la sumisión.',
-      },
-      {
-        label: 'Pareja',
-        description:
-          'Hago cosas que no disfruto sexualmente, socialmente o domésticamente porque temo que mi pareja se distancie si expreso mis límites.',
-      },
+      { label: 'Sobrecarga', description: 'Aceptás más trabajo del que podés manejar porque decir que no te aterra.' },
+      { label: 'Cansancio', description: 'Decís que sí a planes sociales aunque estés agotado/a, por miedo a que se enojen.' },
+      { label: 'Autenticidad', description: 'Ocultás partes de vos mismo/a para encajar y evitar el rechazo.' },
+      { label: 'Prioridades', description: 'Ponés las necesidades ajenas por encima de las tuyas sistemáticamente.' },
     ],
   },
+
   {
     id: 12,
     section: 'C',
-    sectionTitle: 'Evitación — Hacerse invisible',
+    sectionTitle: 'Evitación por anticipación del rechazo',
     dimension: 'anticipatoryAvoidance',
-    text: 'He aprendido a ser "invisible" o a adaptarme excesivamente para no llamar la atención y así evitar el juicio ajeno.',
+    text: 'Dejo de intentar cosas nuevas por miedo al fracaso o al juicio de otros.',
     examples: [
-      {
-        label: 'Personalidad camaleónica',
-        description:
-          'Cambio mis opiniones, gustos o forma de hablar según el grupo para encajar, hasta el punto de no saber quién soy sin audiencia.',
-      },
-      {
-        label: 'Vestimenta / expresión',
-        description:
-          'Evito vestirme de formas que me gustan pero que considerarían "llamativas" porque no quiero que me miren ni me juzguen.',
-      },
-      {
-        label: 'Logros',
-        description:
-          'No comparto mis éxitos porque "parecería presumido" y eso atraería envidia o crítica; minimizo lo que hago bien.',
-      },
-      {
-        label: 'Espacio físico',
-        description:
-          'En grupos, elijo el asiento de atrás, no hablo a menos que me hablen, y trato de que mi presencia sea lo más neutra posible.',
-      },
+      { label: 'Aprendizaje', description: 'No empezás un curso o hobby porque anticipás que no vas a ser bueno/a.' },
+      { label: 'Profesional', description: 'Rechazás oportunidades porque el miedo al fracaso es más fuerte que las ganas de crecer.' },
+      { label: 'Deporte', description: 'No probás actividades físicas grupales por miedo a hacer el ridículo.' },
+      { label: 'Social', description: 'No iniciás conversaciones con desconocidos porque asumís que no les vas a interesar.' },
     ],
   },
 
-  // ═══════════ SECCIÓN D: RUMIA Y AUTOCRÍTICA POST-EVENTO ═══════════
+  // ═══ SECCIÓN D — Rumia y autocrítica post-rechazo (4 ítems) ═══
+
   {
     id: 13,
     section: 'D',
-    sectionTitle: 'Rumia — Repaso mental post-interacción',
+    sectionTitle: 'Rumia y autocrítica',
     dimension: 'rumination',
-    text: 'Después de una interacción social, la repaso mentalmente buscando "errores" o señales de que la otra persona se molestó conmigo.',
+    text: 'Después de una interacción social, repaso mentalmente todo lo que dije o hice mal.',
     examples: [
-      {
-        label: 'Revisión nocturna',
-        description:
-          'Al acostarme, repaso mentalmente conversaciones del día analizando si dije algo inadecuado, si mi tono fue correcto, si me reí en el momento equivocado.',
-      },
-      {
-        label: 'Análisis de mensajes',
-        description:
-          'Releo conversaciones de chat buscando señales de que la otra persona se enfrió o se molestó.',
-      },
-      {
-        label: 'Escenarios alternativos',
-        description:
-          'Mi mente genera "lo que debería haber dicho" o "lo que probablemente malinterpretaron".',
-      },
-      {
-        label: 'Confesión compulsiva',
-        description:
-          'A veces escribo a la persona al día siguiente para "disculparme" o "aclarar" algo que probablemente ni notaron.',
-      },
+      { label: 'Post-evento', description: 'Al volver de una reunión o cena, repasás cada cosa que dijiste buscando errores.' },
+      { label: 'Insomnio', description: 'De noche, tu mente reproduce en bucle las conversaciones del día.' },
+      { label: 'Exageración', description: 'Un pequeño error social te parece una catástrofe cuando lo repasás.' },
+      { label: 'Comparación', description: 'Te comparás con otros que "seguro lo hicieron mejor" en la misma situación.' },
     ],
   },
+
   {
     id: 14,
     section: 'D',
-    sectionTitle: 'Rumia — Rencor persistente',
+    sectionTitle: 'Rumia y autocrítica',
     dimension: 'rumination',
-    text: 'Guardo rencor o me cuesta "soltar" interacciones donde sentí que fui tratado/a injustamente o de forma fría.',
+    text: 'Cuando alguien me rechaza, asumo que es por algo que hice o por cómo soy.',
     examples: [
-      {
-        label: 'Recuerdos persistentes',
-        description:
-          'Años después sigo recordando una humillación leve, un comentario despectivo o un rechazo antiguo con el mismo dolor emocional.',
-      },
-      {
-        label: 'Lista mental',
-        description:
-          'Tengo una "lista" de personas que me hirieron y, aunque las relaciones continúan, nunca logro confiar plenamente en ellas de nuevo.',
-      },
-      {
-        label: 'Fantasías de confrontación',
-        description:
-          'Imagino escenarios donde le digo a alguien cómo me lastimó, aunque nunca lo hago en realidad.',
-      },
-      {
-        label: 'Evitación selectiva',
-        description:
-          'Evito lugares, personas o situaciones que me recuerdan un rechazo pasado, aunque el evento haya sido menor.',
-      },
+      { label: 'Atribución', description: 'Si alguien cancela un plan, asumís que es porque no quiere verte, no porque esté ocupado/a.' },
+      { label: 'Personal', description: 'Tomás como algo personal actitudes que probablemente no tengan que ver con vos.' },
+      { label: 'Culpa', description: 'Te culpás automáticamente cuando una relación no funciona, incluso si no fue tu responsabilidad.' },
+      { label: 'Identidad', description: 'Sentís que el rechazo confirma algo fundamentalmente "malo" o "defectuoso" en vos.' },
     ],
   },
+
   {
     id: 15,
     section: 'D',
-    sectionTitle: 'Rumia — Autocrítica implacable',
+    sectionTitle: 'Rumia y autocrítica',
     dimension: 'rumination',
-    text: 'Mi autocrítica es implacable; cuando algo sale mal, mi primer instinto es culparme a mí mismo/a antes que buscar causas externas.',
+    text: 'Me obsesiono con la idea de que algo que dije o hice pudo haber molestado a alguien.',
     examples: [
-      {
-        label: 'Conflictos grupales',
-        description:
-          'Si un proyecto falla o un grupo se distancia, asumo que fui yo quien "lo arruinó" con mi comportamiento, aunque no tenga evidencia.',
-      },
-      {
-        label: 'Relaciones rotas',
-        description:
-          'Cuando una amistad o pareja termina, mi narrativa interna es "no fui suficiente" o "hice algo mal" en lugar de "no éramos compatibles".',
-      },
-      {
-        label: 'Crítica externa',
-        description:
-          'Si alguien me corrige, mi cerebro lo convierte en "soy incompetente" en lugar de "cometí un error puntual".',
-      },
-      {
-        label: 'Éxitos minimizados',
-        description:
-          'Cuando algo sale bien, pienso "tuve suerte" o "los demás fueron amables conmigo"; no atribuyo el éxito a mi valía.',
-      },
+      { label: 'Verificación', description: 'Le preguntás repetidamente a otros si está todo bien o si hiciste algo mal.' },
+      { label: 'Mensajes', description: 'Releés tus mensajes una y otra vez buscando posibles interpretaciones negativas.' },
+      { label: 'Anticipación', description: 'Antes de enviar un mensaje, lo reescribís muchas veces por miedo a cómo será recibido.' },
+      { label: 'Círculo', description: 'Pasás horas pensando en una interacción breve que quizás la otra persona ya olvidó.' },
     ],
   },
+
   {
     id: 16,
     section: 'D',
-    sectionTitle: 'Rumia — Perfeccionismo y pertenencia condicional',
+    sectionTitle: 'Rumia y autocrítica',
     dimension: 'rumination',
-    text: 'Siento que debo ser "perfecto/a" o excepcional para merecer estar en una relación, grupo o trabajo; los errores me hacen sentir que no pertenezco.',
+    text: 'Siento que tengo que esforzarme más que otros para que me acepten o me valoren.',
     examples: [
-      {
-        label: 'Pertenencia condicional',
-        description:
-          'Siento que mi lugar en cualquier grupo está en constante riesgo y que debo "ganármelo" todos los días con mi rendimiento o mi amabilidad.',
-      },
-      {
-        label: 'Miedo al descubrimiento',
-        description:
-          'Temo que en cualquier momento descubran que "no soy tan listo/a, talentoso/a o agradable como creen" y me expulsen.',
-      },
-      {
-        label: 'Síndrome del impostor',
-        description:
-          'Incluso cuando recibo elogios genuinos, pienso que la persona no me conoce del todo o que pronto se dará cuenta de mi "fraude".',
-      },
-      {
-        label: 'Amor condicional',
-        description:
-          'Siento que si dejo de ser útil, agradable o exitoso/a, las personas dejarán de quererme o de necesitarme.',
-      },
+      { label: 'Mérito', description: 'Creés que tu valor depende de lo que hacés, no de quién sos.' },
+      { label: 'Perfeccionismo', description: 'Te exigís la perfección porque sentís que cualquier error será castigado con rechazo.' },
+      { label: 'Hipervigilancia', description: 'Estás constantemente alerta a señales de desaprobación en los demás.' },
+      { label: 'Autenticidad', description: 'Ocultás tus intereses, opiniones o dificultades por miedo a que te hagan parecer "raro/a".' },
     ],
   },
 ];
 
-export const RSD_SECTIONS = [
-  { id: 'A', title: 'Hipersensibilidad al rechazo percibido', range: [0, 3] },
-  { id: 'B', title: 'Respuesta emocional intensa a la crítica', range: [4, 7] },
-  { id: 'C', title: 'Evitación por anticipación del rechazo', range: [8, 11] },
-  { id: 'D', title: 'Rumia y autocrítica post-evento', range: [12, 15] },
+const RSD_SECTIONS = [
+  { id: 'A', title: 'Percepción de rechazo', range: [0, 3] },
+  { id: 'B', title: 'Respuesta emocional al rechazo', range: [4, 7] },
+  { id: 'C', title: 'Evitación anticipatoria', range: [8, 11] },
+  { id: 'D', title: 'Rumia y autocrítica', range: [12, 15] },
 ];
+
+export { RSD_SECTIONS };
 
 export default rsdQuestions;

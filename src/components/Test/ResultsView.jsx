@@ -255,25 +255,36 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </div>
       )}
 
-      {/* FAS: palabras generadas */}
-      {result.words && !result.wordsUsed && (
+      {/* FAS / COWAT: palabras por ronda */}
+      {result.rounds && (
         <div className="results-fas-words" style={{ marginBottom: '20px' }}>
-          <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
-            Letra: <strong>{result.letter}</strong> · {result.fluency ?? result.words.length} palabras · {result.flexibility ?? '—'} categorías
-            {result.hasPerseveration && (
-              <span style={{ color: 'var(--color-warning)', marginLeft: '8px' }}>⚠️ Tendencia a perseveración</span>
-            )}
+          {result.rounds.map((round) => (
+            <div key={round.letter} style={{ marginBottom: '16px' }}>
+              <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', marginBottom: '4px' }}>
+                <strong>Letra {round.letter}</strong> · {round.validCount} palabra{round.validCount !== 1 ? 's' : ''}
+                {round.perseverations.length > 0 && (
+                  <span style={{ color: 'var(--color-warning)', marginLeft: '8px' }}>
+                    ⚠️ {round.perseverations.length} perseveración{round.perseverations.length !== 1 ? 'es' : ''}
+                  </span>
+                )}
+              </p>
+              {round.validWords.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {round.validWords.map((w, i) => (
+                    <span key={i} style={{
+                      background: 'var(--color-accent-subtle)', color: 'var(--color-accent-deep)', padding: '4px 12px',
+                      borderRadius: '16px', fontSize: '0.85rem', border: '1px solid #bfdbfe',
+                    }}>
+                      {w}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          <p style={{ fontSize: '0.9rem', color: 'var(--color-text)', marginTop: '8px', fontWeight: 600 }}>
+            Total: {result.total} palabra{result.total !== 1 ? 's' : ''} válida{result.total !== 1 ? 's' : ''}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            {result.words.map((w, i) => (
-              <span key={i} style={{
-                background: 'var(--color-accent-subtle)', color: 'var(--color-accent-deep)', padding: '4px 12px',
-                borderRadius: '16px', fontSize: '0.85rem', border: '1px solid #bfdbfe',
-              }}>
-                {w}
-              </span>
-            ))}
-          </div>
         </div>
       )}
 
