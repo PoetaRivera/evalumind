@@ -39,11 +39,11 @@ test.describe('Complementarity notes', () => {
     // Inject TDAH answers (all max value = high score) to skip to results
     await page.goto('/test/tdah-adulto');
     await page.evaluate(() => {
-      const answers = new Array(16).fill(4);
+      const answers = new Array(18).fill(4);
       localStorage.setItem('evalumind_tdah-adulto_state', JSON.stringify({
         accepted: true,
         answers: answers,
-        currentIndex: 15,
+        currentIndex: 17,
       }));
     });
 
@@ -90,7 +90,7 @@ test.describe('PDF export', () => {
     await clearStorage(page);
     await page.goto('/test/hsp-adulto');
     await acceptDisclaimer(page);
-    await answerAllQuestions(page, 16);
+    await answerAllQuestions(page, 27);
     await expect(page.getByRole('button', { name: /descargar/i })).toBeVisible();
   });
 });

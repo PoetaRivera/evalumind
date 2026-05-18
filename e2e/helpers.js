@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test';
 
 export async function acceptDisclaimer(page) {
-  await page.getByLabel(/he leído y entiendo el aviso/i).check();
+  // Click the checkbox label (more reliable than getByRole for implicit label association)
+  await page.locator('.modal-checkbox').click();
   await page.getByRole('button', { name: /comenzar/i }).click();
 }
 

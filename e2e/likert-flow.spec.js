@@ -8,7 +8,7 @@ test.describe('Likert test flow', () => {
     await page.goto('/test/tdah-adulto');
     await acceptDisclaimer(page);
     await expect(page.locator('.instructions-banner')).toBeVisible();
-    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 1 de 16');
+    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 1 de 18');
 
     // Answer and advance through 5 questions to verify navigation
     for (let i = 1; i <= 5; i++) {
@@ -20,7 +20,7 @@ test.describe('Likert test flow', () => {
         await page.waitForTimeout(300);
       }
     }
-    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 5 de 16');
+    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 5 de 18');
   });
 
   test('TDAH: navigation buttons', async ({ page }) => {
@@ -37,12 +37,12 @@ test.describe('Likert test flow', () => {
     await page.waitForTimeout(300);
 
     await expect(prevBtn).toBeEnabled();
-    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 2 de 16');
+    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 2 de 18');
 
     // Go back to Q1 — answer should persist
     await prevBtn.click({ force: true });
     await page.waitForTimeout(200);
-    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 1 de 16');
+    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 1 de 18');
     await expect(page.locator('.likert-options input').nth(1)).toBeChecked();
   });
 
@@ -65,12 +65,12 @@ test.describe('Likert test flow', () => {
     await page.locator('button:has-text("Siguiente")').click({ force: true });
     await page.waitForTimeout(300);
 
-    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 2 de 16');
+    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 2 de 18');
 
     // Reload — should restore to question 2
     await page.reload();
     await page.waitForTimeout(500);
-    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 2 de 16');
+    await expect(page.locator('.progress-bar-text')).toContainText('Pregunta 2 de 18');
   });
 
   test('TEA: masking instruction', async ({ page }) => {
@@ -112,7 +112,7 @@ test.describe('Likert test flow', () => {
 
     // Fill localStorage with answers to skip to results
     await page.evaluate(() => {
-      const answers = new Array(16).fill(2);
+      const answers = new Array(27).fill(2);
       localStorage.setItem('evalumind_hsp-adulto_state', JSON.stringify({
         accepted: true,
         answers: answers,
@@ -129,6 +129,6 @@ test.describe('Likert test flow', () => {
     // Results should appear
     await expect(page.locator('.results-view')).toBeVisible();
     await expect(page.locator('.result-category')).toBeVisible();
-    await expect(page.locator('.result-max')).toContainText('64');
+    await expect(page.locator('.result-max')).toContainText('162');
   });
 });
