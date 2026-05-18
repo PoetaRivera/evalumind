@@ -120,6 +120,7 @@ const TEST_REGISTRY = {
       'No hay respuestas correctas: mide tu sesgo de percepción.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Downey, G. & Feldman, S. (1996). J Pers Soc Psychol, 70(6), 1327-1343. DOI: 10.1037/0022-3514.70.6.1327. Test original de EvaluMind basado en el paradigma RSQ de escenarios sociales ambiguos.',
     disclaimerText: `${DISCLAIMER_GENERAL} Este test mide sesgos de interpretación, no la realidad de tus relaciones.`,
   },
   'self-discrepancy': {
@@ -130,6 +131,7 @@ const TEST_REGISTRY = {
       'Sé honesto/a: este test es anónimo.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Higgins, E.T. (1987). Self-discrepancy: A theory relating self and affect. Psychological Review, 94(3), 319-340. DOI: 10.1037/0033-295X.94.3.319. Test original de EvaluMind adaptado para medir masking (brecha yo público/yo auténtico).',
     disclaimerText: `${DISCLAIMER_GENERAL} La discrepancia entre yo público y privado es común en personas neurodivergentes.`,
   },
   fer: {
@@ -140,6 +142,7 @@ const TEST_REGISTRY = {
       'No se trata de lo que tú sentirías, sino de identificar la emoción "correcta" para cada contexto.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Prikachin, G.C. et al. (2009). Emotion recognition. Test original de EvaluMind basado en el paradigma de reconocimiento emocional situacional. Complementa el TAS-20.',
     disclaimerText: `${DISCLAIMER_GENERAL} Mide reconocimiento emocional, no tu capacidad de sentir.`,
   },
   sart: {
@@ -152,6 +155,7 @@ const TEST_REGISTRY = {
       'La mayoría de las veces DEBES responder. Responde rápido.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Robertson, I.H., Manly, T., Andrade, J., Baddeley, B.T., & Yiend, J. (1997). Neuropsychologia, 35(6), 747-758. DOI: 10.1016/S0028-3932(97)00015-8. Tarea adaptada del Sustained Attention to Response Task.',
     disclaimerText: `${DISCLAIMER_GENERAL} El rendimiento en esta tarea fluctúa con la fatiga, el sueño y el estrés.`,
   },
   flanker: {
@@ -164,6 +168,7 @@ const TEST_REGISTRY = {
       'Ignora las flechas de los lados. Responde rápido.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Eriksen, B.A. & Eriksen, C.W. (1974). Perception & Psychophysics, 16(1), 143-149. DOI: 10.3758/BF03203267. Tarea adaptada de la Eriksen Flanker Task.',
     disclaimerText: `${DISCLAIMER_GENERAL} El control inhibitorio es una función ejecutiva que fluctúa.`,
   },
   'digit-span': {
@@ -175,6 +180,7 @@ const TEST_REGISTRY = {
       'Fase 2: Repite en orden INVERSO.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Wechsler, D. (2008). WAIS-IV: Wechsler Adult Intelligence Scale — Fourth Edition. San Antonio, TX: Pearson. Subprueba Digit Span adaptada.',
     disclaimerText: `${DISCLAIMER_GENERAL} La memoria de trabajo es sensible al estado momentáneo.`,
   },
   navon: {
@@ -185,6 +191,7 @@ const TEST_REGISTRY = {
       'Presiona H o S según corresponda.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Navon, D. (1977). Cognitive Psychology, 9(3), 353-383. DOI: 10.1016/0010-0285(77)90012-3. Tarea adaptada de Navon hierarchical figures (global vs. local precedence).',
     disclaimerText: `${DISCLAIMER_GENERAL} El estilo de procesamiento local-global es una característica cognitiva.`,
   },
   rmet: {
@@ -208,6 +215,7 @@ const TEST_REGISTRY = {
       'La tarea cambia aleatoriamente. Responde con ← o →.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Monsell, S. (2003). Trends in Cognitive Sciences, 7(3), 134-140. DOI: 10.1016/S1364-6613(03)00028-7. Tarea adaptada de task-switching paradigm.',
     disclaimerText: `${DISCLAIMER_GENERAL} La flexibilidad cognitiva fluctúa con el estrés y la fatiga.`,
   },
   'sensory-threshold': {
@@ -218,6 +226,7 @@ const TEST_REGISTRY = {
       'Si no estás seguro/a, no respondas.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Aron, E.N. (2010). Psychotherapy and the Highly Sensitive Person. New York: Routledge. Dimensión DOES: Sensory Sensitivity. Test original de EvaluMind. Sin instrumento validado equivalente.',
     disclaimerText: `${DISCLAIMER_GENERAL} El umbral sensorial bajo es una característica de temperamento.`,
   },
   'auditory-distraction': {
@@ -230,6 +239,7 @@ const TEST_REGISTRY = {
       'Recomendado usar auriculares.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
+    source: 'Aron, E.N. (2010). Psychotherapy and the Highly Sensitive Person. New York: Routledge. Dimensión DOES: Overstimulation. Test original de EvaluMind. Sin instrumento validado equivalente.',
     disclaimerText: `${DISCLAIMER_GENERAL} La distractibilidad puede ser rasgo de temperamento o síntoma atencional.`,
   },
 };

@@ -1,3 +1,11 @@
+// ═══════════════════════════════════════════════════════
+// Escenarios Sociales — EvaluMind (16 escenarios)
+// Basado en el paradigma RSQ: situaciones sociales ambiguas
+// Downey, G. & Feldman, S. (1996). J Pers Soc Psychol,
+// 70(6), 1327-1343. DOI: 10.1037/0022-3514.70.6.1327
+// Test original de EvaluMind. Complementa el test RSD.
+// ═══════════════════════════════════════════════════════
+
 const SOCIAL_SCENARIOS = [
   {
     id: 1,

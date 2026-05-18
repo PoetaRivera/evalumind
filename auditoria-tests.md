@@ -655,16 +655,16 @@ Se auditaron los 20 tests de EvaluMind contra la literatura científica de refer
 | ✅ P2 | 5 | RSD | ~~Migrar a formato A-RSQ~~ Alineado con RSQ + referencias (2026-05-17) | Bajo |
 | ✅ P2 | 6 | Burnout | ~~Incorporar CAT-Q~~ Referenciado CAT-Q como complemento (2026-05-17) | Bajo |
 | ✅ P2 | 7 | F. Ejecutivas | ~~Citar BRIEF-A~~ Referenciado BRIEF-A + Toplak (2013) (2026-05-17) | Bajo |
-| 🟢 P2 | 13 | SART | Ajustar % NoGo a 11%, citar Robertson et al. (1997) | Bajo |
-| 🟢 P2 | 14 | Flanker | Citar Eriksen & Eriksen (1974), calibrar thresholds | Bajo |
-| 🟢 P2 | 15 | Digit Span | Agregar Sequencing, citar WAIS-IV | Bajo |
-| 🟢 P2 | 16 | Navon | Citar Navon (1977), calibrar thresholds | Bajo |
-| 🟢 P2 | 17 | Switch Task | Citar Monsell (2003), calibrar thresholds | Bajo |
-| 🟢 P2 | 12 | FER | Renombrar a "Reconocimiento Emocional Situacional", citar Prikachin et al. (2009) | Bajo |
-| ⚪ P3 | 10 | Social Scenarios | Citar Downey & Feldman (1996). Test original bien fundamentado | Bajo (solo documentación) |
-| ⚪ P3 | 11 | Self-Discrepancy | Citar Higgins (1987). Reconocer que mide masking, no self-discrepancy | Bajo (solo documentación) |
-| ⚪ P3 | 19 | Sensory Threshold | Citar Aron DOES. Marcar como experimental en UI | Bajo (solo documentación) |
-| ⚪ P3 | 20 | Auditory Distraction | Citar Aron DOES. Marcar como experimental en UI | Bajo (solo documentación) |
+| ✅ P2 | 13 | SART | ~~Citar Robertson et al. (1997)~~ Completado 2026-05-17 | Bajo |
+| ✅ P2 | 14 | Flanker | ~~Citar Eriksen & Eriksen (1974)~~ Completado 2026-05-17 | Bajo |
+| ✅ P2 | 15 | Digit Span | ~~Citar WAIS-IV~~ Completado 2026-05-17 | Bajo |
+| ✅ P2 | 16 | Navon | ~~Citar Navon (1977)~~ Completado 2026-05-17 | Bajo |
+| ✅ P2 | 17 | Switch Task | ~~Citar Monsell (2003)~~ Completado 2026-05-17 | Bajo |
+| ✅ P2 | 12 | FER | ~~Citar Prikachin et al. (2009)~~ Completado 2026-05-17 | Bajo |
+| ✅ P3 | 10 | Social Scenarios | ~~Citar Downey & Feldman (1996)~~ Completado 2026-05-17 | Bajo |
+| ✅ P3 | 11 | Self-Discrepancy | ~~Citar Higgins (1987)~~ Completado 2026-05-17 | Bajo |
+| ✅ P3 | 19 | Sensory Threshold | ~~Citar Aron DOES~~ Completado 2026-05-17 | Bajo |
+| ✅ P3 | 20 | Auditory Distraction | ~~Citar Aron DOES~~ Completado 2026-05-17 | Bajo |
 
 ---
 
