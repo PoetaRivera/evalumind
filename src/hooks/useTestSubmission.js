@@ -20,7 +20,7 @@ export function useTestSubmission() {
     setRemoteSaved(false);
 
     // Guardar localmente siempre (para Mapa de Funcionamiento y notas)
-    saveCompletedTest(testId, result);
+    saveCompletedTest(testId, result, answers);
     setSaved(true);
 
     try {

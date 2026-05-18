@@ -17,9 +17,9 @@ function saveAll(data) {
   }
 }
 
-export function saveCompletedTest(testId, result) {
+export function saveCompletedTest(testId, result, answers = null) {
   const all = loadAll();
-  all[testId] = {
+  const entry = {
     testId,
     total: result.total,
     category: result.category,
@@ -33,6 +33,10 @@ export function saveCompletedTest(testId, result) {
     profiles: (result.profiles || []).map((p) => p.id),
     completedAt: Date.now(),
   };
+  if (answers) {
+    entry.answers = answers;
+  }
+  all[testId] = entry;
   saveAll(all);
 }
 
