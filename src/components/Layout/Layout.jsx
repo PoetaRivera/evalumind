@@ -42,7 +42,7 @@ function Layout() {
         <div className="app-footer-content">
           <div className="app-footer-brand">
             <span className="app-footer-name">EvaluMind</span>
-            <span className="app-footer-tagline">Herramienta de orientación cognitiva</span>
+            <span className="app-footer-tagline">Herramienta de autoobservación educativa</span>
           </div>
           <nav className="app-footer-nav">
             {NAV_LINKS.map((link) => (
@@ -52,11 +52,10 @@ function Layout() {
             ))}
           </nav>
           <p className="app-footer-disclaimer">
-            EvaluMind no diagnostica. Solo ofrece información orientativa basada en criterios científicos.
-            Consulta siempre con un profesional de la salud.
+            EvaluMind no diagnostica, confirma ni descarta TDA/TDAH u otra condición. Ofrece información educativa para autoobservación.
           </p>
           <p className="app-footer-privacy">
-            No pedimos datos personales. El perfil local vive en tu sesión; las respuestas pueden enviarse de forma anónima para análisis agregado.
+            No pedimos datos personales. El historial vive en este navegador; el envío remoto está desactivado salvo configuración explícita.
           </p>
         </div>
       </footer>

@@ -80,7 +80,7 @@ describe('calculateRmetScore', () => {
   it('profile for accuracy below 60', () => {
     const r = calculateRmetScore(makeResponses(10, 24)); // 42%
     expect(r.profiles).toHaveLength(1);
-    expect(r.profiles[0].id).toBe('deficit-mentalizacion');
+    expect(r.profiles[0].id).toBe('mentalizacion-en-observacion');
   });
 
   it('no profile for accuracy >= 60', () => {

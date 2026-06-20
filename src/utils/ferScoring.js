@@ -44,7 +44,7 @@ export function calculateFERScore(responses) {
     description = `Identificas correctamente el ${accuracyPct}% de las expresiones emocionales. Puede haber cierta dificultad con emociones específicas${negAccuracy < accuracyPct ? ', especialmente las negativas' : ''}.`;
   } else {
     category = 'reconocimiento-bajo';
-    description = `Tu precisión en reconocimiento emocional es del ${accuracyPct}%${negAccuracy < accuracyPct ? ` (${negAccuracy}% en emociones negativas)` : ''}. Esto sugiere una dificultad significativa para identificar emociones en rostros, un patrón característico de la alexitimia.`;
+    description = `Tu precisión en esta ronda de reconocimiento emocional es del ${accuracyPct}%${negAccuracy < accuracyPct ? ` (${negAccuracy}% en emociones negativas)` : ''}. Úsalo para observar qué emociones o contextos requieren más tiempo o ejemplos. No mide tu capacidad de sentir.`;
   }
 
   return {
@@ -60,10 +60,13 @@ export function calculateFERScore(responses) {
     ],
     maxScores: { total: 100 },
     profiles: accuracyPct < 65
-      ? [{ id: 'deficit-reconocimiento-emocional', label: 'Déficit en reconocimiento emocional', dimension: 'emotionRecognition' }]
+      ? [{ id: 'reconocimiento-emocional-en-observacion', label: 'Reconocimiento emocional para observar', dimension: 'emotionRecognition' }]
       : [],
     category,
     description,
+    scoreDirection: 'higher-is-better',
+    scoreLabel: 'Precisión',
+    scoreInterpretation: 'En esta tarea, puntajes más altos indican más respuestas correctas en esta ronda.',
     childhoodNote:
       'La capacidad de reconocer emociones faciales se desarrolla en la infancia y puede verse afectada por entornos donde no se hablaba de emociones, por rasgos del neurodesarrollo como el TEA, o por trauma temprano. Es una habilidad que puede mejorarse con práctica.',
   };

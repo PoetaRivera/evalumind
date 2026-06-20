@@ -36,7 +36,7 @@ function DisclaimerModal({ onAccept, disclaimerText }) {
           <p>{disclaimerText}</p>
         </div>
         <p className="modal-privacy-note">
-          Tus respuestas no incluyen datos personales. Se guardan en esta sesión y pueden enviarse de forma anónima para análisis agregado si el servidor está activo.
+          No ingreses datos personales en respuestas abiertas. Tus resultados se guardan en este navegador para historial personal. El envío remoto está desactivado salvo configuración explícita y, si se activa, usa métricas agregadas sin respuestas crudas.
         </p>
         <label className="modal-checkbox">
           <input

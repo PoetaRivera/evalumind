@@ -7,7 +7,7 @@
 // 4 dimensiones, 16 ítems, Likert 0-4
 // NOTA: El RSQ original usa 18 escenarios con doble valoración
 // (ansiedad × expectativa). Esta es una adaptación Likert
-// para screening orientativo. El test complementario
+// para autoobservación orientativa. El test complementario
 // "Escenarios Sociales" usa un paradigma similar al RSQ.
 // ═══════════════════════════════════════════════════════
 

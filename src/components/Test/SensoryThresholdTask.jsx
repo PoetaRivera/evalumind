@@ -35,7 +35,7 @@ export default function SensoryThresholdTask({ onComplete }) {
   const [paused, setPaused] = useState(false);
   const canvasRef = useRef(null);
   const rtStartRef = useRef(0);
-  const { isVisible, pauseCount, registerCallbacks } = usePageVisibility();
+  const { pauseCount, registerCallbacks } = usePageVisibility();
 
   useEffect(() => {
     registerCallbacks(() => setPaused(true), null);
@@ -104,20 +104,6 @@ export default function SensoryThresholdTask({ onComplete }) {
     return () => clearTimeout(stimTimeout);
   }, [isActive, currentTrial, isFinished, trials, finish, waitingForITI, paused]);
 
-  useEffect(() => {
-    if (!isActive || !showStimulus || paused) return;
-
-    const handleKey = (e) => {
-      if (e.code === 'Space' || e.key === ' ') {
-        e.preventDefault();
-        handleDetect();
-      }
-    };
-
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [isActive, showStimulus, paused]);
-
   const handleDetect = useCallback(() => {
     if (!showStimulus || waitingForITI || paused) return;
     const rt = performance.now() - rtStartRef.current;
@@ -134,6 +120,20 @@ export default function SensoryThresholdTask({ onComplete }) {
       setCurrentTrial((t) => t + 1);
     }, ITI_MIN);
   }, [showStimulus, waitingForITI, currentTrial, trials, paused]);
+
+  useEffect(() => {
+    if (!isActive || !showStimulus || paused) return;
+
+    const handleKey = (e) => {
+      if (e.code === 'Space' || e.key === ' ') {
+        e.preventDefault();
+        handleDetect();
+      }
+    };
+
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isActive, showStimulus, paused, handleDetect]);
 
   if (!isStarted) {
     return (

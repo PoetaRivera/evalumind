@@ -2,7 +2,16 @@
 // Factory para tests Likert
 // ═══════════════════════════════════════════════════
 
-function createLikertScorer({ maxScores, thresholds, dimensionConfig, profileMap, categoryRules, childhoodNote }) {
+function createLikertScorer({
+  maxScores,
+  thresholds,
+  dimensionConfig,
+  profileMap,
+  categoryRules,
+  childhoodNote,
+  scoreDirection = 'higher-is-more',
+  scoreInterpretation = 'Puntajes más altos indican mayor presencia o intensidad reportada en esta herramienta.',
+}) {
   return (answers) => {
     const dimensions = dimensionConfig.map((dim) => {
       const slice = answers.slice(dim.start, dim.start + dim.count);
@@ -43,6 +52,9 @@ function createLikertScorer({ maxScores, thresholds, dimensionConfig, profileMap
       category,
       description,
       childhoodNote,
+      scoreDirection,
+      scoreLabel: 'Presencia reportada',
+      scoreInterpretation,
     };
   };
 }
@@ -95,13 +107,13 @@ export const calculateTdahScore = (answers) => {
 
   if (total <= 17) {
     category = 'baja-probabilidad';
-    description = 'Tus respuestas no sugieren un patrón consistente con TDAH según los criterios del ASRS-5 (Kessler et al., 2005; Ustun et al., 2017). Algunos síntomas aislados pueden deberse a estrés, ansiedad, agotamiento o alteraciones del estado de ánimo.';
+    description = 'Tus respuestas muestran baja presencia de dificultades atencionales e impulsivas en esta autoobservación. Si aun así hay malestar o interferencia diaria, conviene revisar contexto, sueño, estrés y demandas actuales.';
   } else if (total <= 23) {
     category = 'moderada-probabilidad';
-    description = 'Presentas un patrón que merece exploración profesional según el ASRS-5. Te recomendamos consultar con un psicólogo o psiquiatra para una evaluación diferencial, especialmente si estos síntomas han estado presentes desde la infancia (antes de los 12 años).';
+    description = 'Tus respuestas muestran presencia moderada de patrones de inatención, hiperactividad o impulsividad. Usa este resultado como punto de partida para observar situaciones, horarios y apoyos que cambian tu funcionamiento.';
   } else {
     category = 'alta-probabilidad';
-    description = 'Tus respuestas indican un patrón significativo de rasgos de TDAH según los criterios del ASRS-5. Es altamente recomendable que busques evaluación profesional para confirmar o descartar TDAH y evaluar otras condiciones (ansiedad, TEA, trastorno del estado de ánimo). El TDAH requiere que los síntomas estén presentes desde la infancia.';
+    description = 'Tus respuestas muestran alta presencia de dificultades atencionales e impulsivas en esta autoobservación. No es un diagnóstico: puede servir para ordenar ejemplos concretos y, si lo necesitas, conversar con un profesional sobre apoyos y factores diferenciales.';
   }
 
   const dimensions = [
@@ -118,10 +130,11 @@ export const calculateTdahScore = (answers) => {
     description,
     screenerPositive,
     screenerPositiveCount,
+    scoreDirection: 'higher-is-more',
+    scoreLabel: 'Presencia reportada',
+    scoreInterpretation: 'Puntajes más altos indican mayor presencia reportada de dificultades de atención, hiperactividad o impulsividad. No estiman probabilidad diagnóstica.',
     childhoodNote:
-      'El TDAH requiere que los síntomas estén presentes desde la infancia (antes de los 12 años). ' +
-      'Si estos patrones aparecieron solo en los últimos meses, el agotamiento (burnout), la ansiedad ' +
-      'o la depresión pueden causar síntomas similares. Instrumento: ASRS-5 (Kessler et al., 2005; Ustun et al., 2017).',
+      'Observa si estos patrones han estado presentes por años o si aparecieron con cambios recientes de estrés, sueño, ansiedad, duelo, burnout u otras demandas. Esta herramienta no confirma ni descarta TDAH.',
   };
 };
 
@@ -157,22 +170,19 @@ export function calculateTeaScore(answers) {
   if (total >= 32) {
     category = 'alta-probabilidad';
     description =
-      `Tu puntuación en el AQ-50 es de ${total}/50, por encima del punto de corte clínico (≥32). ` +
-      'Este resultado sugiere un patrón consistente con rasgos del espectro autista. ' +
-      'Es altamente recomendable que busques evaluación profesional especializada en TEA en adultos, ' +
-      'preferiblemente con experiencia en mujeres y personas con masking si aplica a tu caso.';
+      `Tu puntuación en el AQ-50 es de ${total}/50. ` +
+      'En esta herramienta aparece alta presencia de rasgos sociales, sensoriales, comunicativos o de rutina. ' +
+      'Úsalo como material de autoobservación: ejemplos cotidianos, contextos que aumentan el esfuerzo y apoyos que reducen la carga.';
   } else if (total >= 26) {
     category = 'moderada-probabilidad';
     description =
       `Tu puntuación en el AQ-50 es de ${total}/50, en la zona intermedia (26-31). ` +
-      'Este resultado sugiere algunos rasgos del espectro autista que merecen exploración profesional. ' +
-      'Te recomendamos consultar con un psicólogo o neurólogo especializado en diagnóstico de adultos.';
+      'Esto indica presencia moderada de rasgos que conviene observar en tu historia personal, tu ambiente y tu nivel de camuflaje social.';
   } else {
     category = 'baja-probabilidad';
     description =
-      `Tu puntuación en el AQ-50 es de ${total}/50, por debajo del umbral clínico. ` +
-      'No se observa un patrón consistente con rasgos del espectro autista. ' +
-      'Algunas dificultades puntuales pueden deberse a timidez, ansiedad social o agotamiento.';
+      `Tu puntuación en el AQ-50 es de ${total}/50. ` +
+      'En esta autoobservación aparece baja presencia de rasgos medidos por el cuestionario. Algunas dificultades puntuales pueden relacionarse con contexto, ansiedad social, cansancio o demandas actuales.';
   }
 
   return {
@@ -182,12 +192,15 @@ export function calculateTeaScore(answers) {
     ],
     maxScores: { total: 50 },
     profiles: total >= 32
-      ? [{ id: 'aq-clinico', label: 'Puntaje clínico AQ-50', dimension: 'aqTotal' }]
+      ? [{ id: 'aq-alto', label: 'Puntaje AQ-50 alto', dimension: 'aqTotal' }]
       : [],
     category,
     description,
+    scoreDirection: 'higher-is-more',
+    scoreLabel: 'Presencia reportada',
+    scoreInterpretation: 'Puntajes más altos indican mayor presencia reportada de rasgos medidos por el AQ-50. No diagnostican TEA ni comparan tu valor personal.',
     childhoodNote:
-      'El TEA es una condición del neurodesarrollo presente desde la infancia. Si estos patrones aparecieron solo en la adultez, la ansiedad social, el agotamiento (burnout) o la depresión pueden causar síntomas similares. Un profesional especializado en TEA en adultos puede ayudarte a diferenciarlos, incluso si has aprendido a camuflar estos rasgos. El AQ-50 (Baron-Cohen et al., 2001) es un instrumento de screening, no diagnóstico. Punto de corte: ≥32.',
+      'Observa si estos patrones son de larga data o si aumentaron en periodos de ansiedad, agotamiento o cambios de entorno. Esta herramienta no confirma ni descarta TEA.',
   };
 }
 
@@ -400,7 +413,7 @@ export const calculateRsdScore = createLikertScorer({
         description: (_p, labels) =>
           `Presentas un patrón significativo de RSD ${labels.length > 0 ? 'con énfasis en ' + labels.join(' y ') : ''}. ` +
           'Esto puede estar drenando tu energía emocional y dificultando tus relaciones o tu desarrollo profesional. ' +
-          'Te recomendamos explorar esta dinámica con un terapeuta, especialmente si ya tienes un diagnóstico de TDAH o TEA.',
+          'Puede ser útil explorar esta dinámica con apoyo terapéutico si afecta tus relaciones, estudios o trabajo.',
       },
       {
         max: 64,
@@ -490,7 +503,7 @@ export const calculateMaskingBurnoutScore = createLikertScorer({
 // FUNCIONES EJECUTIVAS — EvaluMind (18 ítems)
 // Marco conceptual: BRIEF-A (Gioia et al.)
 // Toplak et al. (2013), DOI: 10.1111/jcpp.12001
-// Versión abreviada de screening, 4 dominios ejecutivos
+// Versión abreviada de autoobservación, 4 dominios ejecutivos
 // ═══════════════════════════════════════════════════════
 
 const EXECUTIVE_MAX = {
@@ -586,6 +599,9 @@ export const calculateDatScore = (words, embeddings) => {
       profiles: [],
       category: 'convergente',
       description: '',
+      scoreDirection: 'higher-is-better',
+      scoreLabel: 'Distancia semántica',
+      scoreInterpretation: 'Puntajes más altos indican asociaciones semánticas más distantes; no miden inteligencia.',
       childhoodNote: '',
     };
   }
@@ -620,6 +636,9 @@ export const calculateDatScore = (words, embeddings) => {
       profiles: [],
       category: 'convergente',
       description: '',
+      scoreDirection: 'higher-is-better',
+      scoreLabel: 'Distancia semántica',
+      scoreInterpretation: 'Puntajes más altos indican asociaciones semánticas más distantes; no miden inteligencia.',
       childhoodNote: '',
     };
   }
@@ -682,6 +701,9 @@ export const calculateDatScore = (words, embeddings) => {
     profiles: [],
     category,
     description,
+    scoreDirection: 'higher-is-better',
+    scoreLabel: 'Distancia semántica',
+    scoreInterpretation: 'Puntajes más altos indican asociaciones semánticas más distantes. Úsalo como estilo cognitivo, no como ranking personal.',
     childhoodNote:
       'El pensamiento divergente es un estilo cognitivo, no una medida de inteligencia. ' +
       'Un resultado convergente no indica menor capacidad intelectual, sino un estilo de procesamiento más focalizado. ' +

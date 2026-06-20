@@ -42,7 +42,7 @@ export function calculateFlankerScore(trials) {
     description = `Buen control inhibitorio con un efecto de interferencia de ${Math.round(flankerEffect)}ms. Dentro de lo esperado.`;
   } else {
     category = 'inhibicion-reducida';
-    description = `Efecto de interferencia elevado (${Math.round(flankerEffect)}ms). Los distractores te afectan significativamente, lo que sugiere dificultades en el control inhibitorio, un marcador frecuente en TDAH.`;
+    description = `Efecto de interferencia elevado (${Math.round(flankerEffect)}ms). En esta ronda los distractores aumentaron tu costo de respuesta. Repítelo en otro momento antes de sacar conclusiones personales.`;
   }
 
   return {
@@ -61,7 +61,10 @@ export function calculateFlankerScore(trials) {
     profiles: [],
     category,
     description,
+    scoreDirection: 'lower-is-better',
+    scoreLabel: 'Costo de interferencia',
+    scoreInterpretation: 'En esta tarea, puntajes más bajos indican menor interferencia de distractores.',
     childhoodNote:
-      'El control de interferencia es una función ejecutiva que puede estar reducida en TDAH. El efecto Flanker mide qué tanto te distraen estímulos irrelevantes mientras realizas una tarea. Es una habilidad que fluctúa con la fatiga y el estrés.',
+      'El control de interferencia fluctúa con fatiga, sueño, estrés y práctica. Este resultado describe una ronda concreta, no una condición clínica.',
   };
 }

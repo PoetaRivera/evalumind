@@ -16,26 +16,26 @@ import { calculateRmetScore } from '../utils/rmetScoring';
 import { calculateFasScore } from '../utils/fasScoring';
 
 const DISCLAIMER_GENERAL =
-  'Este test es únicamente orientativo y no constituye un diagnóstico médico ni psicológico. Los resultados no reemplazan la evaluación de un profesional de la salud mental.';
+  'Esta herramienta es de autoobservación personal y educativa. No diagnostica, confirma ni descarta TDA/TDAH, TEA u otra condición, y no reemplaza una evaluación profesional.';
 
 const TEST_REGISTRY = {
   // ─── Likert ─────────────────────────────────────
   'tdah-adulto': {
-    testId: 'tdah-adult-v2', title: 'Screening de TDAH en Adultos (ASRS-5)',
-    description: 'Evaluación orientativa de rasgos de TDAH basada en el ASRS-5 (Adult ADHD Self-Report Scale, DSM-5). Kessler et al. (2005), Ustun et al. (2017).',
+    testId: 'tdah-adult-v2', title: 'Autoobservación de Atención e Impulsividad',
+    description: 'Cuestionario educativo basado en ítems tipo ASRS para observar atención, hiperactividad e impulsividad en la vida diaria.',
     instructions: [
       'Cada pregunta describe una situación con ejemplos de distintos contextos.',
       'No necesitas identificarte con todos los ejemplos. Si al menos uno describe algo que te ocurre con la frecuencia indicada, responde basándote en ese ejemplo.',
       'Piensa en los últimos 6 meses, no en excepciones puntuales.',
-      'Los primeros 6 ítems constituyen un screener validado (Parte A).',
+      'Los primeros 6 ítems se muestran como bloque breve de autoobservación.',
     ],
     questions: tdahQuestions, sections: TDAH_SECTIONS, scoringFn: calculateTdahScore,
     source: 'ASRS-5 (Kessler et al., 2005; Ustun et al., 2017). DOI: 10.1017/S0033291704002892',
-    disclaimerText: `${DISCLAIMER_GENERAL} Si tus resultados sugieren rasgos significativos, te recomendamos buscar evaluación con un psicólogo o psiquiatra especializado.`,
+    disclaimerText: `${DISCLAIMER_GENERAL} Usa el resultado para registrar ejemplos, apoyos y situaciones que cambian tu funcionamiento.`,
   },
   'tea-adulto': {
-    testId: 'tea-adult-v1', title: 'Screening de Rasgos del Espectro Autista — AQ-50',
-    description: 'Evaluación con el Autism-Spectrum Quotient (AQ-50, Baron-Cohen et al., 2001). 50 ítems con scoring binario. Punto de corte clínico ≥32. Toma ~10-15 minutos.',
+    testId: 'tea-adult-v1', title: 'Rasgos Sociales y Sensoriales — AQ-50',
+    description: 'Cuestionario de autoobservación inspirado en el AQ-50. Registra patrones sociales, sensoriales, comunicativos y de rutina. Toma ~10-15 minutos.',
     instructions: [
       'Cada pregunta describe una situación con ejemplos de distintos contextos.',
       'Respondé qué tan de acuerdo estás: Totalmente de acuerdo, Parcialmente de acuerdo, Parcialmente en desacuerdo o Totalmente en desacuerdo.',
@@ -44,7 +44,7 @@ const TEST_REGISTRY = {
     ],
     questions: teaQuestions, sections: TEA_SECTIONS, scoringFn: calculateTeaScore,
     source: 'AQ-50 — Baron-Cohen, S., Wheelwright, S., Skinner, R., Martin, J., & Clubley, E. (2001). J Autism Dev Disord, 31(1), 5-17. DOI: 10.1023/a:1005653411471',
-    disclaimerText: `${DISCLAIMER_GENERAL} Si tu puntuación supera el punto de corte clínico (≥32), te recomendamos buscar evaluación con un psicólogo o neurólogo especializado en diagnóstico de adultos. El AQ-50 es un instrumento de screening, no diagnóstico.`,
+    disclaimerText: `${DISCLAIMER_GENERAL} El AQ-50 puede orientar una conversación personal o profesional, pero no debe usarse para diagnosticar.`,
   },
   'hsp-adulto': {
     testId: 'hsp-adult-v1', title: 'Screening de Alta Sensibilidad — HSPS-27',
@@ -59,7 +59,7 @@ const TEST_REGISTRY = {
     disclaimerText: `${DISCLAIMER_GENERAL} La alta sensibilidad es un temperamento presente en el 15-20 % de la población, no un trastorno. El HSPS-27 es el instrumento de referencia.`,
   },
   'alexitimia-adulto': {
-    testId: 'alexitimia-adult-v1', type: 'likert', title: 'Screening de Alexitimia — TAS-20',
+    testId: 'alexitimia-adult-v1', type: 'likert', title: 'Autoobservación Emocional — TAS-20',
     description: 'Evaluación de alexitimia con el TAS-20 (Toronto Alexithymia Scale, 20 ítems). Mide 3 dimensiones: identificación de sentimientos (DIF), descripción de sentimientos (DDF) y pensamiento orientado externamente (EOT).',
     instructions: [
       'Responde pensando en tu tendencia general a lo largo de tu vida.',
@@ -68,27 +68,27 @@ const TEST_REGISTRY = {
     ],
     questions: alexithymiaQuestions, sections: ALEXITHYMIA_SECTIONS, scoringFn: calculateAlexithymiaScore,
     source: 'TAS-20 — Bagby, Parker & Taylor (1994). J Psychosom Res, 38(1), 23-32. DOI: 10.1016/0022-3999(94)90005-1. Validación española: Moral de la Rubia, J. (2008). Rev Electrónica Psicología Iztacala, 11(2), 97-110.',
-    disclaimerText: `${DISCLAIMER_GENERAL} La alexitimia no es un trastorno, sino un estilo de procesamiento emocional. El TAS-20 es el instrumento de screening más utilizado internacionalmente.`,
+    disclaimerText: `${DISCLAIMER_GENERAL} La alexitimia describe un estilo de procesamiento emocional; observa tendencias, no etiquetas.`,
   },
   'rsd-adulto': {
     testId: 'rsd-adult-v1', title: 'Screening de Sensibilidad al Rechazo — RSQ',
     description: 'Evaluación de la sensibilidad al rechazo basada en el RSQ (Rejection Sensitivity Questionnaire, Downey & Feldman, 1996). 16 ítems en 4 dimensiones: percepción de rechazo, respuesta emocional, evitación anticipatoria y rumia.',
     instructions: ['Piensa en los últimos 6 meses.', 'Responde pensando en cómo te sientes internamente, no solo en lo que otros ven.'],
     questions: rsdQuestions, sections: RSD_SECTIONS, scoringFn: calculateRsdScore,
-    source: 'RSQ — Downey, G. & Feldman, S. (1996). J Pers Soc Psychol, 70(6), 1327-1343. DOI: 10.1037/0022-3514.70.6.1327. A-RSQ: Berenson et al. (2009). El RSQ original usa 18 escenarios con doble valoración (ansiedad × expectativa); esta es una adaptación Likert para screening orientativo.',
-    disclaimerText: `${DISCLAIMER_GENERAL} La RSD no es un trastorno oficial en el DSM-5, sino un fenómeno emocional clínicamente reconocido. El RSQ es el instrumento de referencia en investigación.`,
+    source: 'RSQ — Downey, G. & Feldman, S. (1996). J Pers Soc Psychol, 70(6), 1327-1343. DOI: 10.1037/0022-3514.70.6.1327. A-RSQ: Berenson et al. (2009). Adaptación Likert educativa para autoobservación.',
+    disclaimerText: `${DISCLAIMER_GENERAL} La sensibilidad al rechazo se presenta aquí como patrón emocional observable, no como diagnóstico.`,
   },
   'burnout-masking': {
     testId: 'burnout-masking-v1', title: 'Burnout por Masking / Camuflaje',
     description: 'Evaluación del agotamiento que produce enmascarar rasgos neurodivergentes. Complementa al CAT-Q (Hull et al., 2019): el CAT-Q mide la conducta de camuflaje, este test mide sus consecuencias (burnout). 13 ítems.',
-    instructions: ['Responde pensando en los últimos 3 meses.', 'Si no tienes diagnóstico formal pero sospechas que eres neurodivergente, responde igualmente.'],
+    instructions: ['Responde pensando en los últimos 3 meses.', 'No necesitas diagnóstico ni etiqueta previa: responde desde tu experiencia concreta.'],
     questions: burnoutMaskingQuestions, sections: BURNOUT_MASKING_SECTIONS, scoringFn: calculateMaskingBurnoutScore,
     source: 'Constructo complementario al CAT-Q — Hull, L., Mandy, W., Lai, M.C., et al. (2019). J Autism Dev Disord, 49(3), 819-833. DOI: 10.1007/s10803-018-3792-6. El burnout por masking no tiene instrumento validado propio; este test es original de EvaluMind.',
     disclaimerText: `${DISCLAIMER_GENERAL} El burnout por masking es un fenómeno real aunque no sea un diagnóstico oficial.`,
   },
   'funciones-ejecutivas': {
-    testId: 'funciones-ejecutivas-v1', title: 'Funciones Ejecutivas (Screening)',
-    description: 'Evaluación subjetiva del funcionamiento ejecutivo basada en el marco BRIEF-A (Gioia et al.): inhibición, memoria de trabajo, planificación y flexibilidad cognitiva. Versión abreviada de 18 ítems.',
+    testId: 'funciones-ejecutivas-v1', title: 'Funciones Ejecutivas (Autoobservación)',
+    description: 'Cuestionario subjetivo sobre inhibición, memoria de trabajo, planificación y flexibilidad cognitiva. Versión breve de 18 ítems.',
     instructions: ['Responde pensando en tu tendencia general, no solo en períodos de estrés.'],
     questions: executiveQuestions, sections: EXECUTIVE_SECTIONS, scoringFn: calculateExecutiveScore,
     source: 'Marco conceptual: BRIEF-A — Gioia, G.A., Isquith, P.K., Guy, S.C., & Kenworthy, L. PAR. Toplak, M.E., West, R.F., & Stanovich, K.E. (2013). J Child Psychol Psychiatry, 54(2), 131-143. DOI: 10.1111/jcpp.12001',
@@ -105,7 +105,7 @@ const TEST_REGISTRY = {
   },
   dat: {
     testId: 'dat-v1', type: 'dat', title: 'Asociación Divergente — DAT (Tarea)',
-    description: 'Evalúa tu capacidad de pensamiento divergente: qué tan lejos saltan tus asociaciones entre palabras.',
+    description: 'Observa tu pensamiento divergente: qué tan lejos saltan tus asociaciones entre palabras.',
     instructions: datConfig.instructions, questions: [], sections: [], config: datConfig, scoringFn: calculateDatScore,
     disclaimerText: `${DISCLAIMER_GENERAL} El pensamiento divergente es un estilo cognitivo, no una medida de inteligencia.`,
   },
@@ -113,11 +113,11 @@ const TEST_REGISTRY = {
   // ─── Complementos de acción ─────────────────────
   'social-scenarios': {
     testId: 'social-scenarios-v1', type: 'social-scenarios', title: 'Escenarios Sociales (RSD)',
-    description: 'Lee 16 situaciones sociales ambiguas. ¿Ves rechazo o casualidad? Complementa el test RSD con una medida objetiva de tu sesgo de interpretación.',
+    description: 'Lee 16 situaciones sociales ambiguas. Observa si tiendes a interpretar rechazo, casualidad u otras posibilidades.',
     instructions: [
       'Lee cada escenario e indica cuál interpretación te parece más probable.',
       'Califica cuánto te afectaría emocionalmente.',
-      'No hay respuestas correctas: mide tu sesgo de percepción.',
+      'No hay respuestas correctas: registra tu tendencia de interpretación.',
     ],
     questions: [], sections: [], config: {}, scoringFn: null,
     source: 'Downey, G. & Feldman, S. (1996). J Pers Soc Psychol, 70(6), 1327-1343. DOI: 10.1037/0022-3514.70.6.1327. Test original de EvaluMind basado en el paradigma RSQ de escenarios sociales ambiguos.',
@@ -146,7 +146,7 @@ const TEST_REGISTRY = {
     disclaimerText: `${DISCLAIMER_GENERAL} Mide reconocimiento emocional, no tu capacidad de sentir.`,
   },
   sart: {
-    testId: 'sart-v1', type: 'sart', title: 'Atención Sostenida — SART (TDAH)',
+    testId: 'sart-v1', type: 'sart', title: 'Atención Sostenida — SART',
     description: 'Tarea de atención sostenida: presiona la barra para cada dígito... excepto el 3. Mide inhibición, atención y variabilidad de respuesta.',
     instructions: [
       '⚠️ Esta tarea requiere un teclado físico. No funciona en dispositivos móviles.',
@@ -159,7 +159,7 @@ const TEST_REGISTRY = {
     disclaimerText: `${DISCLAIMER_GENERAL} El rendimiento en esta tarea fluctúa con la fatiga, el sueño y el estrés.`,
   },
   flanker: {
-    testId: 'flanker-v1', type: 'flanker', title: 'Control Inhibitorio — Flanker (TDAH + Ejecutivas)',
+    testId: 'flanker-v1', type: 'flanker', title: 'Control Inhibitorio — Flanker',
     description: 'Ignora las flechas distractoras y responde solo a la flecha del centro. Mide control inhibitorio.',
     instructions: [
       '⚠️ Esta tarea requiere un teclado físico. No funciona en dispositivos móviles.',
@@ -184,7 +184,7 @@ const TEST_REGISTRY = {
     disclaimerText: `${DISCLAIMER_GENERAL} La memoria de trabajo es sensible al estado momentáneo.`,
   },
   navon: {
-    testId: 'navon-v1', type: 'navon', title: 'Figuras de Navon (Procesamiento TEA)',
+    testId: 'navon-v1', type: 'navon', title: 'Figuras de Navon (Procesamiento Local/Global)',
     description: 'Letras grandes compuestas de letras pequeñas. ¿Ves primero el bosque o los árboles?',
     instructions: [
       'Una pista te dirá si debes fijarte en la letra GRANDE o en las letras PEQUEÑAS.',

@@ -32,14 +32,14 @@ export default function HomePage() {
     <div className="home-page">
       {/* ─── Hero ─── */}
       <section className="home-hero">
-        <div className="home-hero-badge">Evaluación cognitiva</div>
+        <div className="home-hero-badge">Autoobservación educativa</div>
         <h1 className="home-hero-title">Conoce cómo funciona tu mente</h1>
         <p className="home-hero-subtitle">
           Tests gratuitos que combinan preguntas de auto-observación con ejercicios interactivos.
-          Resultados claros en menos de 10 minutos, sin registro ni datos personales.
+          Resultados claros para mirar tus propios patrones, sin registro ni datos personales.
         </p>
         <div className="home-hero-actions">
-          <a href="#tests" className="btn btn-primary btn-lg">Comenzar evaluación</a>
+          <a href="#tests" className="btn btn-primary btn-lg">Comenzar autoobservación</a>
           <Link to="/perfil" className="btn btn-secondary btn-lg">Ver mi perfil</Link>
         </div>
         <div className="home-hero-trust">
@@ -67,7 +67,7 @@ export default function HomePage() {
               <div className="home-step-num">2</div>
               <div className="home-step-content">
                 <h3>Responde y ejercita</h3>
-                <p>Cuestionarios sobre tu experiencia diaria y ejercicios breves que miden tu rendimiento real.</p>
+                <p>Cuestionarios sobre tu experiencia diaria y ejercicios breves para observar tu rendimiento en ese momento.</p>
               </div>
             </div>
             <div className="home-step">
@@ -90,11 +90,11 @@ export default function HomePage() {
           </div>
           <div className="home-trust-item">
             <h4>Resultados orientativos</h4>
-            <p>Ningún test constituye un diagnóstico. Son herramientas de auto-conocimiento basadas en criterios científicos. Si algo te preocupa, consulta con un profesional.</p>
+            <p>Ningún test diagnostica, confirma ni descarta TDA/TDAH u otra condición. Son herramientas de autoobservación personal y educativa.</p>
           </div>
           <div className="home-trust-item">
             <h4>Privacidad real</h4>
-            <p>No pedimos datos personales ni usamos cookies de seguimiento. Tu perfil local vive en la sesión del navegador; si el envío está activo, solo se guarda una copia anónima de respuestas para mejorar la herramienta.</p>
+            <p>No pedimos datos personales ni usamos cookies de seguimiento. Tu historial vive en este navegador; el envío remoto está desactivado salvo configuración explícita.</p>
           </div>
         </div>
       </section>
@@ -112,8 +112,8 @@ export default function HomePage() {
 
         <section className="home-section">
           <span className="home-section-label">Tareas interactivas</span>
-          <h2 className="home-section-title">Ejercicios que miden tu rendimiento</h2>
-          <p className="home-section-desc">Tareas breves que evalúan tu atención, memoria, velocidad de procesamiento y más. Algunas requieren teclado.</p>
+          <h2 className="home-section-title">Ejercicios para observar tu rendimiento</h2>
+          <p className="home-section-desc">Tareas breves sobre atención, memoria, velocidad de procesamiento y más. Algunas requieren teclado.</p>
           <div className="tests-grid">
             {taskTests.map((t) => <TestCard key={t.id} test={t} navigate={navigate} />)}
           </div>

@@ -1,14 +1,21 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 const SESSION_KEY = 'evalumind_completed_tests';
 
 // Mock must be set BEFORE the module is imported (vitest hoists imports)
-const store = new Map();
+const localStore = new Map();
+const sessionStore = new Map();
+globalThis.localStorage = {
+  getItem: (key) => localStore.get(key) ?? null,
+  setItem: (key, value) => { localStore.set(key, value); },
+  removeItem: (key) => { localStore.delete(key); },
+  clear: () => { localStore.clear(); },
+};
 globalThis.sessionStorage = {
-  getItem: (key) => store.get(key) ?? null,
-  setItem: (key, value) => { store.set(key, value); },
-  removeItem: (key) => { store.delete(key); },
-  clear: () => { store.clear(); },
+  getItem: (key) => sessionStore.get(key) ?? null,
+  setItem: (key, value) => { sessionStore.set(key, value); },
+  removeItem: (key) => { sessionStore.delete(key); },
+  clear: () => { sessionStore.clear(); },
 };
 
 const sampleTdah = {
@@ -72,7 +79,8 @@ const sampleEjecutivas = {
 
 let mod;
 beforeEach(async () => {
-  store.clear();
+  localStore.clear();
+  sessionStore.clear();
   mod = await import('./sessionResults');
 });
 
@@ -92,11 +100,12 @@ describe('sessionResults CRUD', () => {
   });
 
   it('saveCompletedTest stores dimensions and profiles', async () => {
-    mod.saveCompletedTest('tdah-adult-v2', sampleTdah);
+    mod.saveCompletedTest('tdah-adult-v2', sampleTdah, [1, 2, 3]);
     const stored = mod.getCompletedTest('tdah-adult-v2');
     expect(stored.dimensions).toHaveLength(2);
     expect(stored.dimensions[0].key).toBe('inat');
     expect(stored.profiles).toEqual([]);
+    expect(stored.answers).toBeUndefined();
   });
 
   it('getCompletedTestIds returns all keys', async () => {
@@ -118,8 +127,10 @@ describe('sessionResults CRUD', () => {
 
   it('clearCompletedTests removes all data', async () => {
     mod.saveCompletedTest('tdah-adult-v2', sampleTdah);
+    expect(mod.getResultHistory('tdah-adult-v2')).toHaveLength(1);
     mod.clearCompletedTests();
     expect(mod.getCompletedTests()).toEqual({});
+    expect(mod.getResultHistory()).toEqual([]);
   });
 
   it('saveCompletedTest merges into existing tests', async () => {
@@ -136,8 +147,25 @@ describe('sessionResults CRUD', () => {
   });
 
   it('handles corrupted sessionStorage gracefully', async () => {
-    sessionStorage.setItem(SESSION_KEY, '{bad json');
+    localStorage.setItem(SESSION_KEY, '{bad json');
     expect(mod.getCompletedTests()).toEqual({});
+  });
+
+  it('keeps a local history per test', async () => {
+    mod.saveCompletedTest('tdah-adult-v2', { ...sampleTdah, total: 40 });
+    mod.saveCompletedTest('tdah-adult-v2', { ...sampleTdah, total: 44 });
+    mod.saveCompletedTest('rsd-adult-v1', sampleRsd);
+
+    const tdahHistory = mod.getResultHistory('tdah-adult-v2');
+    expect(tdahHistory).toHaveLength(2);
+    expect(tdahHistory.map((item) => item.total)).toEqual([40, 44]);
+    expect(mod.getResultHistory()).toHaveLength(3);
+  });
+
+  it('migrates legacy session results when local storage is empty', async () => {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ 'tdah-adult-v2': sampleTdah }));
+    expect(mod.getCompletedTests()).toHaveProperty('tdah-adult-v2');
+    expect(localStorage.getItem(SESSION_KEY)).toBeTruthy();
   });
 });
 

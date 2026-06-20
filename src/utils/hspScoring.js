@@ -53,6 +53,9 @@ export function calculateSensoryThresholdScore(trials) {
       : [],
     category,
     description,
+    scoreDirection: 'style',
+    scoreLabel: 'Umbral sensorial',
+    scoreInterpretation: 'Este puntaje describe un umbral de detección, no una escala de mejor a peor. Repite la tarea para observar tu patrón personal.',
     childhoodNote:
       'El umbral sensorial bajo es una característica del temperamento de alta sensibilidad (HSP). No es un déficit: es una mayor capacidad de detectar sutilezas en el entorno. En la infancia, esto puede manifestarse como molestia con etiquetas de ropa, ruidos fuertes o luces brillantes.',
   };
@@ -109,6 +112,9 @@ export function calculateAuditoryDistractionScore(trials) {
       : [],
     category,
     description,
+    scoreDirection: 'lower-is-better',
+    scoreLabel: 'Costo de distracción',
+    scoreInterpretation: 'En esta tarea, puntajes más bajos indican menor costo ante sonidos distractores.',
     childhoodNote:
       'La distractibilidad elevada puede ser un rasgo de temperamento (HSP) o un síntoma de TDAH. La diferencia clave: en HSP la distracción viene de la profundidad de procesamiento (todo se procesa), en TDAH viene de la dificultad para sostener el foco atencional.',
   };

@@ -21,7 +21,7 @@ export async function exportResultsToPDF(results) {
 
   doc.setFontSize(10);
   doc.setTextColor(107, 114, 128);
-  doc.text('Perfil de screening orientativo', 20, y);
+  doc.text('Resumen personal de autoobservación educativa', 20, y);
   y += 6;
   doc.text(`Fecha: ${today}`, 20, y);
   y += 12;
@@ -45,11 +45,11 @@ export async function exportResultsToPDF(results) {
     doc.text(result.testTitle, 20, y);
     y += 7;
 
-    // Categoría
+    // Lectura
     doc.setFont(undefined, 'normal');
     doc.setFontSize(11);
     doc.setTextColor(79, 70, 229);
-    doc.text(`Categoría: ${result.category}`, 20, y);
+    doc.text(`Lectura: ${result.categoryLabel || result.category}`, 20, y);
     y += 6;
 
     // Puntuación
@@ -104,9 +104,8 @@ export async function exportResultsToPDF(results) {
   doc.setFontSize(8);
   doc.setTextColor(156, 163, 175);
   const disclaimer =
-    'Este documento es orientativo y no constituye un diagnóstico médico ni psicológico. ' +
-    'EvaluMind es una herramienta de screening anónima y gratuita. ' +
-    'Consulta siempre con un profesional de la salud mental.';
+    'Este documento es personal y educativo. No diagnostica, confirma ni descarta TDA/TDAH u otra condición. ' +
+    'Evalúa tendencias propias con cautela y considera contexto, descanso, estrés y apoyos disponibles.';
   const discLines = doc.splitTextToSize(disclaimer, 170);
   discLines.forEach((line) => {
     doc.text(line, 20, y);

@@ -137,7 +137,7 @@ describe('calculateFasScore', () => {
       makeRound('S', []),
     ]);
     expect(r.profiles).toHaveLength(1);
-    expect(r.profiles[0].id).toBe('deficit-fluidez-verbal');
+    expect(r.profiles[0].id).toBe('fluidez-verbal-en-observacion');
   });
 
   it('dimensions has verbalFluency key', () => {

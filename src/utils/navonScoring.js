@@ -67,6 +67,9 @@ export function calculateNavonScore(trials) {
       : [],
     category,
     description,
+    scoreDirection: 'style',
+    scoreLabel: 'Estilo local/global',
+    scoreInterpretation: 'Este puntaje describe tendencia relativa hacia detalle o conjunto; no es una escala de mejor a peor.',
     childhoodNote:
       'El estilo de procesamiento local-global es una característica cognitiva estable que se observa en la infancia. Un sesgo hacia el detalle no es un déficit: muchas personas con TEA lo experimentan como una ventaja en tareas que requieren precisión y detección de patrones.',
   };

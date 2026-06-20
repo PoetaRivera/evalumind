@@ -115,7 +115,7 @@ export function calculateFasScore(rounds) {
     description = `Generaste ${total} palabras válidas en total. Tu fluidez verbal está dentro del rango esperado para tu grupo poblacional. El rendimiento puede variar según la fatiga, ansiedad o nivel educativo.`;
   } else {
     category = 'fluidez-baja';
-    description = `Generaste ${total} palabras válidas en total. Este resultado es inferior al esperado. Puede reflejar dificultades en el acceso léxico, fatiga, ansiedad o bajo nivel educativo. Considera repetir la tarea en otro momento si hoy te sentías agotado/a.`;
+    description = `Generaste ${total} palabras válidas en total. En esta ronda la producción fue baja; puede variar por fatiga, ansiedad, idioma, práctica, escolaridad o presión de tiempo. Considera repetir la tarea en otro momento.`;
   }
 
   return {
@@ -126,10 +126,13 @@ export function calculateFasScore(rounds) {
     ],
     maxScores: { total: 60 },
     profiles: total < 25
-      ? [{ id: 'deficit-fluidez-verbal', label: 'Fluidez verbal reducida', dimension: 'verbalFluency' }]
+      ? [{ id: 'fluidez-verbal-en-observacion', label: 'Fluidez verbal para observar', dimension: 'verbalFluency' }]
       : [],
     category,
     description,
+    scoreDirection: 'higher-is-better',
+    scoreLabel: 'Palabras válidas',
+    scoreInterpretation: 'En esta tarea, puntajes más altos indican más palabras válidas producidas bajo tiempo limitado.',
     childhoodNote:
       'La fluidez verbal fonológica depende del acceso al léxico, la flexibilidad cognitiva y la velocidad de procesamiento. Puede verse afectada por la ansiedad, el estrés o la fatiga. No mide inteligencia ni vocabulario: mide la facilidad para generar palabras bajo presión de tiempo. Las normas de referencia provienen del COWAT (Benton & Hamsher, 1989), con metanormas de Loonstra et al. (2001) y Ruff et al. (1996). En español, se recomiendan las normas de Olabarrieta-Landa et al. (2015).',
   };

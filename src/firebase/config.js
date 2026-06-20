@@ -11,6 +11,7 @@ const firebaseConfig = {
 };
 
 const isConfigured = firebaseConfig.apiKey && firebaseConfig.projectId;
+const isRemoteCollectionEnabled = import.meta.env.VITE_FIREBASE_REMOTE_COLLECTION_ENABLED === 'true';
 
 let db = null;
 
@@ -23,4 +24,4 @@ if (isConfigured) {
   }
 }
 
-export { db };
+export { db, isRemoteCollectionEnabled };

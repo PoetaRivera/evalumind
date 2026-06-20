@@ -270,6 +270,15 @@
   margin-top: var(--space-sm);
 }
 
+.result-score-note,
+.results-scale-note {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--color-text-tertiary);
+  margin: var(--space-sm) auto 0;
+  max-width: 520px;
+}
+
 /* ─── Breakdown ─── */
 .results-breakdown {
   display: flex;
@@ -334,6 +343,43 @@
   font-size: 0.8125rem;
   line-height: 1.6;
   color: var(--color-warning-text);
+}
+
+.results-history {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.results-history h3 {
+  font-size: 0.95rem;
+  margin: 0 0 var(--space-xs);
+  color: var(--color-text);
+}
+
+.results-history-delta {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-sm);
+}
+
+.results-history ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.results-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
 }
 
 .results-profiles {

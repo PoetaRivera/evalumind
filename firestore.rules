@@ -3,9 +3,11 @@ service cloud.firestore {
   match /databases/{database}/documents {
     function hasOnlyResponseFields() {
       return request.resource.data.keys().hasOnly([
+        'schemaVersion',
+        'appContext',
         'testId',
-        'answers',
         'resultCategory',
+        'scoreDirection',
         'sessionId',
         'createdAt',
         'totalScore',
@@ -13,8 +15,7 @@ service cloud.firestore {
         'profiles',
         'finalScore',
         'averageDistance',
-        'standardDeviation',
-        'pairwiseDistances'
+        'standardDeviation'
       ]);
     }
 
@@ -41,26 +42,26 @@ service cloud.firestore {
     }
 
     match /responses/{response} {
-      // Nadie puede leer los datos de screening
+      // Nadie puede leer los datos agregados desde el cliente
       allow read: if false;
 
       // Solo permitir crear documentos con estructura validada
       allow create: if
-        request.resource.data.keys().hasAll(['testId', 'answers', 'resultCategory', 'sessionId', 'createdAt'])
+        request.resource.data.keys().hasAll(['schemaVersion', 'appContext', 'testId', 'resultCategory', 'scoreDirection', 'sessionId', 'createdAt'])
         && hasOnlyResponseFields()
+        && request.resource.data.schemaVersion == 2
+        && request.resource.data.appContext == 'personal-educational'
         && validString('testId', 100)
         && validString('resultCategory', 80)
+        && validString('scoreDirection', 40)
         && validString('sessionId', 80)
         && request.resource.data.createdAt == request.time
-        && request.resource.data.answers is list
-        && request.resource.data.answers.size() <= 120
         && validOptionalNumber('totalScore')
         && validOptionalNumber('finalScore')
         && validOptionalNumber('averageDistance')
         && validOptionalNumber('standardDeviation')
         && validOptionalMap('dimensions', 40)
-        && validOptionalList('profiles', 40)
-        && validOptionalList('pairwiseDistances', 80);
+        && validOptionalList('profiles', 40);
 
       // No permitir updates ni deletes desde el cliente
       allow update, delete: if false;

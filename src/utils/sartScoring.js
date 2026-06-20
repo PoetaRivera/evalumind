@@ -41,10 +41,10 @@ export function calculateSARTScore(trials) {
     description = 'Tu rendimiento atencional es bueno, con algunos lapsos o impulsos ocasionales que entran dentro de lo esperado.';
   } else if (scaledScore <= 60) {
     category = 'atencion-moderada';
-    description = `Presentas un patrón de atención con ciertas dificultades: ${commissionErrors} fallos de inhibición y ${omissionErrors} lapsos atencionales. Tu variabilidad de respuesta es ${rtVariability > 0.3 ? 'elevada' : 'moderada'}. Esto puede reflejar dificultades atencionales que merecen exploración.`;
+    description = `En esta ronda aparecieron algunas dificultades: ${commissionErrors} respuestas cuando convenía inhibir y ${omissionErrors} omisiones. Tu variabilidad de respuesta es ${rtVariability > 0.3 ? 'elevada' : 'moderada'}. Repite en otro momento para comparar con tu propio historial.`;
   } else {
     category = 'atencion-baja';
-    description = `Tu rendimiento sugiere dificultades significativas en atención sostenida e inhibición: ${commissionErrors} errores de comisión (impulsividad) y ${omissionErrors} de omisión (inatención). La variabilidad de tu tiempo de reacción es ${rtVariability > 0.3 ? 'muy elevada' : 'elevada'}, un marcador característico del TDAH.`;
+    description = `En esta ronda hubo alto costo atencional: ${commissionErrors} respuestas cuando convenía inhibir y ${omissionErrors} omisiones. La variabilidad de tu tiempo de reacción es ${rtVariability > 0.3 ? 'muy elevada' : 'elevada'}. Esto describe tu rendimiento actual; no diagnostica TDAH.`;
   }
 
   return {
@@ -67,6 +67,9 @@ export function calculateSARTScore(trials) {
     profiles: [],
     category,
     description,
+    scoreDirection: 'lower-is-better',
+    scoreLabel: 'Costo atencional',
+    scoreInterpretation: 'En esta tarea, puntajes más bajos indican menos errores, menos omisiones y menor variabilidad de respuesta.',
     childhoodNote:
       'La atención sostenida y el control inhibitorio son funciones cognitivas que pueden verse afectadas por el TDAH, la fatiga, la ansiedad o la falta de sueño. Este test mide tu rendimiento en este momento, no tu capacidad permanente.',
   };

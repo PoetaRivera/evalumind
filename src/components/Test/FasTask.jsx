@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { FAS_LETTERS, FAS_DURATION, FAS_RULES } from '../../data/fasConfig';
 import { calculateFasScore } from '../../utils/fasScoring';
 
@@ -8,13 +8,16 @@ export default function FasTask({ onComplete }) {
   const [timeLeft, setTimeLeft] = useState(FAS_DURATION);
   const [currentRound, setCurrentRound] = useState(-1); // -1=intro, 0=F, 1=A, 2=S, 3=finished
   const [error, setError] = useState(null);
-  const [paused, setPaused] = useState(false);
+  const [paused] = useState(false);
   const [flash, setFlash] = useState(null);
   const inputRef = useRef(null);
   const timerRef = useRef(null);
   const flashTimerRef = useRef(null);
 
-  const words = currentRound >= 0 && currentRound < 3 ? roundWords[currentRound] : [];
+  const words = useMemo(
+    () => (currentRound >= 0 && currentRound < 3 ? roundWords[currentRound] : []),
+    [currentRound, roundWords],
+  );
   const letter = currentRound >= 0 && currentRound < 3 ? FAS_LETTERS[currentRound] : '';
 
   const finishAll = useCallback(() => {

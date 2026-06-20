@@ -1,16 +1,17 @@
 # EvaluMind
 
-EvaluMind es una aplicación React/Vite para screening orientativo de rasgos cognitivos y neurodivergentes en adultos. Combina cuestionarios de auto-observación con tareas interactivas breves, un mapa de funcionamiento, notas de complementariedad y exportación a PDF.
+EvaluMind es una aplicación React/Vite de autoobservación personal y educativa sobre atención, impulsividad, memoria de trabajo, organización, sensibilidad y funciones ejecutivas. Combina cuestionarios con tareas interactivas breves, historial local, mapa de funcionamiento, notas de complementariedad y exportación a PDF.
 
 ## Estado
 
-El sistema está desplegado en producción y actualmente se encuentra en fase de pruebas. Los resultados son orientativos: no constituyen diagnóstico médico, psicológico ni neuropsicológico.
+El sistema está desplegado en producción y actualmente se encuentra en fase de pruebas. Los resultados no diagnostican, confirman ni descartan TDA/TDAH, TEA u otra condición.
 
 ## Privacidad
 
 - No se solicita nombre, correo, teléfono ni identificadores personales.
-- El mapa de funcionamiento se conserva en `sessionStorage` y desaparece al cerrar la pestaña.
-- Si Firebase está configurado, se envía una copia anónima de respuestas y métricas a Firestore para análisis agregado.
+- El mapa de funcionamiento y el historial se conservan en `localStorage` del navegador.
+- El envío remoto a Firestore está desactivado por defecto con `VITE_FIREBASE_REMOTE_COLLECTION_ENABLED=false`.
+- Si se activa explícitamente, solo se envían métricas agregadas, nunca respuestas crudas.
 - Las reglas de Firestore bloquean lecturas desde cliente, no permiten updates/deletes y restringen el esquema permitido en `responses`.
 
 ## Scripts
@@ -35,9 +36,10 @@ VITE_FIREBASE_PROJECT_ID=
 VITE_FIREBASE_STORAGE_BUCKET=
 VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
+VITE_FIREBASE_REMOTE_COLLECTION_ENABLED=false
 ```
 
-Si Firebase no está configurado, la app sigue funcionando con resultados locales de sesión.
+Si Firebase no está configurado, la app sigue funcionando con resultados e historial locales.
 
 ## Verificación Recomendada
 

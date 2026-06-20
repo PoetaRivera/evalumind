@@ -42,7 +42,7 @@ export function calculateDigitSpanScore(responses) {
 
   } else {
     category = 'memoria-baja';
-    description = `Memoria de trabajo verbal por debajo de lo esperado. Span directo: ${forwardSpan}, inverso: ${backwardSpan}. Esto puede reflejar dificultades de memoria de trabajo, comunes en TDAH y otras condiciones.`;
+    description = `En esta ronda el span verbal fue bajo. Span directo: ${forwardSpan}, inverso: ${backwardSpan}. El rendimiento puede variar por sueño, estrés, ansiedad, práctica y ruido ambiental.`;
   }
 
   return {
@@ -60,6 +60,9 @@ export function calculateDigitSpanScore(responses) {
     profiles: [],
     category,
     description,
+    scoreDirection: 'higher-is-better',
+    scoreLabel: 'Span registrado',
+    scoreInterpretation: 'En esta tarea, puntajes más altos indican mayor cantidad de dígitos recordados o manipulados en esta ronda.',
     childhoodNote:
       'La memoria de trabajo verbal es una función ejecutiva que puede verse afectada en TDAH, TEA, ansiedad o fatiga. Es altamente sensible al estado momentáneo (sueño, estrés, cafeína). Un resultado bajo no indica baja inteligencia.',
   };

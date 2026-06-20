@@ -56,6 +56,9 @@ export function calculateSocialScenariosScore(responses) {
       : [],
     category,
     description,
+    scoreDirection: 'higher-is-more',
+    scoreLabel: 'Lectura de rechazo',
+    scoreInterpretation: 'Puntajes más altos indican mayor tendencia a interpretar rechazo en escenarios ambiguos.',
     childhoodNote:
       'Los sesgos de interpretación social pueden tener raíces en experiencias tempranas de rechazo, bullying o invalidación emocional. La buena noticia es que estos sesgos son modificables con intervención terapéutica (ej: terapia cognitivo-conductual, DBT).',
   };

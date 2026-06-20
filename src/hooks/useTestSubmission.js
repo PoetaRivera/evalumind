@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { db } from '../firebase/config';
+import { db, isRemoteCollectionEnabled } from '../firebase/config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { saveCompletedTest } from '../utils/sessionResults';
 
@@ -10,7 +10,8 @@ export function useTestSubmission() {
   const [remoteSaved, setRemoteSaved] = useState(false);
   const submitting = useRef(false);
 
-  const saveResponse = useCallback(async (testId, answers, result) => {
+  const saveResponse = useCallback(async (testId, _answers, result) => {
+    void _answers;
     if (submitting.current) return;
     submitting.current = true;
 
@@ -19,18 +20,19 @@ export function useTestSubmission() {
     setSaved(false);
     setRemoteSaved(false);
 
-    // Guardar localmente siempre (para Mapa de Funcionamiento y notas)
-    saveCompletedTest(testId, result, answers);
+    saveCompletedTest(testId, result);
     setSaved(true);
 
     try {
-      const sessionId = crypto.randomUUID();
+      if (!db || !isRemoteCollectionEnabled) return;
 
       const responseData = {
+        schemaVersion: 2,
+        appContext: 'personal-educational',
         testId,
-        answers,
         resultCategory: result.category,
-        sessionId,
+        scoreDirection: result.scoreDirection || 'higher-is-more',
+        sessionId: crypto.randomUUID(),
         createdAt: serverTimestamp(),
       };
 
@@ -50,17 +52,12 @@ export function useTestSubmission() {
         responseData.averageDistance = result.averageDistance;
         responseData.standardDeviation = result.standardDeviation;
       }
-      if (result.pairwiseDistances) {
-        responseData.pairwiseDistances = result.pairwiseDistances;
-      }
 
-      if (db) {
-        await addDoc(collection(db, 'responses'), responseData);
-        setRemoteSaved(true);
-      }
+      await addDoc(collection(db, 'responses'), responseData);
+      setRemoteSaved(true);
     } catch (err) {
-      const message = 'No se pudo enviar la copia anónima. Tus resultados locales siguen disponibles en esta sesión.';
-      console.warn('Firestore save skipped (not configured or offline):', err.message);
+      const message = 'No se pudo enviar la copia anónima opcional. Tus resultados locales siguen disponibles en este navegador.';
+      console.warn('Firestore save skipped (not configured, disabled or offline):', err.message);
       setError(message);
     } finally {
       setLoading(false);

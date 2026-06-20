@@ -1,6 +1,6 @@
 # CLAUDE.md — EvaluMind
 
-Proyecto React/Vite de screening cognitivo orientativo para adultos. 20 tests (7 Likert + 13 tareas interactivas) con Firestore, mapa de perfil, notas de complementariedad y exportación PDF.
+Proyecto React/Vite de autoobservación personal y educativa para adultos. 20 herramientas (7 cuestionarios + 13 tareas interactivas) con historial local, mapa de funcionamiento, notas de complementariedad y exportación PDF.
 
 ## Comandos
 
@@ -74,7 +74,7 @@ src/
 ## Estado actual (2026-05-15)
 
 - **125 tests unitarios** pasando, **93 E2E** (84 pass, 9 skip en Chromium, Firefox y WebKit)
-- **Firebase**: proyecto `evalumind-app`, Firestore `(default)` en nam5, reglas desplegadas
+- **Firebase**: proyecto `evalumind-app`, Firestore `(default)` en nam5, envío remoto desactivado por defecto
 - **Producción**: https://evalumind-app.web.app
 - **GitHub**: https://github.com/PoetaRivera/evalumind
 - **Modo oscuro**: `prefers-color-scheme: dark` con 44 custom properties

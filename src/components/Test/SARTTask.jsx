@@ -34,7 +34,7 @@ export default function SARTTask({ onComplete }) {
   const [paused, setPaused] = useState(false);
   const respondedRef = useRef(false);
   const rtStartRef = useRef(0);
-  const { isVisible, pauseCount, registerCallbacks } = usePageVisibility();
+  const { pauseCount, registerCallbacks } = usePageVisibility();
 
   useEffect(() => {
     registerCallbacks(

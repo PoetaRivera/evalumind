@@ -1,43 +1,132 @@
-const SESSION_KEY = 'evalumind_completed_tests';
+const COMPLETED_KEY = 'evalumind_completed_tests';
+const LEGACY_SESSION_KEY = 'evalumind_completed_tests';
+const HISTORY_KEY = 'evalumind_result_history_v1';
+const MAX_HISTORY_PER_TEST = 12;
 
-function loadAll() {
+function getStorage(preferLocal = true) {
+  const primary = preferLocal ? globalThis.localStorage : globalThis.sessionStorage;
+  const fallback = preferLocal ? globalThis.sessionStorage : globalThis.localStorage;
+
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
+    if (primary) {
+      const probe = '__evalumind_storage_probe__';
+      primary.setItem(probe, '1');
+      primary.removeItem(probe);
+      return primary;
+    }
+  } catch {
+    /* storage unavailable */
+  }
+
+  try {
+    if (fallback) return fallback;
+  } catch {
+    /* storage unavailable */
+  }
+
+  return null;
+}
+
+function loadJson(key, fallback = {}) {
+  const storage = getStorage();
+  if (!storage) return fallback;
+
+  try {
+    const raw = storage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveJson(key, data) {
+  const storage = getStorage();
+  if (!storage) return;
+
+  try {
+    storage.setItem(key, JSON.stringify(data));
+  } catch {
+    /* storage full or private mode */
+  }
+}
+
+function removeJson(key) {
+  const storage = getStorage();
+  try {
+    storage?.removeItem(key);
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+function loadLegacySessionResults() {
+  try {
+    const raw = globalThis.sessionStorage?.getItem(LEGACY_SESSION_KEY);
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
   }
 }
 
-function saveAll(data) {
-  try {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
-  } catch {
-    /* storage lleno */
-  }
-}
-
-export function saveCompletedTest(testId, result, answers = null) {
-  const all = loadAll();
-  const entry = {
+function normalizeEntry(testId, result) {
+  return {
     testId,
     total: result.total,
     category: result.category,
+    scoreDirection: result.scoreDirection || 'higher-is-more',
+    scoreLabel: result.scoreLabel || 'Puntaje',
+    scoreInterpretation: result.scoreInterpretation || '',
     maxScores: result.maxScores || {},
     dimensions: (result.dimensions || []).map((d) => ({
       key: d.key,
       label: d.label,
       score: d.score,
       max: d.max,
+      direction: d.direction || result.scoreDirection || 'higher-is-more',
+      interpretation: d.interpretation || '',
     })),
     profiles: (result.profiles || []).map((p) => p.id),
     completedAt: Date.now(),
   };
-  if (answers) {
-    entry.answers = answers;
+}
+
+function appendHistory(entry) {
+  const history = loadJson(HISTORY_KEY, []);
+  const next = [...history, entry]
+    .filter((item) => item && item.testId)
+    .sort((a, b) => a.completedAt - b.completedAt);
+
+  const byTest = new Map();
+  for (const item of next) {
+    const items = byTest.get(item.testId) || [];
+    items.push(item);
+    byTest.set(item.testId, items.slice(-MAX_HISTORY_PER_TEST));
   }
+
+  saveJson(HISTORY_KEY, Array.from(byTest.values()).flat().sort((a, b) => a.completedAt - b.completedAt));
+}
+
+function loadAll() {
+  const stored = loadJson(COMPLETED_KEY, {});
+  if (Object.keys(stored).length > 0) return stored;
+
+  const legacy = loadLegacySessionResults();
+  if (Object.keys(legacy).length > 0) {
+    saveJson(COMPLETED_KEY, legacy);
+  }
+  return legacy;
+}
+
+function saveAll(data) {
+  saveJson(COMPLETED_KEY, data);
+}
+
+export function saveCompletedTest(testId, result) {
+  const all = loadAll();
+  const entry = normalizeEntry(testId, result);
   all[testId] = entry;
   saveAll(all);
+  appendHistory(entry);
 }
 
 export function getCompletedTests() {
@@ -52,14 +141,23 @@ export function getCompletedTest(testId) {
   return loadAll()[testId] || null;
 }
 
-export function clearCompletedTests() {
-  sessionStorage.removeItem(SESSION_KEY);
+export function getResultHistory(testId = null) {
+  const history = loadJson(HISTORY_KEY, []);
+  const filtered = testId ? history.filter((item) => item.testId === testId) : history;
+  return filtered.sort((a, b) => a.completedAt - b.completedAt);
 }
 
-// ═══════════════════════════════════════════════════
-// Reglas de complementariedad
-// ═══════════════════════════════════════════════════
+export function clearCompletedTests() {
+  removeJson(COMPLETED_KEY);
+  removeJson(HISTORY_KEY);
+  try {
+    globalThis.sessionStorage?.removeItem(LEGACY_SESSION_KEY);
+  } catch {
+    /* storage unavailable */
+  }
+}
 
+// Reglas de complementariedad: muestran patrones personales combinados, no diagnósticos.
 const COMPLEMENTARITY_RULES = [
   {
     id: 'tdah-rsd',
@@ -70,9 +168,7 @@ const COMPLEMENTARITY_RULES = [
       return tdahModerate && rsdModerate;
     },
     note:
-      'Tu puntuación alta en TDAH y RSD sugiere que estos fenómenos pueden estar conectados. ' +
-      'La RSD frecuentemente coexiste con el TDAH y explica por qué algunas personas no se identifican ' +
-      'con la hiperactividad física pero sí con tormentas emocionales ante el rechazo.',
+      'Tus respuestas muestran alta presencia de patrones atencionales y sensibilidad al rechazo. Puede ser útil observar si el miedo al rechazo aumenta la impulsividad, la evitación o el agotamiento emocional.',
   },
   {
     id: 'tea-alexitimia',
@@ -83,9 +179,7 @@ const COMPLEMENTARITY_RULES = [
       return teaModerate && alexModerate;
     },
     note:
-      'La combinación de rasgos autistas con alexitimia es común. No significa que no sientas, ' +
-      'sino que tu procesamiento emocional puede ser más somático que verbal. Muchas personas con TEA ' +
-      'experimentan las emociones primero en el cuerpo y luego les ponen nombre.',
+      'La combinación de rasgos sociales/comunicativos con dificultad para nombrar emociones puede indicar que tu experiencia emocional se registra primero en el cuerpo. Un diario breve de sensaciones puede ayudarte a detectar tendencias.',
   },
   {
     id: 'hsp-rsd',
@@ -96,9 +190,7 @@ const COMPLEMENTARITY_RULES = [
       return hspModerate && rsdModerate;
     },
     note:
-      'La alta sensibilidad (HSP) combinada con RSD sugiere que tu sistema nervioso procesa profundamente ' +
-      'tanto los estímulos sensoriales como los sociales. Las personas con este perfil suelen necesitar ' +
-      'más tiempo de procesamiento después de interacciones sociales y ambientes estimulantes.',
+      'Aparece una combinación de alta sensibilidad y lectura intensa de señales sociales. Observa si necesitas más tiempo de recuperación después de conversaciones ambiguas o ambientes estimulantes.',
   },
   {
     id: 'tdah-tea',
@@ -109,9 +201,7 @@ const COMPLEMENTARITY_RULES = [
       return tdahModerate && teaModerate;
     },
     note:
-      'Tus resultados sugieren rasgos tanto de TDAH como de TEA. Esta co-ocurrencia es frecuente: ' +
-      'muchas personas tienen ambos perfiles (a veces llamado AuDHD). Un profesional especializado ' +
-      'puede ayudarte a entender cómo interactúan estas dos condiciones en tu caso particular.',
+      'Tus respuestas combinan patrones de atención/impulsividad con patrones sociales, sensoriales o de rutina. Esta nota no confirma ninguna condición; solo señala una interacción que puede valer la pena observar en tu vida diaria.',
   },
   {
     id: 'tea-hsp',
@@ -122,9 +212,7 @@ const COMPLEMENTARITY_RULES = [
       return teaModerate && hspModerate;
     },
     note:
-      'El TEA y la alta sensibilidad comparten la sensibilidad sensorial y la necesidad de procesamiento ' +
-      'profundo. La diferencia clave es que el TEA incluye aspectos de comunicación social y rutinas ' +
-      'que no forman parte del rasgo HSP. Un profesional puede ayudarte a distinguir si tienes uno, otro, o ambos.',
+      'Hay sensibilidad sensorial y procesamiento profundo en más de una herramienta. Prioriza registrar contextos concretos: luz, ruido, cambios de rutina, demandas sociales y tiempo de recuperación.',
   },
   {
     id: 'rsd-burnout',
@@ -135,9 +223,7 @@ const COMPLEMENTARITY_RULES = [
       return rsdModerate && burnoutModerate;
     },
     note:
-      'La RSD y el burnout por masking suelen retroalimentarse: el miedo al rechazo alimenta el camuflaje, ' +
-      'y el camuflaje constante genera agotamiento. Romper este ciclo requiere entornos donde puedas ' +
-      'bajar la máscara sin miedo a las consecuencias sociales.',
+      'La sensibilidad al rechazo y el desgaste por camuflaje pueden retroalimentarse. Observa si anticipar crítica te lleva a enmascararte más y si eso aumenta la fatiga posterior.',
   },
   {
     id: 'ejecutivas-tdah',
@@ -148,9 +234,7 @@ const COMPLEMENTARITY_RULES = [
       return ejModerate && tdahModerate;
     },
     note:
-      'Las dificultades ejecutivas y el TDAH están estrechamente vinculados. Las funciones ejecutivas ' +
-      '(memoria de trabajo, inhibición, planificación) son precisamente las áreas más afectadas por el TDAH. ' +
-      'Si ambos resultados son altos, una evaluación neuropsicológica puede ayudarte a mapear tus fortalezas y desafíos específicos.',
+      'Los cuestionarios de funciones ejecutivas y atención apuntan a dificultades parecidas. Puede ayudarte probar apoyos externos: recordatorios visibles, pasos pequeños, temporizadores y menos cambios de contexto.',
   },
   {
     id: 'ejecutivas-tea',
@@ -161,9 +245,7 @@ const COMPLEMENTARITY_RULES = [
       return ejModerate && teaModerate;
     },
     note:
-      'Las personas con TEA frecuentemente experimentan desafíos ejecutivos, especialmente en flexibilidad ' +
-      'cognitiva y planificación. Esto no es un déficit de inteligencia: es una forma diferente de procesar ' +
-      'que puede beneficiarse de apoyos visuales, rutinas externas y estrategias de organización personalizadas.',
+      'Aparecen dificultades ejecutivas junto con patrones de rutina, comunicación o sensibilidad. Las rutinas externas y apoyos visuales pueden ser más útiles que depender solo de fuerza de voluntad.',
   },
   {
     id: 'alexitimia-burnout',
@@ -174,9 +256,7 @@ const COMPLEMENTARITY_RULES = [
       return alexModerate && burnoutModerate;
     },
     note:
-      'La alexitimia puede hacer que no detectes el agotamiento hasta que es severo, porque las señales ' +
-      'de alarma del cuerpo (fatiga, tensión, malestar) no se traducen claramente en "necesito descansar". ' +
-      'Aprender a leer las señales corporales como datos puede ayudarte a prevenir el burnout.',
+      'Si cuesta nombrar emociones, el agotamiento puede detectarse tarde. Registra señales corporales simples: tensión, sueño, irritabilidad, hambre, dolor o necesidad de silencio.',
   },
 ];
 

@@ -6,21 +6,38 @@ test.describe('Profile Map', () => {
 
   test('shows empty state when no tests completed', async ({ page }) => {
     await page.goto('/perfil');
-    await expect(page.getByText(/completa al menos 2 tests/i)).toBeVisible();
+    await expect(page.getByText(/completa al menos una herramienta/i)).toBeVisible();
   });
 
-  test('shows results from sessionStorage', async ({ page }) => {
+  test('migrates legacy sessionStorage results into the personal map', async ({ page }) => {
     await page.goto('/');
     await page.evaluate(() => {
       sessionStorage.setItem('evalumind_completed_tests', JSON.stringify({
-        'tdah-adult-v2': { testId: 'tdah-adult-v2', total: 42, category: 'alta-probabilidad', dimensions: { inattention: 24, hyperactivityPhysical: 8, impulsivityVerbal: 10 }, profiles: [], completedAt: Date.now() },
-        'tea-adult-v1': { testId: 'tea-adult-v1', total: 38, category: 'moderada-probabilidad', dimensions: { socialCommunication: 10, relationships: 8, routinesFlexibility: 12, sensoryInterests: 8 }, profiles: [], completedAt: Date.now() },
+        'tdah-adult-v2': {
+          testId: 'tdah-adult-v2',
+          total: 42,
+          category: 'alta-probabilidad',
+          dimensions: [
+            { key: 'inattention', label: 'Inatención', score: 24, max: 36 },
+            { key: 'hyperactivityImpulsivity', label: 'Hiperactividad-Impulsividad', score: 18, max: 36 },
+          ],
+          profiles: [],
+          completedAt: Date.now(),
+        },
+        'tea-adult-v1': {
+          testId: 'tea-adult-v1',
+          total: 38,
+          category: 'moderada-probabilidad',
+          dimensions: [{ key: 'aqTotal', label: 'AQ-50', score: 38, max: 50 }],
+          profiles: [],
+          completedAt: Date.now(),
+        },
       }));
     });
     await page.goto('/perfil');
-    await expect(page.getByText(/2 tests completados/i)).toBeVisible();
-    await expect(page.getByText('TDAH')).toBeVisible();
-    await expect(page.getByText('TEA')).toBeVisible();
+    await expect(page.getByText(/Basado en 2 resultados recientes/i)).toBeVisible();
+    await expect(page.getByText('Atención e impulsividad')).toBeVisible();
+    await expect(page.getByText('Rasgos sociales/sensoriales')).toBeVisible();
   });
 });
 

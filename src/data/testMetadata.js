@@ -1,16 +1,16 @@
 const TEST_CARDS = [
   {
     id: 'tdah-adulto',
-    title: 'Screening de TDAH en Adultos (ASRS-5)',
-    description: 'Evaluación orientativa de rasgos de TDAH según el ASRS-5 (DSM-5). 18 ítems con screener validado de 6 ítems.',
+    title: 'Autoobservación de Atención e Impulsividad',
+    description: 'Cuestionario educativo basado en ítems tipo ASRS para observar atención, hiperactividad e impulsividad. No diagnostica TDA/TDAH.',
     questionCount: 18,
     isTask: false,
     estimatedMinutes: 7,
   },
   {
     id: 'tea-adulto',
-    title: 'Screening TEA (AQ-50)',
-    description: 'Autism-Spectrum Quotient de 50 ítems (Baron-Cohen et al., 2001). Evalúa habilidades sociales, atención, comunicación e imaginación. Punto de corte clínico ≥32.',
+    title: 'Rasgos Sociales y Sensoriales (AQ-50)',
+    description: 'Cuestionario de autoobservación inspirado en el AQ-50. Ayuda a registrar patrones sociales, sensoriales, de atención y rutina sin emitir diagnóstico.',
     questionCount: 50,
     isTask: false,
     estimatedMinutes: 15,
@@ -25,7 +25,7 @@ const TEST_CARDS = [
   },
   {
     id: 'alexitimia-adulto',
-    title: 'Screening de Alexitimia (TAS-20)',
+    title: 'Autoobservación Emocional (TAS-20)',
     description: 'Evaluación de alexitimia con el TAS-20 (Toronto Alexithymia Scale). 20 ítems. Mide identificación (DIF), descripción (DDF) y pensamiento externo (EOT). Puntos de corte validados.',
     questionCount: 20,
     isTask: false,
@@ -49,8 +49,8 @@ const TEST_CARDS = [
   },
   {
     id: 'funciones-ejecutivas',
-    title: 'Funciones Ejecutivas (BRIEF-A screening)',
-    description: 'Screening basado en el marco BRIEF-A (Gioia et al.). 18 ítems en 4 dominios: inhibición, memoria de trabajo, planificación y flexibilidad cognitiva.',
+    title: 'Funciones Ejecutivas (Autoobservación)',
+    description: 'Cuestionario breve sobre inhibición, memoria de trabajo, planificación y flexibilidad. Prioriza patrones personales y apoyos prácticos.',
     questionCount: 18,
     isTask: false,
     estimatedMinutes: 7,
@@ -103,7 +103,7 @@ const TEST_CARDS = [
   {
     id: 'sart',
     type: 'sart',
-    title: 'Atención Sostenida — SART (TDAH)',
+    title: 'Atención Sostenida — SART',
     description: 'Tarea de atención sostenida: presiona la barra para cada dígito... excepto el 3. Mide inhibición, atención y variabilidad de respuesta.',
     questionCount: 1,
     isTask: true,
@@ -112,7 +112,7 @@ const TEST_CARDS = [
   {
     id: 'flanker',
     type: 'flanker',
-    title: 'Control Inhibitorio — Flanker (TDAH + Ejecutivas)',
+    title: 'Control Inhibitorio — Flanker',
     description: 'Ignora las flechas distractoras y responde solo a la flecha del centro. Mide control inhibitorio.',
     questionCount: 1,
     isTask: true,
@@ -130,7 +130,7 @@ const TEST_CARDS = [
   {
     id: 'navon',
     type: 'navon',
-    title: 'Figuras de Navon (Procesamiento TEA)',
+    title: 'Figuras de Navon (Procesamiento Local/Global)',
     description: 'Letras grandes compuestas de letras pequeñas. ¿Ves primero el bosque o los árboles?',
     questionCount: 1,
     isTask: true,

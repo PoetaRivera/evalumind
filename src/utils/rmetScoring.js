@@ -23,7 +23,7 @@ export function calculateRmetScore(responses) {
     description = `Identificas correctamente el ${accuracyPct}% de los estados mentales. Puede haber cierta dificultad en situaciones sociales sutiles.`;
   } else {
     category = 'mentalizacion-baja';
-    description = `Tu precisión en teoría de la mente es del ${accuracyPct}%, por debajo de lo esperado. Esto puede reflejar dificultades en cognición social, un patrón frecuente en el espectro autista.`;
+    description = `Tu precisión en esta adaptación textual fue del ${accuracyPct}%. Puede indicar que las claves sociales sutiles requieren más contexto verbal o más tiempo en esta ronda. No es una medida diagnóstica.`;
   }
 
   return {
@@ -35,10 +35,13 @@ export function calculateRmetScore(responses) {
     ],
     maxScores: { total: 100 },
     profiles: accuracyPct < 60
-      ? [{ id: 'deficit-mentalizacion', label: 'Dificultad en mentalización', dimension: 'theoryOfMind' }]
+      ? [{ id: 'mentalizacion-en-observacion', label: 'Mentalización para observar', dimension: 'theoryOfMind' }]
       : [],
     category,
     description,
+    scoreDirection: 'higher-is-better',
+    scoreLabel: 'Precisión',
+    scoreInterpretation: 'En esta tarea, puntajes más altos indican más respuestas correctas en una adaptación textual; no son comparables con normas clínicas del RMET fotográfico.',
     childhoodNote:
       'La teoría de la mente (capacidad de inferir estados mentales en otros) es una habilidad que se desarrolla en la infancia y puede verse afectada en el TEA. No es una medida de empatía: puedes preocuparte por los demás y aun así tener dificultad para leer sus estados mentales. Este test es una adaptación textual inspirada en el RMET de Baron-Cohen et al. (2001); no utiliza las 36 fotografías originales del RMET.',
   };

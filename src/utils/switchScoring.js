@@ -42,7 +42,7 @@ export function calculateSwitchScore(trials) {
     description = `Flexibilidad cognitiva dentro de lo esperado. Tu costo de cambio es de ${Math.round(rtSwitchCost)}ms, un valor típico.`;
   } else {
     category = 'flexibilidad-baja';
-    description = `Costo de cambio elevado (${Math.round(rtSwitchCost)}ms). Cambiar entre tareas te cuesta significativamente más que repetir la misma. Esto es frecuente en TDAH, TEA y fatiga cognitiva.`;
+    description = `Costo de cambio elevado (${Math.round(rtSwitchCost)}ms). En esta ronda cambiar entre reglas costó más que repetir la misma. Puede variar con fatiga, estrés, práctica y claridad de instrucciones.`;
   }
 
   return {
@@ -61,7 +61,10 @@ export function calculateSwitchScore(trials) {
     profiles: [],
     category,
     description,
+    scoreDirection: 'lower-is-better',
+    scoreLabel: 'Costo de cambio',
+    scoreInterpretation: 'En esta tarea, puntajes más bajos indican menor costo al cambiar entre reglas.',
     childhoodNote:
-      'La flexibilidad cognitiva (capacidad de alternar entre tareas o perspectivas) es una función ejecutiva que se desarrolla en la infancia y puede verse afectada en condiciones del neurodesarrollo. Es una habilidad que fluctúa con el estrés y la fatiga.',
+      'La flexibilidad cognitiva fluctúa con estrés, fatiga, sueño y práctica. Este resultado describe tu rendimiento en esta ronda.',
   };
 }

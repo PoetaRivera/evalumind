@@ -104,11 +104,10 @@ describe('calculateTdahScore', () => {
     expect(r.profiles[0].id).toBe('tdah-combinado');
   });
 
-  it('childhoodNote mentions ASRS-5', () => {
+  it('childhoodNote states non-diagnostic scope', () => {
     const r = calculateTdahScore(all(18, 2));
     expect(r.childhoodNote).toBeTruthy();
-    expect(r.childhoodNote).toContain('12 años');
-    expect(r.childhoodNote).toContain('ASRS-5');
+    expect(r.childhoodNote).toContain('no confirma ni descarta TDAH');
   });
 
   it('maxScores matches expected', () => {
@@ -182,9 +181,9 @@ describe('calculateTeaScore', () => {
     expect(r.total).toBe(47);
   });
 
-  it('childhoodNote mentions neurodesarrollo', () => {
+  it('childhoodNote states non-diagnostic scope', () => {
     const r = calculateTeaScore(all(50, 1));
-    expect(r.childhoodNote).toContain('neurodesarrollo');
+    expect(r.childhoodNote).toContain('no confirma ni descarta TEA');
   });
 
   it('maxScores.total is 50', () => {
@@ -195,7 +194,7 @@ describe('calculateTeaScore', () => {
   it('profile added when ≥32', () => {
     const r = calculateTeaScore(all(50, 0));
     expect(r.profiles).toHaveLength(1);
-    expect(r.profiles[0].id).toBe('aq-clinico');
+    expect(r.profiles[0].id).toBe('aq-alto');
   });
 });
 

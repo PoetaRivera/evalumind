@@ -56,7 +56,6 @@ function TestContainer() {
   const [finished, setFinished] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(!saved?.accepted);
   const [taskResult, setTaskResult] = useState(null);
-  const [datEmbeddings, setDatEmbeddings] = useState(null);
   const [datLoading, setDatLoading] = useState(false);
   const embeddingsRef = useRef(null);
 
@@ -133,9 +132,10 @@ function TestContainer() {
       loadEmbeddings()
         .then((emb) => {
           embeddingsRef.current = emb;
-          setDatEmbeddings(emb);
         })
-        .catch(() => setDatEmbeddings(null))
+        .catch(() => {
+          embeddingsRef.current = null;
+        })
         .finally(() => setDatLoading(false));
     }
   }, [test?.type, datLoading]);
@@ -183,7 +183,6 @@ function TestContainer() {
           setFinished(false);
           setShowDisclaimer(true);
           setAccepted(false);
-          setFasLetter(randomFasLetter());
           localStorage.removeItem(storageKey(testId));
         }}
       />

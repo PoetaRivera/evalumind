@@ -33,7 +33,7 @@ export default function AuditoryDistractionTask({ onComplete }) {
   const respondedRef = useRef(false);
   const rtStartRef = useRef(0);
   const audioCtxRef = useRef(null);
-  const { isVisible, pauseCount, registerCallbacks } = usePageVisibility();
+  const { pauseCount, registerCallbacks } = usePageVisibility();
 
   useEffect(() => {
     registerCallbacks(() => setPaused(true), null);

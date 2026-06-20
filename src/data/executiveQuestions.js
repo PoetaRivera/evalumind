@@ -4,7 +4,7 @@
 // Behavior Rating Inventory of Executive Function — Adult
 // 75 ítems, 9 subescalas, 2 índices (BRI + MI) → GEC
 //
-// Este test es una versión abreviada de screening con
+// Esta herramienta es una versión abreviada de autoobservación con
 // 4 dominios ejecutivos: inhibición, memoria de trabajo,
 // planificación y flexibilidad cognitiva.
 // Referencia: Toplak, M.E., West, R.F., & Stanovich, K.E.

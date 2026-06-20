@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCompletedTests, clearCompletedTests } from '../../utils/sessionResults';
+import { getCompletedTests, clearCompletedTests, getResultHistory } from '../../utils/sessionResults';
 import { exportResultsToPDF } from '../../utils/pdfExport';
 
 const TEST_LABELS = {
-  'tdah-adult-v2': { name: 'TDAH', color: 'var(--color-accent)' },
-  'tea-adult-v1': { name: 'TEA', color: 'var(--color-bar-mid)' },
+  'tdah-adult-v2': { name: 'Atención e impulsividad', color: 'var(--color-accent)' },
+  'tea-adult-v1': { name: 'Rasgos sociales/sensoriales', color: 'var(--color-bar-mid)' },
   'hsp-adult-v1': { name: 'Alta Sensibilidad', color: 'var(--color-bar-low)' },
   'alexitimia-adult-v1': { name: 'Alexitimia', color: 'var(--color-bar-high)' },
   'rsd-adult-v1': { name: 'RSD', color: '#ec4899' },
@@ -26,9 +26,16 @@ const TEST_LABELS = {
   'auditory-distraction-v1': { name: 'Distracción Auditiva', color: 'var(--color-bar-low)' },
 };
 
+const CATEGORY_LABELS = {
+  'baja-probabilidad': 'Baja presencia reportada',
+  'moderada-probabilidad': 'Presencia moderada reportada',
+  'alta-probabilidad': 'Presencia alta reportada',
+};
+
 const DIMENSION_LABELS = {
   inattention: 'Inatención',
   hyperactivityPhysical: 'Hiperactividad física',
+  hyperactivityImpulsivity: 'Hiperactividad-Impulsividad',
   impulsivityVerbal: 'Impulsividad verbal',
   aqTotal: 'AQ-50',
   deepProcessing: 'Procesamiento profundo',
@@ -148,23 +155,23 @@ function normalizeDimensions(completedTests) {
   return allDims;
 }
 
-function findStrengths(dimensions) {
+function findLowerAreas(dimensions) {
   return Object.entries(dimensions)
     .filter(([, pct]) => pct <= 35)
     .map(([key]) => ({
       key,
       label: DIMENSION_LABELS[key] || key,
-      type: 'strength',
+      type: 'lower',
     }));
 }
 
-function findEffortAreas(dimensions) {
+function findHigherAreas(dimensions) {
   return Object.entries(dimensions)
     .filter(([, pct]) => pct >= 65)
     .map(([key]) => ({
       key,
       label: DIMENSION_LABELS[key] || key,
-      type: 'effort',
+      type: 'higher',
     }));
 }
 
@@ -186,20 +193,21 @@ export default function ProfileMap() {
 
   const dimensions = useMemo(() => normalizeDimensions(completedTests), [completedTests]);
   const dimEntries = useMemo(() => Object.entries(dimensions).sort((a, b) => b[1] - a[1]), [dimensions]);
-  const strengths = useMemo(() => findStrengths(dimensions), [dimensions]);
-  const effortAreas = useMemo(() => findEffortAreas(dimensions), [dimensions]);
+  const lowerAreas = useMemo(() => findLowerAreas(dimensions), [dimensions]);
+  const higherAreas = useMemo(() => findHigherAreas(dimensions), [dimensions]);
   const strategies = useMemo(() => findStrategies(dimensions, completedTests), [dimensions, completedTests]);
+  const history = useMemo(() => getResultHistory().slice(-6).reverse(), []);
 
   if (!hasTests) {
     return (
       <div className="profile-map" style={{ maxWidth: '700px', margin: '0 auto', padding: '40px 20px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '16px' }}>Mapa de Funcionamiento</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '16px' }}>Mapa Personal de Funcionamiento</h2>
         <div className="question-card" style={{ textAlign: 'center', padding: '32px' }}>
           <p style={{ fontSize: '1.05rem', color: 'var(--color-text-secondary)', marginBottom: '16px' }}>
-            Completa al menos 2 tests para ver tu mapa de funcionamiento combinado.
+            Completa al menos una herramienta para ver tu mapa personal de funcionamiento.
           </p>
           <p style={{ fontSize: '0.9rem', color: 'var(--color-text-tertiary)', marginBottom: '24px' }}>
-            Tu mapa local se arma con los resultados disponibles en esta sesión del navegador.
+            Tu mapa local se arma con el historial guardado en este navegador.
           </p>
           <button className="btn btn-primary" onClick={() => navigate('/')}>
             Ir a los tests
@@ -210,7 +218,7 @@ export default function ProfileMap() {
   }
 
   const handleClear = () => {
-    if (window.confirm('¿Borrar tu mapa local? Los datos de esta sesión se perderán permanentemente.')) {
+    if (window.confirm('¿Borrar tu mapa e historial local? Los datos guardados en este navegador se perderán permanentemente.')) {
       clearCompletedTests();
       navigate('/');
     }
@@ -236,6 +244,7 @@ export default function ProfileMap() {
       return {
         testTitle: meta.name,
         category: data.category,
+        categoryLabel: CATEGORY_LABELS[data.category] || data.category,
         total: data.total,
         maxScore,
         dimensions: dimensionsData,
@@ -246,9 +255,9 @@ export default function ProfileMap() {
 
   return (
     <div className="profile-map" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>Mapa de Funcionamiento</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>Mapa Personal de Funcionamiento</h2>
       <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '0.9rem', marginBottom: '32px' }}>
-        Basado en {testEntries.length} test{testEntries.length > 1 ? 's' : ''} completado{testEntries.length > 1 ? 's' : ''} en esta sesión
+        Basado en {testEntries.length} resultado{testEntries.length > 1 ? 's' : ''} reciente{testEntries.length > 1 ? 's' : ''} guardado{testEntries.length > 1 ? 's' : ''} en este navegador
       </p>
 
       {/* Tests completados */}
@@ -292,33 +301,33 @@ export default function ProfileMap() {
             ))}
           </div>
           <p style={{ fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginTop: '8px', textAlign: 'center' }}>
-            Verde = área de fortaleza relativa · Violeta = zona intermedia · Ámbar = área de esfuerzo
+            Las barras comparan dimensiones dentro de su propia escala. En algunas, más alto significa mayor presencia o costo; en otras, mayor precisión.
           </p>
         </div>
       )}
 
-      {/* Fortalezas + Áreas de esfuerzo */}
+      {/* Áreas bajas + áreas altas */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
-        {strengths.length > 0 && (
+        {lowerAreas.length > 0 && (
           <div style={{ background: 'var(--color-success-bg)', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '16px' }}>
             <h3 style={{ fontSize: '0.95rem', color: 'var(--color-success-text)', marginBottom: '10px' }}>
-              Fortalezas identificadas
+              Menor presencia o costo
             </h3>
             <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: 'var(--color-success-text)', lineHeight: 1.8 }}>
-              {strengths.map((s) => (
+              {lowerAreas.map((s) => (
                 <li key={s.key}>{s.label}</li>
               ))}
             </ul>
           </div>
         )}
 
-        {effortAreas.length > 0 && (
+        {higherAreas.length > 0 && (
           <div style={{ background: 'var(--color-warning-bg)', border: '1px solid #fde68a', borderRadius: '10px', padding: '16px' }}>
             <h3 style={{ fontSize: '0.95rem', color: 'var(--color-warning-text)', marginBottom: '10px' }}>
-              Áreas que requieren estrategia
+              Mayor presencia, costo o precisión
             </h3>
             <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '0.85rem', color: 'var(--color-warning-text)', lineHeight: 1.8 }}>
-              {effortAreas.map((a) => (
+              {higherAreas.map((a) => (
                 <li key={a.key}>{a.label}</li>
               ))}
             </ul>
@@ -360,6 +369,23 @@ export default function ProfileMap() {
         </div>
       )}
 
+      {history.length > 0 && (
+        <div style={{ marginBottom: '32px', background: 'var(--color-bg)', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '16px' }}>
+          <h3 style={{ fontSize: '1rem', marginBottom: '12px', color: 'var(--color-text)' }}>Historial reciente</h3>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {history.map((item) => {
+              const meta = TEST_LABELS[item.testId] || { name: item.testId };
+              return (
+                <li key={`${item.testId}-${item.completedAt}`} style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
+                  <span>{meta.name}</span>
+                  <strong>{item.total}/{item.maxScores?.total ?? 100}</strong>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {/* Acciones */}
       <div style={{ textAlign: 'center', display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
         <button className="btn btn-secondary" onClick={() => navigate('/')}>
@@ -372,16 +398,16 @@ export default function ProfileMap() {
           Historias de adaptación
         </button>
         <button className="btn btn-secondary" onClick={() => navigate('/recursos')}>
-          Buscar ayuda profesional
+          Recursos de apoyo
         </button>
         <button className="btn btn-link" onClick={handleClear} style={{ fontSize: '0.85rem' }}>
-          Limpiar resultados de sesión
+          Limpiar datos locales
         </button>
       </div>
 
       <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--color-text-tertiary)', marginTop: '32px' }}>
-        Este mapa es orientativo. No constituye un diagnóstico ni un perfil clínico.
-        El mapa se guarda solo en esta sesión del navegador.
+        Este mapa es personal y orientativo. No constituye diagnóstico ni perfil clínico.
+        El historial se guarda localmente en este navegador.
       </p>
     </div>
   );

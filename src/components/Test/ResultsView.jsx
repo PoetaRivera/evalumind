@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getComplementarityNotes } from '../../utils/sessionResults';
+import { getComplementarityNotes, getResultHistory } from '../../utils/sessionResults';
 import { exportResultsToPDF } from '../../utils/pdfExport';
+import { isRemoteCollectionEnabled } from '../../firebase/config';
 
 const CATEGORY_LABELS = {
-  'baja-probabilidad': 'Baja probabilidad',
-  'moderada-probabilidad': 'Moderada probabilidad',
-  'alta-probabilidad': 'Alta probabilidad',
+  'baja-probabilidad': 'Baja presencia reportada',
+  'moderada-probabilidad': 'Presencia moderada reportada',
+  'alta-probabilidad': 'Presencia alta reportada',
   'sensibilidad-promedio': 'Sensibilidad promedio',
   'alta-sensibilidad-moderada': 'Alta sensibilidad moderada',
   'alta-sensibilidad-marcada': 'Alta sensibilidad marcada',
@@ -25,6 +26,7 @@ const CATEGORY_LABELS = {
   'dificultades-ejecutivas-moderadas': 'Dificultades ejecutivas moderadas',
   'dificultades-ejecutivas-significativas': 'Dificultades ejecutivas significativas',
   'fluidez-baja': 'Fluidez verbal baja',
+  'fluidez-normal': 'Fluidez verbal esperada',
   'fluidez-moderada': 'Fluidez verbal moderada',
   'fluidez-alta': 'Fluidez verbal alta',
   'sesgo-bajo': 'Sesgo de rechazo bajo',
@@ -85,6 +87,7 @@ const CATEGORY_COLORS = {
   'dificultades-ejecutivas-moderadas': '#e67e22',
   'dificultades-ejecutivas-significativas': '#c0392b',
   'fluidez-baja': 'var(--color-bar-high)',
+  'fluidez-normal': 'var(--color-bar-mid)',
   'fluidez-moderada': 'var(--color-bar-mid)',
   'fluidez-alta': 'var(--color-bar-low)',
   'sesgo-bajo': '#2e7d32',
@@ -223,19 +226,61 @@ function RadarChart({ dimensions }) {
   );
 }
 
+function formatDate(ts) {
+  return new Intl.DateTimeFormat('es', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(ts));
+}
+
+function describeDelta(delta, direction) {
+  if (delta === 0) return 'Sin cambio frente al intento anterior.';
+
+  const abs = Math.abs(delta);
+  const wentUp = delta > 0;
+
+  if (direction === 'lower-is-better') {
+    return wentUp
+      ? `+${abs} puntos: más costo, errores o variabilidad que antes.`
+      : `-${abs} puntos: menos costo, errores o variabilidad que antes.`;
+  }
+
+  if (direction === 'higher-is-better') {
+    return wentUp
+      ? `+${abs} puntos: mayor precisión o capacidad registrada que antes.`
+      : `-${abs} puntos: menor precisión o capacidad registrada que antes.`;
+  }
+
+  if (direction === 'style') {
+    return wentUp
+      ? `+${abs} puntos frente al intento anterior; observa el contexto en que cambió.`
+      : `-${abs} puntos frente al intento anterior; observa el contexto en que cambió.`;
+  }
+
+  return wentUp
+    ? `+${abs} puntos: mayor presencia/intensidad reportada que antes.`
+    : `-${abs} puntos: menor presencia/intensidad reportada que antes.`;
+}
+
 function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRestart }) {
   const navigate = useNavigate();
   const complementarityNotes = useMemo(
     () => testId ? getComplementarityNotes(testId) : [],
     [testId]
   );
+  const history = testId ? getResultHistory(testId).slice(-4) : [];
 
   const dimensions = result.dimensions || [];
   const chartDimensions = dimensions.length >= 3 ? dimensions : [];
+  const previousResult = history.length > 1 ? history[history.length - 2] : null;
+  const delta = previousResult ? result.total - previousResult.total : null;
+  const scoreDirection = result.scoreDirection || previousResult?.scoreDirection || 'higher-is-more';
 
   return (
     <div className="results-view">
-      <h2>Resultados del screening</h2>
+      <h2>Resultados de autoobservación</h2>
 
       {/* Resumen principal */}
       <div className="results-summary">
@@ -246,6 +291,9 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         <div className="result-category" data-testid="result-category" style={{ color: CATEGORY_COLORS[result.category] }}>
           {CATEGORY_LABELS[result.category] || result.category || 'Resultado calculado'}
         </div>
+        <p className="result-score-note">
+          {result.scoreInterpretation || 'Este puntaje resume tu patrón en esta herramienta; interprétalo junto con el contexto, el cansancio y tu historial personal.'}
+        </p>
       </div>
 
       {/* Gráfico radar (solo si hay ≥3 dimensiones) */}
@@ -311,6 +359,9 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       {/* Desglose por dimensión */}
       {dimensions.length > 0 && (
         <div className="results-breakdown">
+          <p className="results-scale-note">
+            Lee cada barra por su etiqueta: algunas representan presencia o costo, y otras precisión o capacidad. No todas usan la misma dirección.
+          </p>
           {dimensions.map((dim) => (
             <div className="breakdown-item" key={dim.key}>
               <span className="breakdown-label">{dim.label}</span>
@@ -328,10 +379,10 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </div>
       )}
 
-      {/* Perfiles detectados */}
+      {/* Patrones destacados */}
       {result.profiles && result.profiles.length > 0 && (
         <div className="results-profiles">
-          <h3>Perfil detectado</h3>
+          <h3>Patrones destacados</h3>
           <ul>
             {result.profiles.map((p) => (
               <li key={p.id}>{p.label}</li>
@@ -409,6 +460,25 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
         </div>
       )}
 
+      {history.length > 0 && (
+        <div className="results-history">
+          <h3>Historial personal local</h3>
+          {previousResult && (
+            <p className="results-history-delta">
+              {describeDelta(delta, scoreDirection)}
+            </p>
+          )}
+          <ul>
+            {history.map((item) => (
+              <li key={`${item.completedAt}-${item.total}`}>
+                <span>{formatDate(item.completedAt)}</span>
+                <strong>{item.total}/{item.maxScores?.total ?? result.maxScores?.total ?? 100}</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Notas de complementariedad entre tests */}
       {complementarityNotes.length > 0 && (
         <div className="results-complementarity" style={{
@@ -431,13 +501,13 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
 
       {saved && (
         <p className="results-saved" data-testid="result-saved-local" aria-live="polite">
-          Resultados disponibles en esta sesión del navegador.
+          Resultado guardado en el historial local de este navegador.
         </p>
       )}
 
       {remoteSaved && (
         <p className="results-saved" data-testid="result-saved-remote" aria-live="polite">
-          Copia anónima enviada correctamente para análisis agregado.
+          Copia anónima agregada enviada correctamente.
         </p>
       )}
 
@@ -465,6 +535,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
             exportResultsToPDF([{
               testTitle: testId || 'Resultado EvaluMind',
               category: result.category,
+              categoryLabel: CATEGORY_LABELS[result.category] || result.category,
               total: result.total,
               maxScore,
               description: result.description,
@@ -479,9 +550,9 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
           className="btn btn-secondary"
           data-testid="result-recursos"
           onClick={() => navigate('/recursos')}
-          aria-label="Ver recursos y orientación profesional"
+          aria-label="Ver recursos de apoyo"
         >
-          Recursos profesionales
+          Recursos de apoyo
         </button>
         <button
           className="btn btn-secondary"
@@ -506,7 +577,7 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
       </div>
 
       <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-text-tertiary)', marginTop: '20px' }}>
-        Tu perfil local se guarda solo en esta sesión del navegador. Si el envío está activo, también se registra una copia anónima sin datos personales.
+        Tu historial se guarda localmente en este navegador. {isRemoteCollectionEnabled ? 'El envío remoto opcional usa solo métricas agregadas, sin respuestas crudas.' : 'El envío remoto está desactivado en esta versión.'}
       </p>
     </div>
   );

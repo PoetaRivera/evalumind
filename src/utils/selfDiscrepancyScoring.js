@@ -70,6 +70,9 @@ export function calculateSelfDiscrepancyScore(responses) {
       : [],
     category,
     description,
+    scoreDirection: 'higher-is-more',
+    scoreLabel: 'Brecha público/privado',
+    scoreInterpretation: 'Puntajes más altos indican mayor diferencia reportada entre cómo te muestras y cómo te percibes internamente.',
     childhoodNote:
       'El camuflaje de rasgos neurodivergentes a menudo comienza en la infancia o adolescencia como estrategia de supervivencia social. Recuperar la conexión con tu yo auténtico es un proceso gradual que merece apoyo terapéutico.',
   };
