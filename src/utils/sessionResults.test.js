@@ -162,6 +162,48 @@ describe('sessionResults CRUD', () => {
     expect(mod.getResultHistory()).toHaveLength(3);
   });
 
+  it('saves context notes on the latest local history entry', async () => {
+    mod.saveCompletedTest('tdah-adult-v2', { ...sampleTdah, total: 40 });
+    mod.saveCompletedTest('tdah-adult-v2', { ...sampleTdah, total: 44 });
+
+    expect(mod.saveResultContext('tdah-adult-v2', null, {
+      rest: 'bajo',
+      stress: 'alto',
+      environment: 'ruidoso',
+      note: 'Dormí poco y hubo interrupciones.',
+    })).toBe(true);
+
+    const tdahHistory = mod.getResultHistory('tdah-adult-v2');
+    expect(tdahHistory[0].context).toEqual({});
+    expect(tdahHistory[1].context).toMatchObject({
+      rest: 'bajo',
+      stress: 'alto',
+      environment: 'ruidoso',
+      note: 'Dormí poco y hubo interrupciones.',
+    });
+    expect(mod.getCompletedTest('tdah-adult-v2').context.note).toBe('Dormí poco y hubo interrupciones.');
+  });
+
+  it('sanitizes context fields before saving', async () => {
+    mod.saveCompletedTest('tdah-adult-v2', sampleTdah);
+    const entry = mod.getResultHistory('tdah-adult-v2')[0];
+
+    mod.saveResultContext('tdah-adult-v2', entry.completedAt, {
+      rest: '  medio  ',
+      stress: 10,
+      note: 'x'.repeat(320),
+    });
+
+    const context = mod.getResultContext('tdah-adult-v2', entry.completedAt);
+    expect(context.rest).toBe('medio');
+    expect(context.stress).toBeUndefined();
+    expect(context.note).toHaveLength(280);
+  });
+
+  it('returns false when saving context without a matching result', async () => {
+    expect(mod.saveResultContext('tdah-adult-v2', Date.now(), { rest: 'alto' })).toBe(false);
+  });
+
   it('migrates legacy session results when local storage is empty', async () => {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify({ 'tdah-adult-v2': sampleTdah }));
     expect(mod.getCompletedTests()).toHaveProperty('tdah-adult-v2');

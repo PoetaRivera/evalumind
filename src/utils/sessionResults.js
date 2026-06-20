@@ -2,6 +2,7 @@ const COMPLETED_KEY = 'evalumind_completed_tests';
 const LEGACY_SESSION_KEY = 'evalumind_completed_tests';
 const HISTORY_KEY = 'evalumind_result_history_v1';
 const MAX_HISTORY_PER_TEST = 12;
+const CONTEXT_NOTE_MAX_LENGTH = 280;
 
 function getStorage(preferLocal = true) {
   const primary = preferLocal ? globalThis.localStorage : globalThis.sessionStorage;
@@ -50,6 +51,25 @@ function saveJson(key, data) {
   }
 }
 
+function cleanContextValue(value, maxLength = 80) {
+  if (typeof value !== 'string') return '';
+  return value.replace(/\s+/g, ' ').trim().slice(0, maxLength);
+}
+
+function sanitizeContext(context = {}) {
+  const cleaned = {
+    rest: cleanContextValue(context.rest, 24),
+    stress: cleanContextValue(context.stress, 24),
+    energy: cleanContextValue(context.energy, 24),
+    environment: cleanContextValue(context.environment, 32),
+    timeOfDay: cleanContextValue(context.timeOfDay, 24),
+    support: cleanContextValue(context.support, 48),
+    note: cleanContextValue(context.note, CONTEXT_NOTE_MAX_LENGTH),
+  };
+
+  return Object.fromEntries(Object.entries(cleaned).filter(([, value]) => value));
+}
+
 function removeJson(key) {
   const storage = getStorage();
   try {
@@ -69,7 +89,10 @@ function loadLegacySessionResults() {
 }
 
 function normalizeEntry(testId, result) {
+  const completedAt = Date.now();
+
   return {
+    entryId: `${testId}-${completedAt}-${Math.random().toString(36).slice(2, 10)}`,
     testId,
     total: result.total,
     category: result.category,
@@ -86,7 +109,8 @@ function normalizeEntry(testId, result) {
       interpretation: d.interpretation || '',
     })),
     profiles: (result.profiles || []).map((p) => p.id),
-    completedAt: Date.now(),
+    context: sanitizeContext(result.context),
+    completedAt,
   };
 }
 
@@ -145,6 +169,54 @@ export function getResultHistory(testId = null) {
   const history = loadJson(HISTORY_KEY, []);
   const filtered = testId ? history.filter((item) => item.testId === testId) : history;
   return filtered.sort((a, b) => a.completedAt - b.completedAt);
+}
+
+export function saveResultContext(testId, entryRef, context) {
+  if (!testId) return false;
+
+  const history = loadJson(HISTORY_KEY, []);
+  const entriesForTest = history
+    .filter((item) => item?.testId === testId)
+    .sort((a, b) => a.completedAt - b.completedAt);
+
+  const latestEntry = entriesForTest.at(-1);
+  const targetEntryId = typeof entryRef === 'string' ? entryRef : latestEntry?.entryId;
+  const targetCompletedAt = typeof entryRef === 'number' ? entryRef : latestEntry?.completedAt;
+  if (!targetEntryId && !targetCompletedAt) return false;
+
+  const cleanedContext = sanitizeContext(context);
+  let updated = false;
+
+  const nextHistory = history.map((item) => {
+    const matchesEntryId = targetEntryId && item.entryId === targetEntryId;
+    const matchesLegacyTime = !targetEntryId && item.completedAt === targetCompletedAt;
+    if (item?.testId !== testId || (!matchesEntryId && !matchesLegacyTime)) return item;
+    updated = true;
+    return { ...item, context: cleanedContext };
+  });
+
+  if (!updated) return false;
+
+  saveJson(HISTORY_KEY, nextHistory);
+
+  const all = loadAll();
+  if (
+    all[testId]?.entryId === targetEntryId ||
+    (!targetEntryId && all[testId]?.completedAt === targetCompletedAt)
+  ) {
+    all[testId] = { ...all[testId], context: cleanedContext };
+    saveAll(all);
+  }
+
+  return true;
+}
+
+export function getResultContext(testId, completedAt = null) {
+  const history = getResultHistory(testId);
+  const entry = completedAt
+    ? history.find((item) => item.completedAt === completedAt)
+    : history.at(-1);
+  return entry?.context || {};
 }
 
 export function clearCompletedTests() {

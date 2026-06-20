@@ -1,6 +1,6 @@
 # EvaluMind
 
-EvaluMind es una aplicación React/Vite de autoobservación personal y educativa sobre atención, impulsividad, memoria de trabajo, organización, sensibilidad y funciones ejecutivas. Combina cuestionarios con tareas interactivas breves, historial local, mapa de funcionamiento, notas de complementariedad y exportación a PDF.
+EvaluMind es una aplicación React/Vite de autoobservación personal y educativa sobre atención, impulsividad, memoria de trabajo, organización, sensibilidad y funciones ejecutivas. Combina cuestionarios con tareas interactivas breves, historial local, tendencias personales con notas de contexto, mapa de funcionamiento, notas de complementariedad y exportación a PDF.
 
 ## Estado
 
@@ -9,9 +9,9 @@ El sistema está desplegado en producción y actualmente se encuentra en fase de
 ## Privacidad
 
 - No se solicita nombre, correo, teléfono ni identificadores personales.
-- El mapa de funcionamiento y el historial se conservan en `localStorage` del navegador.
+- El mapa de funcionamiento, el historial, las tendencias y las notas de contexto se conservan en `localStorage` del navegador.
 - El envío remoto a Firestore está desactivado por defecto con `VITE_FIREBASE_REMOTE_COLLECTION_ENABLED=false`.
-- Si se activa explícitamente, solo se envían métricas agregadas, nunca respuestas crudas.
+- Si se activa explícitamente, solo se envían métricas agregadas, nunca respuestas crudas ni notas de contexto.
 - Las reglas de Firestore bloquean lecturas desde cliente, no permiten updates/deletes y restringen el esquema permitido en `responses`.
 
 ## Scripts

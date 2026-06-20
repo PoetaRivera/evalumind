@@ -39,6 +39,26 @@ test.describe('Profile Map', () => {
     await expect(page.getByText('Atención e impulsividad')).toBeVisible();
     await expect(page.getByText('Rasgos sociales/sensoriales')).toBeVisible();
   });
+
+  test('saves context locally and shows it in personal trends', async ({ page }) => {
+    await page.goto('/test/hsp-adulto');
+    await acceptDisclaimer(page);
+    await answerAllQuestions(page, 27);
+
+    const saveContext = page.getByRole('button', { name: /guardar contexto local/i });
+    await expect(saveContext).toBeEnabled();
+    await page.getByTestId('context-rest').selectOption('bajo');
+    await page.getByTestId('context-stress').selectOption('alto');
+    await page.getByTestId('context-environment').selectOption('ruidoso');
+    await page.getByLabel('Nota breve').fill('Dormí poco y había ruido.');
+    await saveContext.click();
+
+    await expect(page.getByText('Guardado', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: /ver mi perfil/i }).click();
+    await expect(page.getByText(/Tendencias personales/i)).toBeVisible();
+    await expect(page.getByText(/Descanso bajo/i)).toBeVisible();
+    await expect(page.getByText(/Nota: Dormí poco y había ruido./i)).toBeVisible();
+  });
 });
 
 test.describe('Complementarity notes', () => {

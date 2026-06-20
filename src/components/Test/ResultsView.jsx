@@ -1,8 +1,83 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getComplementarityNotes, getResultHistory } from '../../utils/sessionResults';
+import { getComplementarityNotes, getResultHistory, saveResultContext } from '../../utils/sessionResults';
 import { exportResultsToPDF } from '../../utils/pdfExport';
 import { isRemoteCollectionEnabled } from '../../firebase/config';
+
+const EMPTY_CONTEXT = {
+  rest: '',
+  stress: '',
+  energy: '',
+  environment: '',
+  timeOfDay: '',
+  support: '',
+  note: '',
+};
+
+const CONTEXT_FIELDS = [
+  {
+    key: 'rest',
+    label: 'Descanso',
+    options: [
+      ['', 'Sin registrar'],
+      ['bajo', 'Bajo'],
+      ['medio', 'Medio'],
+      ['alto', 'Alto'],
+    ],
+  },
+  {
+    key: 'stress',
+    label: 'Estrés',
+    options: [
+      ['', 'Sin registrar'],
+      ['bajo', 'Bajo'],
+      ['medio', 'Medio'],
+      ['alto', 'Alto'],
+    ],
+  },
+  {
+    key: 'energy',
+    label: 'Energía',
+    options: [
+      ['', 'Sin registrar'],
+      ['baja', 'Baja'],
+      ['media', 'Media'],
+      ['alta', 'Alta'],
+    ],
+  },
+  {
+    key: 'environment',
+    label: 'Ambiente',
+    options: [
+      ['', 'Sin registrar'],
+      ['tranquilo', 'Tranquilo'],
+      ['normal', 'Normal'],
+      ['ruidoso', 'Ruidoso'],
+      ['interrumpido', 'Interrumpido'],
+    ],
+  },
+  {
+    key: 'timeOfDay',
+    label: 'Momento',
+    options: [
+      ['', 'Sin registrar'],
+      ['manana', 'Mañana'],
+      ['tarde', 'Tarde'],
+      ['noche', 'Noche'],
+    ],
+  },
+  {
+    key: 'support',
+    label: 'Apoyo usado',
+    options: [
+      ['', 'Sin registrar'],
+      ['ninguno', 'Ninguno'],
+      ['pausas', 'Pausas'],
+      ['temporizador', 'Temporizador'],
+      ['ambiente-adaptado', 'Ambiente adaptado'],
+    ],
+  },
+];
 
 const CATEGORY_LABELS = {
   'baja-probabilidad': 'Baja presencia reportada',
@@ -264,19 +339,73 @@ function describeDelta(delta, direction) {
     : `-${abs} puntos: menor presencia/intensidad reportada que antes.`;
 }
 
+function loadTestHistory(testId) {
+  return testId ? getResultHistory(testId).slice(-4) : [];
+}
+
+function hasContext(context) {
+  return Object.values(context || {}).some(Boolean);
+}
+
+function contextOptionLabel(key, value) {
+  const field = CONTEXT_FIELDS.find((item) => item.key === key);
+  return field?.options.find(([optionValue]) => optionValue === value)?.[1] || value;
+}
+
+function contextSummary(context) {
+  if (!hasContext(context)) return [];
+
+  return [
+    context.rest && `Descanso: ${contextOptionLabel('rest', context.rest)}`,
+    context.stress && `Estrés: ${contextOptionLabel('stress', context.stress)}`,
+    context.energy && `Energía: ${contextOptionLabel('energy', context.energy)}`,
+    context.environment && `Ambiente: ${contextOptionLabel('environment', context.environment)}`,
+    context.timeOfDay && `Momento: ${contextOptionLabel('timeOfDay', context.timeOfDay)}`,
+    context.support && `Apoyo: ${contextOptionLabel('support', context.support)}`,
+  ].filter(Boolean);
+}
+
 function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRestart }) {
   const navigate = useNavigate();
+  const [history, setHistory] = useState(() => loadTestHistory(testId));
+  const [contextDraft, setContextDraft] = useState(EMPTY_CONTEXT);
+  const [contextSaved, setContextSaved] = useState(false);
   const complementarityNotes = useMemo(
     () => testId ? getComplementarityNotes(testId) : [],
     [testId]
   );
-  const history = testId ? getResultHistory(testId).slice(-4) : [];
 
   const dimensions = result.dimensions || [];
   const chartDimensions = dimensions.length >= 3 ? dimensions : [];
+  const currentEntry = history.at(-1) || null;
   const previousResult = history.length > 1 ? history[history.length - 2] : null;
   const delta = previousResult ? result.total - previousResult.total : null;
   const scoreDirection = result.scoreDirection || previousResult?.scoreDirection || 'higher-is-more';
+  const savedContextTags = contextSummary(currentEntry?.context);
+
+  useEffect(() => {
+    const nextHistory = loadTestHistory(testId);
+    setHistory(nextHistory);
+
+    const latest = nextHistory.at(-1);
+    const latestContext = latest?.context || {};
+    setContextDraft({ ...EMPTY_CONTEXT, ...latestContext });
+    setContextSaved(hasContext(latestContext));
+  }, [saved, testId, result.total]);
+
+  const handleContextChange = (key, value) => {
+    setContextDraft((current) => ({ ...current, [key]: value }));
+    setContextSaved(false);
+  };
+
+  const handleContextSave = (event) => {
+    event.preventDefault();
+    const savedOk = saveResultContext(testId, currentEntry?.entryId || currentEntry?.completedAt, contextDraft);
+    if (!savedOk) return;
+
+    setHistory(loadTestHistory(testId));
+    setContextSaved(true);
+  };
 
   return (
     <div className="results-view">
@@ -478,6 +607,50 @@ function ResultsView({ result, testId, loading, error, saved, remoteSaved, onRes
           </ul>
         </div>
       )}
+
+      <form className="results-context" onSubmit={handleContextSave}>
+        <div className="results-context-header">
+          <div>
+            <h3>Contexto de este intento</h3>
+            <p>Opcional y local. Ayuda a interpretar tendencias sin convertir un resultado aislado en conclusión.</p>
+          </div>
+          {contextSaved && <span className="results-context-saved">Guardado</span>}
+        </div>
+        <div className="results-context-grid">
+          {CONTEXT_FIELDS.map((field) => (
+            <label key={field.key} className="results-context-field">
+              <span>{field.label}</span>
+              <select
+                data-testid={`context-${field.key}`}
+                value={contextDraft[field.key]}
+                onChange={(event) => handleContextChange(field.key, event.target.value)}
+              >
+                {field.options.map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+            </label>
+          ))}
+        </div>
+        <label className="results-context-note">
+          <span>Nota breve</span>
+          <textarea
+            value={contextDraft.note}
+            maxLength={280}
+            rows={3}
+            placeholder="Ejemplo: dormí poco, había ruido, hice pausas o estaba con mucha carga mental."
+            onChange={(event) => handleContextChange('note', event.target.value)}
+          />
+        </label>
+        {savedContextTags.length > 0 && (
+          <div className="results-context-tags" aria-label="Contexto guardado">
+            {savedContextTags.map((tag) => <span key={tag}>{tag}</span>)}
+          </div>
+        )}
+        <button className="btn btn-secondary" type="submit" disabled={!currentEntry}>
+          Guardar contexto local
+        </button>
+      </form>
 
       {/* Notas de complementariedad entre tests */}
       {complementarityNotes.length > 0 && (

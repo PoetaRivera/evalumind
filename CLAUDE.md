@@ -1,14 +1,14 @@
 # CLAUDE.md — EvaluMind
 
-Proyecto React/Vite de autoobservación personal y educativa para adultos. 20 herramientas (7 cuestionarios + 13 tareas interactivas) con historial local, mapa de funcionamiento, notas de complementariedad y exportación PDF.
+Proyecto React/Vite de autoobservación personal y educativa para adultos. 20 herramientas (7 cuestionarios + 13 tareas interactivas) con historial local, tendencias personales con contexto, mapa de funcionamiento, notas de complementariedad y exportación PDF.
 
 ## Comandos
 
 ```bash
 npm run dev          # Desarrollo (Vite)
 npm run build        # Build producción → dist/
-npm test             # 125 tests unitarios (Vitest)
-npm run test:e2e     # 93 tests E2E (Playwright, 3 navegadores)
+npm test             # Tests unitarios (Vitest)
+npm run test:e2e     # Tests E2E (Playwright)
 npm run lint         # ESLint
 firebase deploy      # Deploy a evalumind-app
 ```
@@ -24,7 +24,7 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=
 VITE_FIREBASE_APP_ID=
 ```
 
-Sin Firebase, la app funciona con resultados locales (sessionStorage).
+Sin Firebase, la app funciona con resultados, tendencias y notas de contexto locales (`localStorage`).
 
 ## Arquitectura
 
@@ -44,7 +44,7 @@ src/
 ├── components/
 │   ├── Test/ (23 archivos)
 │   │   ├── TestContainer.jsx        ← Orquestador con switch para 20 tests
-│   │   ├── ResultsView.jsx          ← Radar, dimensiones, PDF, complementariedad
+│   │   ├── ResultsView.jsx          ← Radar, dimensiones, contexto local, PDF, complementariedad
 │   │   ├── 13 tareas interactivas (SART, Flanker, DigitSpan, Navon, RMET,
 │   │   │   Switch, SensoryThreshold, AuditoryDistraction, FER, SelfDiscrepancy,
 │   │   │   SocialScenarios, FasTask, DatInput)
@@ -53,7 +53,7 @@ src/
 │   ├── Common/ (DisclaimerModal, ErrorBoundary, NotFound)
 │   ├── Layout/, Profile/, Stories/, HomePage, RecursosPage
 ├── hooks/
-│   ├── useTestSubmission.js         ← Firestore + sessionStorage + rate limit
+│   ├── useTestSubmission.js         ← Guardado local + Firestore opcional + rate limit
 │   └── usePageVisibility.js         ← Pausa tareas al cambiar pestaña
 ├── firebase/config.js
 ├── App.jsx                          ← 6 rutas + lazy + Suspense + ErrorBoundary
@@ -66,14 +66,14 @@ src/
 |---|---|
 | `/` | HomePage (20 cards) |
 | `/test/:testId` | Cualquiera de los 20 tests |
-| `/perfil` | Mapa de Funcionamiento |
+| `/perfil` | Mapa personal, tendencias e historial local |
 | `/historias` | Historias de Adaptación |
 | `/recursos` | Recursos profesionales |
 | `*` | NotFound (404) |
 
 ## Estado actual (2026-05-15)
 
-- **125 tests unitarios** pasando, **93 E2E** (84 pass, 9 skip en Chromium, Firefox y WebKit)
+- **158 tests unitarios** pasando y suite E2E estable en Chromium
 - **Firebase**: proyecto `evalumind-app`, Firestore `(default)` en nam5, envío remoto desactivado por defecto
 - **Producción**: https://evalumind-app.web.app
 - **GitHub**: https://github.com/PoetaRivera/evalumind

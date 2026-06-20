@@ -185,6 +185,108 @@ function getBarColor(pct) {
   return 'var(--color-bar-low)';
 }
 
+function scorePercent(entry) {
+  const max = entry?.maxScores?.total || 100;
+  if (!max) return 0;
+  return Math.max(0, Math.min(100, Math.round((entry.total / max) * 100)));
+}
+
+function buildTrendGroups(allHistory) {
+  const groups = new Map();
+
+  for (const item of allHistory) {
+    if (!item?.testId) continue;
+    const entries = groups.get(item.testId) || [];
+    entries.push(item);
+    groups.set(item.testId, entries);
+  }
+
+  return Array.from(groups.entries())
+    .map(([testId, entries]) => ({
+      testId,
+      entries: entries.sort((a, b) => a.completedAt - b.completedAt).slice(-6),
+    }))
+    .sort((a, b) => {
+      const latestA = a.entries.at(-1)?.completedAt || 0;
+      const latestB = b.entries.at(-1)?.completedAt || 0;
+      const repeatedA = a.entries.length > 1 ? 1 : 0;
+      const repeatedB = b.entries.length > 1 ? 1 : 0;
+      return repeatedB - repeatedA || latestB - latestA;
+    })
+    .slice(0, 4);
+}
+
+function trendMessage(entries) {
+  const latest = entries.at(-1);
+  const previous = entries.at(-2);
+  if (!latest || !previous) return 'Primer registro guardado. Repite la herramienta para ver tendencia.';
+
+  const delta = latest.total - previous.total;
+  if (delta === 0) return 'Sin cambio frente al intento anterior.';
+
+  const abs = Math.abs(delta);
+  const direction = latest.scoreDirection || 'higher-is-more';
+
+  if (direction === 'lower-is-better') {
+    return delta > 0
+      ? `Subió ${abs}: observa si hubo más costo o interferencia.`
+      : `Bajó ${abs}: menos costo registrado que antes.`;
+  }
+
+  if (direction === 'higher-is-better') {
+    return delta > 0
+      ? `Subió ${abs}: mayor precisión o capacidad registrada.`
+      : `Bajó ${abs}: menor precisión o capacidad registrada.`;
+  }
+
+  if (direction === 'style') {
+    return `${delta > 0 ? 'Subió' : 'Bajó'} ${abs}: cambio de estilo; revisa el contexto.`;
+  }
+
+  return delta > 0
+    ? `Subió ${abs}: mayor presencia o intensidad reportada.`
+    : `Bajó ${abs}: menor presencia o intensidad reportada.`;
+}
+
+function contextTags(context = {}) {
+  return [
+    context.rest && `Descanso ${context.rest}`,
+    context.stress && `Estrés ${context.stress}`,
+    context.energy && `Energía ${context.energy}`,
+    context.environment && `Ambiente ${context.environment}`,
+    context.timeOfDay && `Momento ${context.timeOfDay === 'manana' ? 'mañana' : context.timeOfDay}`,
+    context.support && `Apoyo ${context.support.replace('-', ' ')}`,
+  ].filter(Boolean);
+}
+
+function TrendSparkline({ entries, color }) {
+  const width = 180;
+  const height = 56;
+  const padding = 8;
+  const values = entries.map(scorePercent);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = Math.max(8, max - min);
+  const denominator = Math.max(1, values.length - 1);
+
+  const points = values.map((value, index) => {
+    const x = padding + (index / denominator) * (width - padding * 2);
+    const y = height - padding - ((value - min) / span) * (height - padding * 2);
+    return `${x},${y}`;
+  }).join(' ');
+
+  return (
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Línea de tendencia personal" style={{ width: '100%', height: '56px' }}>
+      <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#e5e7eb" strokeWidth="1" />
+      <polyline points={points} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      {values.map((value, index) => {
+        const [x, y] = points.split(' ')[index].split(',').map(Number);
+        return <circle key={`${value}-${index}`} cx={x} cy={y} r="3.5" fill={color} />;
+      })}
+    </svg>
+  );
+}
+
 export default function ProfileMap() {
   const navigate = useNavigate();
   const completedTests = useMemo(() => getCompletedTests(), []);
@@ -196,7 +298,9 @@ export default function ProfileMap() {
   const lowerAreas = useMemo(() => findLowerAreas(dimensions), [dimensions]);
   const higherAreas = useMemo(() => findHigherAreas(dimensions), [dimensions]);
   const strategies = useMemo(() => findStrategies(dimensions, completedTests), [dimensions, completedTests]);
-  const history = useMemo(() => getResultHistory().slice(-6).reverse(), []);
+  const allHistory = useMemo(() => getResultHistory(), []);
+  const history = useMemo(() => allHistory.slice(-6).reverse(), [allHistory]);
+  const trendGroups = useMemo(() => buildTrendGroups(allHistory), [allHistory]);
 
   if (!hasTests) {
     return (
@@ -366,6 +470,50 @@ export default function ProfileMap() {
                 ? 'Tienes buena flexibilidad cognitiva balanceada con coherencia.'
                 : 'Tu pensamiento tiende a la profundidad dentro de dominios familiares.'}
           </p>
+        </div>
+      )}
+
+      {trendGroups.length > 0 && (
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{ fontSize: '1rem', marginBottom: '8px', color: 'var(--color-text)' }}>Tendencias personales</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', margin: '0 0 14px' }}>
+            Estas líneas comparan tus propios intentos guardados. El contexto ayuda a explicar cambios por descanso, estrés o ambiente.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+            {trendGroups.map(({ testId, entries }) => {
+              const latest = entries.at(-1);
+              const meta = TEST_LABELS[testId] || { name: testId, color: 'var(--color-accent)' };
+              const tags = contextTags(latest?.context);
+              return (
+                <div key={testId} style={{ background: 'var(--color-bg)', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', alignItems: 'baseline', marginBottom: '8px' }}>
+                    <h4 style={{ fontSize: '0.92rem', color: 'var(--color-text)', margin: 0 }}>{meta.name}</h4>
+                    <strong style={{ color: meta.color, fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+                      {latest.total}/{latest.maxScores?.total ?? 100}
+                    </strong>
+                  </div>
+                  <TrendSparkline entries={entries} color={meta.color} />
+                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', lineHeight: 1.5, margin: '8px 0' }}>
+                    {trendMessage(entries)}
+                  </p>
+                  {tags.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
+                      {tags.slice(0, 4).map((tag) => (
+                        <span key={tag} style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent)', border: '1px solid var(--color-accent-border)', borderRadius: '999px', padding: '3px 8px', fontSize: '0.72rem' }}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {latest.context?.note && (
+                    <p style={{ fontSize: '0.78rem', color: 'var(--color-text-tertiary)', lineHeight: 1.5, margin: '8px 0 0' }}>
+                      Nota: {latest.context.note}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
